@@ -5,7 +5,7 @@ Provides a new artist for matplotlib to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using 
 plt.imshow(...). 
 
-.. image:: https://github.com/ppinard/matplotlib-scalebar/tree/master/doc/example1.png
+.. image:: https://raw.githubusercontent.com/ppinard/matplotlib-scalebar/master/doc/example1.png
 
 The artist supports customization either directly from the *Scalebar* object or
 from the matplotlibrc.
@@ -52,7 +52,7 @@ Here are parameters that can either be customized in the constructor of the
   * ``scalebar.pad``: fraction of the font size (default: ``0.2``)
   * ``scalebar.border_pad``: fraction of the font size (default: ``0.1``)
   * ``scalebar.sep``: separation between scale bar and label in points 
-        (default: ``5``)
+    (default: ``5``)
   * ``scalebar.frameon``: if True, will draw a box around the scale bar 
     and label (default: ``True``)
   * ``scalebar.color``: color for the scale bar and label (default: ``k``)
