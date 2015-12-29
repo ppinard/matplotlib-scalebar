@@ -41,12 +41,12 @@ matplotlibrc parameters
 -----------------------
 
 Here are parameters that can either be customized in the constructor of the
-:class:`ScaleBar` class or in the matplotlibrc file.
+**ScaleBar** class or in the matplotlibrc file.
 
   * ``scalebar.length_fraction``: length of the scale bar as a fraction of the 
-    axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``)
+    axes's width (default: ``0.2``)
   * ``scalebar.height_fraction``: height of the scale bar as a fraction of the 
-    axes's height (default: rcParams['scalebar.height_fraction'] or ``0.01``)
+    axes's height (default: ``0.01``)
   * ``scalebar.location``: a location code (same as legend)
     (default: ``upper right``)
   * ``scalebar.pad``: fraction of the font size (default: ``0.2``)
