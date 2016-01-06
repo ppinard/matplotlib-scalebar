@@ -49,4 +49,6 @@ setup(name='matplotlib-scalebar',
 
       zip_safe=True,
 
+      test_suite='nose.collector'
+
      )
