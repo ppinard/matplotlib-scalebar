@@ -4,6 +4,8 @@
 # Standard library modules.
 
 # Third party modules.
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.testing.decorators import cleanup
 
