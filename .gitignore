@@ -1,7 +1,6 @@
 #### joe made this: https://goel.io/joe
 
 #####=== Eclipse ===#####
-*.project
 *.pydevproject
 .metadata
 .gradle
