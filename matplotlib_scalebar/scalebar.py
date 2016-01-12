@@ -185,7 +185,7 @@ class ScaleBar(Artist):
         label_top = self.label_top or rcParams.get('scalebar.label_top', False)
         font_properties = self.font_properties
 
-        ax = self.get_axes()
+        ax = self.axes
         xlim, ylim = ax.get_xlim(), ax.get_ylim()
 
         # Calculate dimensions
@@ -207,7 +207,7 @@ class ScaleBar(Artist):
                                   color=color,
                                   label_top=label_top,
                                   fontproperties=font_properties)
-        sizebar.set_axes(ax)
+        sizebar.axes = ax
         sizebar.set_figure(self.get_figure())
         sizebar.patch.set_color(box_color)
         sizebar.patch.set_alpha(box_alpha)
