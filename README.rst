@@ -25,7 +25,7 @@ Easiest way to install using ``pip``::
     
 For development installation from the git repository::
 
-    $ git pull 
+    $ git clone git@github.com:ppinard/matplotlib-scalebar.git
     $ pip install -e matplotlib-scalebar
 
 Example
