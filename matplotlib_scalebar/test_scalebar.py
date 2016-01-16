@@ -13,7 +13,7 @@ import numpy as np
 
 from nose.tools import \
     (assert_equal, assert_almost_equal, assert_is_none, assert_true,
-     assert_false)
+     assert_false, assert_raises)
 
 # Local modules.
 from matplotlib_scalebar.scalebar import ScaleBar
@@ -67,6 +67,9 @@ def test_scalebar_length_fraction():
     assert_almost_equal(0.1, scalebar.get_length_fraction())
     assert_almost_equal(0.1, scalebar.length_fraction)
 
+    assert_raises(ValueError, scalebar.set_length_fraction, 0.0)
+    assert_raises(ValueError, scalebar.set_length_fraction, 1.1)
+
 @cleanup
 def test_scalebar_height_fraction():
     _fig, _ax, scalebar = create_figure()
@@ -81,6 +84,9 @@ def test_scalebar_height_fraction():
     scalebar.height_fraction = 0.1
     assert_almost_equal(0.1, scalebar.get_height_fraction())
     assert_almost_equal(0.1, scalebar.height_fraction)
+
+    assert_raises(ValueError, scalebar.set_height_fraction, 0.0)
+    assert_raises(ValueError, scalebar.set_height_fraction, 1.1)
 
 @cleanup
 def test_scalebar_location():

@@ -227,7 +227,7 @@ class ScaleBar(Artist):
     def set_length_fraction(self, fraction):
         if fraction is not None:
             fraction = float(fraction)
-            if fraction < 0.0 or fraction > 1.0:
+            if fraction <= 0.0 or fraction > 1.0:
                 raise ValueError('Length fraction must be between [0.0, 1.0]')
         self._length_fraction = fraction
 
@@ -239,7 +239,7 @@ class ScaleBar(Artist):
     def set_height_fraction(self, fraction):
         if fraction is not None:
             fraction = float(fraction)
-            if fraction < 0.0 or fraction > 1.0:
+            if fraction <= 0.0 or fraction > 1.0:
                 raise ValueError('Height fraction must be between [0.0, 1.0]')
         self._height_fraction = fraction
 
