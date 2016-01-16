@@ -13,7 +13,7 @@ plt.imshow(...).
 
 .. image:: https://raw.githubusercontent.com/ppinard/matplotlib-scalebar/master/doc/example1.png
 
-The artist supports customization either directly from the *Scalebar* object or
+The artist supports customization either directly from the **ScaleBar** object or
 from the matplotlibrc.
 
 Installation
