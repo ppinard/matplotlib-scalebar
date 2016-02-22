@@ -168,21 +168,24 @@ class ScaleBar(Artist):
         # Get parameters
         from matplotlib import rcParams # late import
 
-        length_fraction = self.length_fraction or \
-            rcParams.get('scalebar.length_fraction', 0.2)
-        height_fraction = self.height_fraction or \
-            rcParams.get('scalebar.height_fraction', 0.01)
-        location = self.location or \
-            self._LOCATIONS[rcParams.get('scalebar.location', 'upper right')]
-        pad = self.pad or rcParams.get('scalebar.pad', 0.2)
-        border_pad = self.border_pad or \
-            rcParams.get('scalebar.border_pad', 0.1)
-        sep = self.sep or rcParams.get('scalebar.sep', 5)
-        frameon = self.frameon or rcParams.get('scalebar.frameon', True)
-        color = self.color or rcParams.get('scalebar.color', 'k')
-        box_color = self.box_color or rcParams.get('scalebar.box_color', 'w')
-        box_alpha = self.box_alpha or rcParams.get('scalebar.box_alpha', 1.0)
-        label_top = self.label_top or rcParams.get('scalebar.label_top', False)
+        def _get_value(attr, default):
+            value = getattr(self, attr)
+            if value is None:
+                value = rcParams.get('scalebar.' + attr, default)
+            return value
+        length_fraction = _get_value('length_fraction', 0.2)
+        height_fraction = _get_value('height_fraction', 0.01)
+        location = _get_value('location', 'upper right')
+        if is_string_like(location):
+            location = self._LOCATIONS[location]
+        pad = _get_value('pad', 0.2)
+        border_pad = _get_value('border_pad', 0.1)
+        sep = _get_value('sep', 5)
+        frameon = _get_value('frameon', True)
+        color = _get_value('color', 'k')
+        box_color = _get_value('box_color', 'w')
+        box_alpha = _get_value('box_alpha', 1.0)
+        label_top = _get_value('label_top', False)
         font_properties = self.font_properties
 
         ax = self.axes
