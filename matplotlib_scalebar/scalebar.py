@@ -40,6 +40,8 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import \
     (defaultParams, validate_float, validate_legend_loc, validate_bool,
      validate_color, ValidateInStrings)
+from matplotlib.offsetbox import AuxTransformBox
+from matplotlib.text import Text
 
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredSizeBar
 
@@ -90,7 +92,8 @@ class ScaleBar(Artist):
                   'center':       10,
               }
 
-    def __init__(self, dx_m, length_fraction=None, height_fraction=None,
+    def __init__(self, dx_m, label=None,
+                 length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
                  scale_loc=None, font_properties=None):
@@ -100,6 +103,8 @@ class ScaleBar(Artist):
         :arg dx_m: dimension of one pixel in meters (m)
             Set ``dx_m`` to 1.0 if the axes image has already been calibrated by
             setting its ``extent``.
+        :arg label: optional label associated with the scale bar 
+            (default: ``None``, no label is shown)
         :arg length_fraction: length of the scale bar as a fraction of the 
             axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``)
         :arg height_fraction: height of the scale bar as a fraction of the 
@@ -128,6 +133,7 @@ class ScaleBar(Artist):
         Artist.__init__(self)
 
         self.dx_m = dx_m
+        self.label = label
         self.length_fraction = length_fraction
         self.height_fraction = height_fraction
         self.location = location
@@ -193,19 +199,30 @@ class ScaleBar(Artist):
 
         ax = self.axes
         xlim, ylim = ax.get_xlim(), ax.get_ylim()
+        label = self.label
 
-        # Calculate dimensions
+        # Create label
+        if label:
+            labelbox = AuxTransformBox(ax.transAxes)
+
+            text = Text(0, 0, label,
+                        fontproperties=font_properties,
+                        color=color)
+            labelbox.add_artist(text)
+        else:
+            labelbox = None
+
+        # Create sizebar
         length_px = abs(xlim[1] - xlim[0]) * length_fraction
-        length_px, label = self._calculate_length(length_px)
+        length_px, scale_label = self._calculate_length(length_px)
 
         size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
 
         label_top = scale_loc == 'top'
 
-        # Create sizebar
         sizebar = AnchoredSizeBar(transform=ax.transData,
                                   size=length_px,
-                                  label=label,
+                                  label=scale_label,
                                   loc=location,
                                   pad=pad,
                                   borderpad=border_pad,
@@ -215,6 +232,13 @@ class ScaleBar(Artist):
                                   color=color,
                                   label_top=label_top,
                                   fontproperties=font_properties)
+
+        if labelbox is not None:
+            if label_top:
+                sizebar._box._children.append(labelbox)
+            else:
+                sizebar._box._children.insert(0, labelbox)
+
         sizebar.axes = ax
         sizebar.set_figure(self.get_figure())
         sizebar.patch.set_color(box_color)
@@ -228,6 +252,14 @@ class ScaleBar(Artist):
         self._dx_m = float(dx_m)
 
     dx_m = property(get_dx_m, set_dx_m)
+
+    def get_label(self):
+        return self._label
+
+    def set_label(self, label):
+        self._label = label
+
+    label = property(get_label, set_label)
 
     def get_length_fraction(self):
         return self._length_fraction
