@@ -21,7 +21,7 @@ The following parameters are available for customization in the matplotlibrc:
     - scalebar.color
     - scalebar.box_color
     - scalebar.box_alpha
-    - scalebar.label_top
+    - scalebar.scale_loc
     
 See the class documentation (:class:`.Scalebar`) for a description of the 
 parameters. 
@@ -39,7 +39,7 @@ from matplotlib.cbook import is_string_like
 from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import \
     (defaultParams, validate_float, validate_legend_loc, validate_bool,
-     validate_color)
+     validate_color, ValidateInStrings)
 
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredSizeBar
 
@@ -52,6 +52,9 @@ _PREFIXES_VALUES = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
+validate_scale_loc = ValidateInStrings('scale_loc', ['bottom', 'top'],
+                                       ignorecase=True)
+
 defaultParams.update(
     {'scalebar.length_fraction': [0.2, validate_float],
      'scalebar.height_fraction': [0.01, validate_float],
@@ -63,7 +66,7 @@ defaultParams.update(
      'scalebar.color': ['k', validate_color],
      'scalebar.box_color': ['w', validate_color],
      'scalebar.box_alpha': [1.0, validate_float],
-     'scalebar.label_top': [False, validate_bool],
+     'scalebar.scale_loc': ['bottom', validate_scale_loc],
      })
 
 # Reload matplotlib to reset the default parameters
@@ -90,7 +93,7 @@ class ScaleBar(Artist):
     def __init__(self, dx_m, length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
-                 label_top=None, font_properties=None):
+                 scale_loc=None, font_properties=None):
         """
         Creates a new scale bar.
         
@@ -117,8 +120,8 @@ class ScaleBar(Artist):
             (default: rcParams['scalebar.box_color'] or ``w``)
         :arg box_alpha: transparency of box
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
-        :arg label_top : if True, the label will be over the scale bar
-            (default: rcParams['scalebar.label_top'] or ``False``)
+        :arg scale_loc : either ``bottom`` or ``top``
+            (default: rcParams['scalebar.scale_loc'] or ``bottom``)
         :arg font_properties: a matplotlib.font_manager.FontProperties instance, 
             optional sets the font properties for the label text
         """
@@ -135,7 +138,7 @@ class ScaleBar(Artist):
         self.color = color
         self.box_color = box_color
         self.box_alpha = box_alpha
-        self.label_top = label_top
+        self.scale_loc = scale_loc
         self.font_properties = FontProperties(font_properties)
 
     def _calculate_length(self, length_px):
@@ -185,7 +188,7 @@ class ScaleBar(Artist):
         color = _get_value('color', 'k')
         box_color = _get_value('box_color', 'w')
         box_alpha = _get_value('box_alpha', 1.0)
-        label_top = _get_value('label_top', False)
+        scale_loc = _get_value('scale_loc', 'bottom')
         font_properties = self.font_properties
 
         ax = self.axes
@@ -196,6 +199,8 @@ class ScaleBar(Artist):
         length_px, label = self._calculate_length(length_px)
 
         size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
+
+        label_top = scale_loc == 'top'
 
         # Create sizebar
         sizebar = AnchoredSizeBar(transform=ax.transData,
@@ -320,13 +325,15 @@ class ScaleBar(Artist):
 
     box_alpha = property(get_box_alpha, set_box_alpha)
 
-    def get_label_top(self):
-        return self._label_top
+    def get_scale_loc(self):
+        return self._scale_loc
 
-    def set_label_top(self, top):
-        self._label_top = top
+    def set_scale_loc(self, loc):
+        if loc is not None and loc not in ['bottom', 'top']:
+            raise ValueError('Unknown location: %s' % loc)
+        self._scale_loc = loc
 
-    label_top = property(get_label_top, set_label_top)
+    scale_loc = property(get_scale_loc, set_scale_loc)
 
     def get_font_properties(self):
         return self._font_properties
