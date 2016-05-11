@@ -22,6 +22,7 @@ The following parameters are available for customization in the matplotlibrc:
     - scalebar.box_color
     - scalebar.box_alpha
     - scalebar.scale_loc
+    - scalebar.label_loc
     
 See the class documentation (:class:`.Scalebar`) for a description of the 
 parameters. 
@@ -40,10 +41,9 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import \
     (defaultParams, validate_float, validate_legend_loc, validate_bool,
      validate_color, ValidateInStrings)
-from matplotlib.offsetbox import AuxTransformBox
-from matplotlib.text import Text
-
-from mpl_toolkits.axes_grid.anchored_artists import AnchoredSizeBar
+from matplotlib.offsetbox import \
+    AuxTransformBox, TextArea, VPacker, HPacker, AnchoredOffsetbox
+from matplotlib.patches import Rectangle
 
 # Local modules.
 _PREFIXES_VALUES = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
@@ -54,7 +54,9 @@ _PREFIXES_VALUES = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-validate_scale_loc = ValidateInStrings('scale_loc', ['bottom', 'top'],
+validate_scale_loc = ValidateInStrings('scale_loc', ['bottom', 'top', 'right', 'left'],
+                                       ignorecase=True)
+validate_label_loc = ValidateInStrings('label_loc', ['bottom', 'top', 'right', 'left'],
                                        ignorecase=True)
 
 defaultParams.update(
@@ -69,6 +71,7 @@ defaultParams.update(
      'scalebar.box_color': ['w', validate_color],
      'scalebar.box_alpha': [1.0, validate_float],
      'scalebar.scale_loc': ['bottom', validate_scale_loc],
+     'scalebar.label_loc': ['top', validate_label_loc],
      })
 
 # Reload matplotlib to reset the default parameters
@@ -96,7 +99,7 @@ class ScaleBar(Artist):
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
-                 scale_loc=None, font_properties=None):
+                 scale_loc=None, label_loc=None, font_properties=None):
         """
         Creates a new scale bar.
         
@@ -125,8 +128,10 @@ class ScaleBar(Artist):
             (default: rcParams['scalebar.box_color'] or ``w``)
         :arg box_alpha: transparency of box
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
-        :arg scale_loc : either ``bottom`` or ``top``
+        :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.scale_loc'] or ``bottom``)
+        :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
+            (default: rcParams['scalebar.label_loc'] or ``top``)
         :arg font_properties: a matplotlib.font_manager.FontProperties instance, 
             optional sets the font properties for the label text
         """
@@ -145,6 +150,7 @@ class ScaleBar(Artist):
         self.box_color = box_color
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
+        self.label_loc = label_loc
         self.font_properties = FontProperties(font_properties)
 
     def _calculate_length(self, length_px):
@@ -195,7 +201,13 @@ class ScaleBar(Artist):
         box_color = _get_value('box_color', 'w')
         box_alpha = _get_value('box_alpha', 1.0)
         scale_loc = _get_value('scale_loc', 'bottom')
+        label_loc = _get_value('label_loc', 'top')
         font_properties = self.font_properties
+
+        if font_properties is None:
+            textprops = {'color': color}
+        else:
+            textprops = {'color': color, 'fontproperties': font_properties}
 
         ax = self.axes
         xlim, ylim = ax.get_xlim(), ax.get_ylim()
@@ -203,14 +215,9 @@ class ScaleBar(Artist):
 
         # Create label
         if label:
-            labelbox = AuxTransformBox(ax.transAxes)
-
-            text = Text(0, 0, label,
-                        fontproperties=font_properties,
-                        color=color)
-            labelbox.add_artist(text)
+            txtlabel = TextArea(label, minimumdescent=False, textprops=textprops)
         else:
-            labelbox = None
+            txtlabel = None
 
         # Create sizebar
         length_px = abs(xlim[1] - xlim[0]) * length_fraction
@@ -218,32 +225,48 @@ class ScaleBar(Artist):
 
         size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
 
-        label_top = scale_loc == 'top'
+        sizebar = AuxTransformBox(ax.transData)
+        sizebar.add_artist(Rectangle((0, 0), length_px, size_vertical,
+                                     fill=True, facecolor=color,
+                                     edgecolor=color))
 
-        sizebar = AnchoredSizeBar(transform=ax.transData,
-                                  size=length_px,
-                                  label=scale_label,
-                                  loc=location,
-                                  pad=pad,
-                                  borderpad=border_pad,
-                                  sep=sep,
-                                  frameon=frameon,
-                                  size_vertical=size_vertical,
-                                  color=color,
-                                  label_top=label_top,
-                                  fontproperties=font_properties)
+        txtscale = TextArea(scale_label, minimumdescent=False, textprops=textprops)
 
-        if labelbox is not None:
-            if label_top:
-                sizebar._box._children.append(labelbox)
+        if scale_loc in ['bottom', 'right']:
+            children = [sizebar, txtscale]
+        else:
+            children = [txtscale, sizebar]
+        if scale_loc in ['bottom', 'top']:
+            Packer = VPacker
+        else:
+            Packer = HPacker
+        boxsizebar = Packer(children=children, align='center', pad=0, sep=sep)
+
+        # Create final offset box
+        if txtlabel:
+            if label_loc in ['bottom', 'right']:
+                children = [boxsizebar, txtlabel]
             else:
-                sizebar._box._children.insert(0, labelbox)
+                children = [txtlabel, boxsizebar]
+            if label_loc in ['bottom', 'top']:
+                Packer = VPacker
+            else:
+                Packer = HPacker
+            child = Packer(children=children, align='center', pad=0, sep=sep)
+        else:
+            child = boxsizebar
 
-        sizebar.axes = ax
-        sizebar.set_figure(self.get_figure())
-        sizebar.patch.set_color(box_color)
-        sizebar.patch.set_alpha(box_alpha)
-        sizebar.draw(renderer)
+        box = AnchoredOffsetbox(loc=location,
+                                pad=pad,
+                                borderpad=border_pad,
+                                child=child,
+                                frameon=frameon)
+
+        box.axes = ax
+        box.set_figure(self.get_figure())
+        box.patch.set_color(box_color)
+        box.patch.set_alpha(box_alpha)
+        box.draw(renderer)
 
     def get_dx_m(self):
         return self._dx_m
@@ -361,11 +384,21 @@ class ScaleBar(Artist):
         return self._scale_loc
 
     def set_scale_loc(self, loc):
-        if loc is not None and loc not in ['bottom', 'top']:
+        if loc is not None and loc not in ['bottom', 'top', 'right', 'left']:
             raise ValueError('Unknown location: %s' % loc)
         self._scale_loc = loc
 
     scale_loc = property(get_scale_loc, set_scale_loc)
+
+    def get_label_loc(self):
+        return self._label_loc
+
+    def set_label_loc(self, loc):
+        if loc is not None and loc not in ['bottom', 'top', 'right', 'left']:
+            raise ValueError('Unknown location: %s' % loc)
+        self._label_loc = loc
+
+    label_loc = property(get_label_loc, set_label_loc)
 
     def get_font_properties(self):
         return self._font_properties
