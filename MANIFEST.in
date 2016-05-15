@@ -1,0 +1,2 @@
+include versioneer.py
+include matplotlib_scalebar/_version.py
