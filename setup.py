@@ -10,9 +10,10 @@ from setuptools import setup, find_packages
 import versioneer
 
 # Globals and constants variables.
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the relevant file
-with open('README.rst', 'r') as f:
+with open(os.path.join(BASEDIR, 'README.rst'), 'r') as f:
     long_description = f.read()
 
 setup(name='matplotlib-scalebar',
