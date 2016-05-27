@@ -173,7 +173,7 @@ class ScaleBar(Artist):
 
         length_px = length_unit * factor / dx_m
         if units is not None:
-            unit = units[0]
+            unit = units[:-1]
         label = '%i %sm' % (length_unit, unit)
 
         return length_px, label
