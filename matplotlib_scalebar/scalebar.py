@@ -99,7 +99,7 @@ class ScaleBar(Artist):
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
-                 scale_loc=None, label_loc=None, font_properties=None):
+                 scale_loc=None, label_loc=None, font_properties=None, units=None):
         """
         Creates a new scale bar.
         
@@ -151,12 +151,14 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
+        self.units = units
         self.font_properties = FontProperties(font_properties)
 
     def _calculate_length(self, length_px):
         dx_m = self.dx_m
+        units = self.units
         length_m = length_px * dx_m
-
+        
         prefixes_values = _PREFIXES_VALUES.copy()
         prefixes_values[''] = 1.0
         prefixes_values.pop('u')
@@ -170,6 +172,8 @@ class ScaleBar(Artist):
         length_unit = self._PREFERRED_VALUES[index - 1]
 
         length_px = length_unit * factor / dx_m
+        if units is not None:
+            unit = units[:-1]
         label = '%i %sm' % (length_unit, unit)
 
         return length_px, label
