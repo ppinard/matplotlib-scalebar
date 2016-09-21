@@ -6,6 +6,7 @@
 # Third party modules.
 import matplotlib
 matplotlib.use('agg')
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 from matplotlib.testing.decorators import cleanup
 
@@ -162,6 +163,15 @@ def test_scalebar_frameon():
     scalebar.frameon = False
     assert_false(scalebar.get_frameon())
     assert_false(scalebar.frameon)
+    
+@cleanup
+def test_scalebar_font_properties():
+    font_settings = fm.FontProperties(family='serif', size=9)
+    scalebar = ScaleBar(0.5, font_properties=font_settings)
+    
+    assert_equal(scalebar.font_properties.get_family(), ['serif'])
+    assert_equal(scalebar.font_properties.get_size(), 9)
+    
 
 if __name__ == '__main__':
     import nose

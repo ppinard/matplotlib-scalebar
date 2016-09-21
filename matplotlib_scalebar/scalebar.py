@@ -151,7 +151,7 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        self.font_properties = FontProperties(font_properties)
+        self.font_properties = FontProperties(_init=font_properties)
 
     def _calculate_length(self, length_px):
         dx_m = self.dx_m
