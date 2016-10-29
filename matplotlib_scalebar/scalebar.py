@@ -28,7 +28,8 @@ See the class documentation (:class:`.Scalebar`) for a description of the
 parameters. 
 """
 
-__all__ = ['ScaleBar']
+__all__ = ['ScaleBar',
+           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH']
 
 # Standard library modules.
 import sys
@@ -77,6 +78,14 @@ defaultParams.update(
 # Reload matplotlib to reset the default parameters
 imp.reload(sys.modules['matplotlib'])
 
+SI_LENGTH = 'si length'
+SI_LENGTH_RECIPROCAL = 'si length reciprocal'
+IMPERIAL_LENGTH = 'imperial length'
+
+_DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
+                     SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
+                     IMPERIAL_LENGTH: ImperialLengthDimension}
+
 class ScaleBar(Artist):
 
     zorder = 6
@@ -95,7 +104,7 @@ class ScaleBar(Artist):
                   'center':       10,
               }
 
-    def __init__(self, dx, units='m', dimension='si length', label=None,
+    def __init__(self, dx, units='m', dimension=SI_LENGTH, label=None,
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
@@ -317,17 +326,12 @@ class ScaleBar(Artist):
         return self._dimension
 
     def set_dimension(self, dimension):
-        dimension = dimension.lower()
-        if dimension == 'si length':
-            dimension = SILengthDimension()
-        elif dimension == 'imperial length':
-            dimension = ImperialLengthDimension()
-        elif dimension == 'si length reciprocal':
-            dimension = SILengthReciprocalDimension()
-        elif isinstance(dimension, _Dimension):
-            pass
-        else:
+        if dimension in _DIMENSION_LOOKUP:
+            dimension = _DIMENSION_LOOKUP[dimension]()
+
+        if not isinstance(dimension, _Dimension):
             raise ValueError('Unknown dimension: %s' % dimension)
+
         self._dimension = dimension
 
     dimension = property(get_dimension, set_dimension)
