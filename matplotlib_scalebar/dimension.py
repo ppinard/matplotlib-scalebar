@@ -74,7 +74,7 @@ class _Dimension(object):
 class SILengthDimension(_Dimension):
 
     def __init__(self):
-        super().__init__('m')
+        super(SILengthDimension, self).__init__('m')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = None
             if prefix == u'\u00b5':
@@ -84,7 +84,7 @@ class SILengthDimension(_Dimension):
 class SILengthReciprocalDimension(_Dimension):
 
     def __init__(self):
-        super().__init__('1/m', 'm$^{-1}$')
+        super(SILengthReciprocalDimension, self).__init__('1/m', 'm$^{-1}$')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = '{0}m$^{{-1}}$'.format(prefix)
             if prefix == u'\u00b5':
@@ -94,7 +94,7 @@ class SILengthReciprocalDimension(_Dimension):
 class ImperialLengthDimension(_Dimension):
 
     def __init__(self):
-        super().__init__('ft')
+        super(ImperialLengthDimension, self).__init__('ft')
         self.add_units('th', 1 / 12000)
         self.add_units('in', 1 / 12)
         self.add_units('yd', 3)
