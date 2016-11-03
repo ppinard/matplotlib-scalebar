@@ -14,7 +14,7 @@ import numpy as np
 
 from nose.tools import \
     (assert_equal, assert_almost_equal, assert_is_none, assert_true,
-     assert_false, assert_raises)
+     assert_false, assert_raises, raises)
 
 # Local modules.
 from matplotlib_scalebar.scalebar import ScaleBar
@@ -166,11 +166,16 @@ def test_scalebar_frameon():
     
 @cleanup
 def test_scalebar_font_properties():
-    font_settings = fm.FontProperties(family='serif', size=9)
+    font_settings = dict(family='serif', size=9)
     scalebar = ScaleBar(0.5, font_properties=font_settings)
     
     assert_equal(scalebar.font_properties.get_family(), ['serif'])
     assert_equal(scalebar.font_properties.get_size(), 9)
+    
+@cleanup
+@raises(TypeError)
+def test_scalebar_font_properties_invalid_type():
+    ScaleBar(0.5, font_properties=2.0)
     
 
 if __name__ == '__main__':
