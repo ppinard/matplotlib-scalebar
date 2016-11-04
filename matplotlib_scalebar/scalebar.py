@@ -178,10 +178,12 @@ class ScaleBar(Artist):
         :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.label_loc'] or ``top``)
         :type label_loc: :class:`str`
-            
-        :arg font_properties: a :class:`matplotlib.font_manager.FontProperties`
-            instance, optional sets the font properties for the label text
-        :type font_properties: :class:`matplotlib.font_manager.FontProperties`
+
+        :arg font_properties: font properties of the label text, specified
+            either as dict or `fontconfig <http://www.fontconfig.org/>`_
+            pattern (XML).
+        :type font_properties: :class:`matplotlib.font_manager.FontProperties`,
+            :class:`str` or :class:`dict`
         """
         Artist.__init__(self)
 
@@ -201,7 +203,16 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        self.font_properties = FontProperties(font_properties)
+        if font_properties is None:
+            font_properties = FontProperties()
+        elif isinstance(font_properties, dict):
+            font_properties = FontProperties(**font_properties)
+        elif is_string_like(font_properties):
+            font_properties = FontProperties(font_properties)
+        else:
+            raise TypeError("Unsupported type for `font_properties`. Pass "
+                            "either a dict or a font config pattern as string.")
+        self.font_properties = font_properties
 
     def _calculate_length(self, length_px):
         dx = self.dx
