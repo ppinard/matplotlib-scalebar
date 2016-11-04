@@ -66,8 +66,8 @@ Here are parameters that can either be customized in the constructor of the
   * ``scalebar.box_alpha``: transparency of box (default: ``1.0``)
   * ``scalebar.label_top``: if True, the label will be over the scale bar
     (default: ``False``)
-  * ``scalebar.font_properties``: a matplotlib.font_manager.FontProperties instance, 
-    optional sets the font properties for the label text
+  * ``scalebar.font_properties``: font properties of the label text, specified
+    either as dict or `fontconfig <http://www.fontconfig.org/>`_ pattern (XML).
 
 License
 -------
