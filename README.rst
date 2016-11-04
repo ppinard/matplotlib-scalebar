@@ -43,6 +43,12 @@ Here is an example how to add a scale bar::
    >>> plt.gca().add_artist(scalebar)
    >>> plt.show()
    
+The scale bar also works with non-SI units, reciprocal units or any dimension
+system defined by the **Dimension** class::
+
+   >>> from matplotlib_scalebar.scalebar import IMPERIAL_LENGTH
+   >>> scalebar = ScaleBar(0.2, 'ft', IMPERIAL_LENGTH) # 1 pixel = 0.2 feet
+   
 matplotlibrc parameters
 -----------------------
 

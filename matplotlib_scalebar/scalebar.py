@@ -78,9 +78,9 @@ defaultParams.update(
 # Reload matplotlib to reset the default parameters
 imp.reload(sys.modules['matplotlib'])
 
-SI_LENGTH = 'si length'
-SI_LENGTH_RECIPROCAL = 'si length reciprocal'
-IMPERIAL_LENGTH = 'imperial length'
+SI_LENGTH = 'si-length'
+SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
+IMPERIAL_LENGTH = 'imperial-length'
 
 _DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
                      SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
@@ -122,10 +122,12 @@ class ScaleBar(Artist):
         
         :arg dimension: dimension of *dx* and *units*. 
             It can either be equal 
-                * ``si length``: scale bar showing km, m, cm, etc.
-                * ``imperial length``: scale bar showing in, ft, yd, mi, etc.
-                * ``si length reciprocal``: scale bar showing 1/m, 1/cm, etc.
+                * ``:const:`SI_LENGTH```: scale bar showing km, m, cm, etc.
+                * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
+                * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
+        :type dimension: :class:`str` or 
+            :class:`matplotlib_scalebar.dimension._Dimension`
                 
         :arg label: optional label associated with the scale bar 
             (default: ``None``, no label is shown)
