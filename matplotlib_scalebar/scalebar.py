@@ -28,10 +28,12 @@ See the class documentation (:class:`.Scalebar`) for a description of the
 parameters. 
 """
 
+__all__ = ['ScaleBar',
+           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH']
+
 # Standard library modules.
 import sys
 import bisect
-from operator import itemgetter
 import imp
 
 # Third party modules.
@@ -46,10 +48,9 @@ from matplotlib.offsetbox import \
 from matplotlib.patches import Rectangle
 
 # Local modules.
-_PREFIXES_VALUES = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
-                    'G': 1e9, 'M': 1e6, 'k': 1e3, 'm': 1e-3, u'\u00b5': 1e-6,
-                    'u': 1e-6, 'n': 1e-9, 'p': 1e-12, 'f': 1e-15, 'a': 1e-18,
-                    'z': 1e-21, 'y': 1e-24}
+from matplotlib_scalebar.dimension import \
+    (_Dimension, SILengthDimension, SILengthReciprocalDimension,
+     ImperialLengthDimension)
 
 # Globals and constants variables.
 
@@ -77,6 +78,14 @@ defaultParams.update(
 # Reload matplotlib to reset the default parameters
 imp.reload(sys.modules['matplotlib'])
 
+SI_LENGTH = 'si-length'
+SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
+IMPERIAL_LENGTH = 'imperial-length'
+
+_DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
+                     SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
+                     IMPERIAL_LENGTH: ImperialLengthDimension}
+
 class ScaleBar(Artist):
 
     zorder = 6
@@ -95,7 +104,7 @@ class ScaleBar(Artist):
                   'center':       10,
               }
 
-    def __init__(self, dx_m, label=None,
+    def __init__(self, dx, units='m', dimension=SI_LENGTH, label=None,
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
@@ -103,42 +112,86 @@ class ScaleBar(Artist):
         """
         Creates a new scale bar.
         
-        :arg dx_m: dimension of one pixel in meters (m)
-            Set ``dx_m`` to 1.0 if the axes image has already been calibrated by
+        :arg dx: size of one pixel in *units*
+            Set ``dx`` to 1.0 if the axes image has already been calibrated by
             setting its ``extent``.
+        :type dx: :class:`float`
+            
+        :arg units: units of *dx* (default: ``m``)
+        :type units: :class:`str`
+        
+        :arg dimension: dimension of *dx* and *units*. 
+            It can either be equal 
+                * ``:const:`SI_LENGTH```: scale bar showing km, m, cm, etc.
+                * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
+                * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
+                * a :class:`matplotlib_scalebar.dimension._Dimension` object
+        :type dimension: :class:`str` or 
+            :class:`matplotlib_scalebar.dimension._Dimension`
+                
         :arg label: optional label associated with the scale bar 
             (default: ``None``, no label is shown)
+        :type label: :class:`str`
+            
         :arg length_fraction: length of the scale bar as a fraction of the 
             axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``)
+        :type length_fraction: :class:`float`
+            
         :arg height_fraction: height of the scale bar as a fraction of the 
             axes's height (default: rcParams['scalebar.height_fraction'] or ``0.01``)
+        :type length_fraction: :class:`float`
+            
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
+        :type location: :class:`str`
+            
         :arg pad: fraction of the font size
             (default: rcParams['scalebar.pad'] or ``0.2``)
+        :type pad: :class:`float`
+            
         :arg border_pad : fraction of the font size
             (default: rcParams['scalebar.border_pad'] or ``0.1``)
+        :type border_pad: :class:`float`
+            
         :arg sep : separation between scale bar and label in points
             (default: rcParams['scalebar.sep'] or ``5``)
+        :type sep: :class:`float`
+            
         :arg frameon : if True, will draw a box around the scale bar 
             and label (default: rcParams['scalebar.frameon'] or ``True``)
+        :type frameon: :class:`bool`
+            
         :arg color : color for the scale bar and label
             (default: rcParams['scalebar.color'] or ``k``)
+        :type color: :class:`str`
+            
         :arg box_color: color of the box (if *frameon*)
             (default: rcParams['scalebar.box_color'] or ``w``)
+        :type box_color: :class:`str`
+            
         :arg box_alpha: transparency of box
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
+        :type box_alpha: :class:`float`
+            
         :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.scale_loc'] or ``bottom``)
+        :type scale_loc: :class:`str`
+            
         :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.label_loc'] or ``top``)
+        :type label_loc: :class:`str`
+
         :arg font_properties: font properties of the label text, specified
             either as dict or `fontconfig <http://www.fontconfig.org/>`_
             pattern (XML).
+        :type font_properties: :class:`matplotlib.font_manager.FontProperties`,
+            :class:`str` or :class:`dict`
         """
         Artist.__init__(self)
 
-        self.dx_m = dx_m
+        self.dx = dx
+        self.dimension = dimension # Should be initialize before units
+        self.units = units
         self.label = label
         self.length_fraction = length_fraction
         self.height_fraction = height_fraction
@@ -164,30 +217,25 @@ class ScaleBar(Artist):
         self.font_properties = font_properties
 
     def _calculate_length(self, length_px):
-        dx_m = self.dx_m
-        length_m = length_px * dx_m
+        dx = self.dx
+        units = self.units
+        value = length_px * dx
 
-        prefixes_values = _PREFIXES_VALUES.copy()
-        prefixes_values[''] = 1.0
-        prefixes_values.pop('u')
-        prefixes_values = sorted(prefixes_values.items(), key=itemgetter(1))
-        values = [prefix_value[1] for prefix_value in prefixes_values]
-        index = bisect.bisect_left(values, length_m)
-        unit, factor = prefixes_values[index - 1]
+        newvalue, newunits = self.dimension.calculate_preferred(value, units)
+        factor = value / newvalue
 
-        length_unit = length_m / factor
-        index = bisect.bisect_left(self._PREFERRED_VALUES, length_unit)
-        length_unit = self._PREFERRED_VALUES[index - 1]
+        index = bisect.bisect_left(self._PREFERRED_VALUES, newvalue)
+        newvalue = self._PREFERRED_VALUES[index - 1]
 
-        length_px = length_unit * factor / dx_m
-        label = '%i %sm' % (length_unit, unit)
+        length_px = newvalue * factor / dx
+        label = '%i %s' % (newvalue, self.dimension.to_latex(newunits))
 
         return length_px, label
 
     def draw(self, renderer, *args, **kwargs):
         if not self.get_visible():
             return
-        if self.dx_m == 0:
+        if self.dx == 0:
             return
 
         # Get parameters
@@ -198,6 +246,7 @@ class ScaleBar(Artist):
             if value is None:
                 value = rcParams.get('scalebar.' + attr, default)
             return value
+
         length_fraction = _get_value('length_fraction', 0.2)
         height_fraction = _get_value('height_fraction', 0.01)
         location = _get_value('location', 'upper right')
@@ -278,13 +327,37 @@ class ScaleBar(Artist):
         box.patch.set_alpha(box_alpha)
         box.draw(renderer)
 
-    def get_dx_m(self):
-        return self._dx_m
+    def get_dx(self):
+        return self._dx
 
-    def set_dx_m(self, dx_m):
-        self._dx_m = float(dx_m)
+    def set_dx(self, dx):
+        self._dx = float(dx)
 
-    dx_m = property(get_dx_m, set_dx_m)
+    dx = property(get_dx, set_dx)
+
+    def get_dimension(self):
+        return self._dimension
+
+    def set_dimension(self, dimension):
+        if dimension in _DIMENSION_LOOKUP:
+            dimension = _DIMENSION_LOOKUP[dimension]()
+
+        if not isinstance(dimension, _Dimension):
+            raise ValueError('Unknown dimension: %s' % dimension)
+
+        self._dimension = dimension
+
+    dimension = property(get_dimension, set_dimension)
+
+    def get_units(self):
+        return self._units
+
+    def set_units(self, units):
+        if not self.dimension.is_valid_units(units):
+            raise ValueError('Invalid unit with dimension')
+        self._units = units
+
+    units = property(get_units, set_units)
 
     def get_label(self):
         return self._label

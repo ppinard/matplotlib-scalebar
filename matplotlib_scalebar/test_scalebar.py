@@ -42,16 +42,16 @@ def test_scalebar_draw():
 def test_scalebar_dx_m():
     _fig, _ax, scalebar = create_figure()
 
-    assert_almost_equal(0.5, scalebar.get_dx_m())
-    assert_almost_equal(0.5, scalebar.dx_m)
+    assert_almost_equal(0.5, scalebar.get_dx())
+    assert_almost_equal(0.5, scalebar.dx)
 
-    scalebar.set_dx_m(0.2)
-    assert_almost_equal(0.2, scalebar.get_dx_m())
-    assert_almost_equal(0.2, scalebar.dx_m)
+    scalebar.set_dx(0.2)
+    assert_almost_equal(0.2, scalebar.get_dx())
+    assert_almost_equal(0.2, scalebar.dx)
 
-    scalebar.dx_m = 0.1
-    assert_almost_equal(0.1, scalebar.get_dx_m())
-    assert_almost_equal(0.1, scalebar.dx_m)
+    scalebar.dx = 0.1
+    assert_almost_equal(0.1, scalebar.get_dx())
+    assert_almost_equal(0.1, scalebar.dx)
 
 @cleanup
 def test_scalebar_length_fraction():
