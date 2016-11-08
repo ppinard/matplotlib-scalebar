@@ -26,7 +26,7 @@ setup(name='matplotlib-scalebar',
       maintainer='Philippe Pinard',
       maintainer_email='philippe.pinard@gmail.com',
 
-      url='http://pyhmsa.readthedocs.org',
+      url='https://github.com/ppinard/matplotlib-scalebar',
       license='BSD',
       keywords='matplotlib scale micron bar',
 
