@@ -32,11 +32,10 @@ __all__ = ['ScaleBar',
            'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH']
 
 # Standard library modules.
-import sys
 import bisect
-import imp
 
 # Third party modules.
+import matplotlib
 from matplotlib.artist import Artist
 from matplotlib.cbook import is_string_like
 from matplotlib.font_manager import FontProperties
@@ -46,6 +45,8 @@ from matplotlib.rcsetup import \
 from matplotlib.offsetbox import \
     AuxTransformBox, TextArea, VPacker, HPacker, AnchoredOffsetbox
 from matplotlib.patches import Rectangle
+
+import six
 
 # Local modules.
 from matplotlib_scalebar.dimension import \
@@ -75,9 +76,13 @@ defaultParams.update(
      'scalebar.label_loc': ['top', validate_label_loc],
      })
 
-# Reload matplotlib to reset the default parameters
-imp.reload(sys.modules['matplotlib'])
+# Recreate the validate function
+matplotlib.rcParams.validate = \
+    dict((key, converter) for key, (default, converter) in
+         six.iteritems(defaultParams)
+         if key not in matplotlib._all_deprecated)
 
+# Dimension lookup
 SI_LENGTH = 'si-length'
 SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
 IMPERIAL_LENGTH = 'imperial-length'
