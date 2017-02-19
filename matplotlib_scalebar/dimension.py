@@ -12,9 +12,9 @@ import bisect
 # Globals and constants variables.
 _PREFIXES_FACTORS = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
                      'G': 1e9, 'M': 1e6, 'k': 1e3, 'd': 1e-1, 'c': 1e-2,
-                     'm': 1e-3, u'\u00b5': 1e-6,
-                     'u': 1e-6, 'n': 1e-9, 'p': 1e-12, 'f': 1e-15, 'a': 1e-18,
-                     'z': 1e-21, 'y': 1e-24}
+                     'm': 1e-3, u'\u00b5': 1e-6, 'u': 1e-6, 'n': 1e-9,
+                     'p': 1e-12, 'f': 1e-15, 'a': 1e-18, 'z': 1e-21,
+                     'y': 1e-24}
 
 class _Dimension(object):
 
@@ -78,7 +78,7 @@ class SILengthDimension(_Dimension):
         super(SILengthDimension, self).__init__('m')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = None
-            if prefix == u'\u00b5':
+            if prefix == u'\u00b5' or prefix == 'u':
                 latexrepr = '$\\mu$m'
             self.add_units(prefix + 'm', factor, latexrepr)
 
@@ -88,7 +88,7 @@ class SILengthReciprocalDimension(_Dimension):
         super(SILengthReciprocalDimension, self).__init__('1/m', 'm$^{-1}$')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = '{0}m$^{{-1}}$'.format(prefix)
-            if prefix == u'\u00b5':
+            if prefix == u'\u00b5' or prefix == 'u':
                 latexrepr = '$\\mu$m$^{-1}$'
             self.add_units('1/{0}m'.format(prefix), factor, latexrepr)
 
