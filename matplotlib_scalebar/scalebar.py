@@ -113,7 +113,7 @@ class ScaleBar(Artist):
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
-                 scale_loc=None, label_loc=None, font_properties=None, label_formater=None):
+                 scale_loc=None, label_loc=None, font_properties=None, label_formatter=None):
         """
         Creates a new scale bar.
         
@@ -192,10 +192,10 @@ class ScaleBar(Artist):
         :type font_properties: :class:`matplotlib.font_manager.FontProperties`,
             :class:`str` or :class:`dict`
 
-        :arg label_formater: function used to format the label. Needs to take
+        :arg label_formatter: function used to format the label. Needs to take
             the value (float) and the unit (str) as input and return the label
             string.
-        :type label_formater: :class:`func`
+        :type label_formatter: :class:`func`
         """
         Artist.__init__(self)
 
@@ -216,7 +216,7 @@ class ScaleBar(Artist):
         self.scale_loc = scale_loc
         self.label_loc = label_loc
         default_formatter = lambda value, unit: '{} {}'.format(value, unit)
-        self.label_formatter = label_formater or default_formatter
+        self.label_formatter = label_formatter or default_formatter
         if font_properties is None:
             font_properties = FontProperties()
         elif isinstance(font_properties, dict):
