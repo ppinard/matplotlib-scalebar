@@ -502,3 +502,11 @@ class ScaleBar(Artist):
         self._font_properties = props
 
     font_properties = property(get_font_properties, set_font_properties)
+
+    def get_label_formatter(self):
+        return self._label_formatter
+
+    def set_label_formatter(self, label_formatter):
+        self._label_formatter = float(label_formatter)
+
+    label_formatter = property(get_label_formatter, set_label_formatter)
