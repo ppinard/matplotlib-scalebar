@@ -507,6 +507,6 @@ class ScaleBar(Artist):
         return self._label_formatter
 
     def set_label_formatter(self, label_formatter):
-        self._label_formatter = float(label_formatter)
+        self._label_formatter = label_formatter
 
     label_formatter = property(get_label_formatter, set_label_formatter)
