@@ -32,6 +32,9 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+#####=== PyCharm ===#####
+.idea
+
 #####=== Python ===#####
 
 # Byte-compiled / optimized / DLL files
