@@ -56,12 +56,57 @@ imperial units::
 .. image:: https://raw.githubusercontent.com/ppinard/matplotlib-scalebar/master/doc/example2.png
    
 and system defined by the **Dimension** class.
-   
+
+ScaleBar arguments
+------------------
+
+Here are parameters of the **ScaleBar** class constructor.
+
+  * ``dx``: Size of one pixel in *units* specified by the next argument (required). 
+    Set ``dx`` to 1.0 if the axes image has already been calibrated by
+    setting its ``extent``.
+  * ``units``: units of *dx* (default: ``m``)
+  * ``dimension``: dimension of *dx* and *units*. 
+    It can either be equal 
+    
+        * ``SI_LENGTH``: scale bar showing km, m, cm, etc.
+        * ``IMPERIAL_LENGTH``: scale bar showing in, ft, yd, mi, etc.
+        * ``SI_LENGTH_RECIPROCAL``: scale bar showing 1/m, 1/cm, etc.
+        * a ``matplotlib_scalebar.dimension._Dimension`` object
+  
+  * ``label``: optional label associated with the scale bar 
+    (default: ``None``, no label is shown)
+  * ``length_fraction``: length of the scale bar as a fraction of the 
+    axes's width (default: ``rcParams['scalebar.lenght_fraction']`` or ``0.2``)
+  * ``height_fraction``: height of the scale bar as a fraction of the 
+    axes's height (default: ``rcParams['scalebar.height_fraction']`` or ``0.01``)
+  * ``location``: a location code (same as legend)
+    (default: ``rcParams['scalebar.location']`` or ``upper right``)
+  * ``pad``: fraction of the font size
+    (default: ``rcParams['scalebar.pad']`` or ``0.2``)
+  * ``border_pad``: fraction of the font size
+    (default: ``rcParams['scalebar.border_pad']`` or ``0.1``)
+  * ``sep``: separation between scale bar and label in points
+    (default: ``rcParams['scalebar.sep']`` or ``5``)
+  * ``frameon``: if ``True``, will draw a box around the scale bar and label 
+    (default: ``rcParams['scalebar.frameon']`` or ``True``)
+  * ``color``: color for the scale bar and label
+    (default: ``rcParams['scalebar.color']`` or ``k``)
+  * ``box_color``: color of the box (if *frameon*)
+    (default: ``rcParams['scalebar.box_color']`` or ``w``)
+  * ``box_alpha``: transparency of box
+    (default: ``rcParams['scalebar.box_alpha']`` or ``1.0``)
+  * ``scale_loc``: either ``bottom``, ``top``, ``left``, ``right``
+    (default: ``rcParams['scalebar.scale_loc']`` or ``bottom``)
+  * ``label_loc``: either ``bottom``, ``top``, ``left``, ``right``
+    (default: ``rcParams['scalebar.label_loc']`` or ``top``)
+  * ``font_properties``: font properties of the label text, specified either as 
+    dict or `fontconfig <http://www.fontconfig.org/>`_ pattern (XML).
+
 matplotlibrc parameters
 -----------------------
 
-Here are parameters that can either be customized in the constructor of the
-**ScaleBar** class or in the matplotlibrc file.
+Here are parameters that can be customized in the matplotlibrc file.
 
   * ``scalebar.length_fraction``: length of the scale bar as a fraction of the 
     axes's width (default: ``0.2``)
@@ -88,4 +133,4 @@ License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015 Philippe Pinard
+Copyright (c) 2015-2017 Philippe Pinard
