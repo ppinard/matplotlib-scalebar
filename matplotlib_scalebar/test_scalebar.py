@@ -179,6 +179,20 @@ def test_scalebar_font_properties_invalid_type():
 def test_matplotlibrc():
     matplotlib.rcParams['scalebar.box_color'] = 'r'
 
+@cleanup
+def test_custom_label_format():
+    _fig, _ax, scalebar = create_figure()
+    scalebar.dx = 1
+    scalebar.units = 'm'
+    assert_equal(scalebar._calculate_length(10)[1], '5 m')
+    scalebar.label_formatter = lambda value, unit: 'test'
+    assert_equal(scalebar._calculate_length(1)[1], 'test')
+    scalebar.label_formatter = lambda value, unit: '{} {}'.format(unit, value)
+    assert_equal(scalebar._calculate_length(10)[1], 'm 5')
+
+
+
+
 if __name__ == '__main__':
     import nose
     import sys

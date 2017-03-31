@@ -32,6 +32,9 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+#####=== PyCharm ===#####
+.idea
+
 #####=== Python ===#####
 
 # Byte-compiled / optimized / DLL files
@@ -57,6 +60,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.eggs/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

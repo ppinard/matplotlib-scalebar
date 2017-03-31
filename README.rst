@@ -3,13 +3,13 @@ matplotlib-scalebar
 
 .. image:: https://travis-ci.org/ppinard/matplotlib-scalebar.svg
    :target: https://travis-ci.org/ppinard/matplotlib-scalebar
-   
+
 .. image:: https://badge.fury.io/py/matplotlib-scalebar.svg
    :target: http://badge.fury.io/py/matplotlib-scalebar
 
 Provides a new artist for matplotlib to display a scale bar, aka micron bar.
-It is particularly useful when displaying calibrated images plotted using 
-plt.imshow(...). 
+It is particularly useful when displaying calibrated images plotted using
+plt.imshow(...).
 
 .. image:: https://raw.githubusercontent.com/ppinard/matplotlib-scalebar/master/doc/example1.png
 
@@ -22,7 +22,7 @@ Installation
 Easiest way to install using ``pip``::
 
     $ pip install matplotlib-scalebar
-    
+
 For development installation from the git repository::
 
     $ git clone git@github.com:ppinard/matplotlib-scalebar.git
@@ -42,7 +42,7 @@ Here is an example how to add a scale bar::
    >>> scalebar = ScaleBar(0.2) # 1 pixel = 0.2 meter
    >>> plt.gca().add_artist(scalebar)
    >>> plt.show()
-   
+
 The scale bar also works with reciprocal units,::
 
    >>> from matplotlib_scalebar.scalebar import SI_LENGTH_RECIPROCAL
@@ -52,9 +52,9 @@ imperial units::
 
    >>> from matplotlib_scalebar.scalebar import IMPERIAL_LENGTH
    >>> scalebar = ScaleBar(0.2, 'ft', IMPERIAL_LENGTH) # 1 pixel = 0.2 feet
-   
+
 .. image:: https://raw.githubusercontent.com/ppinard/matplotlib-scalebar/master/doc/example2.png
-   
+
 and system defined by the **Dimension** class.
 
 ScaleBar arguments
@@ -62,23 +62,23 @@ ScaleBar arguments
 
 Here are parameters of the **ScaleBar** class constructor.
 
-  * ``dx``: Size of one pixel in *units* specified by the next argument (required). 
+  * ``dx``: Size of one pixel in *units* specified by the next argument (required).
     Set ``dx`` to 1.0 if the axes image has already been calibrated by
     setting its ``extent``.
   * ``units``: units of *dx* (default: ``m``)
-  * ``dimension``: dimension of *dx* and *units*. 
-    It can either be equal 
-    
+  * ``dimension``: dimension of *dx* and *units*.
+    It can either be equal
+
         * ``SI_LENGTH``: scale bar showing km, m, cm, etc.
         * ``IMPERIAL_LENGTH``: scale bar showing in, ft, yd, mi, etc.
         * ``SI_LENGTH_RECIPROCAL``: scale bar showing 1/m, 1/cm, etc.
         * a ``matplotlib_scalebar.dimension._Dimension`` object
-  
-  * ``label``: optional label associated with the scale bar 
+
+  * ``label``: optional label associated with the scale bar
     (default: ``None``, no label is shown)
-  * ``length_fraction``: length of the scale bar as a fraction of the 
+  * ``length_fraction``: length of the scale bar as a fraction of the
     axes's width (default: ``rcParams['scalebar.lenght_fraction']`` or ``0.2``)
-  * ``height_fraction``: height of the scale bar as a fraction of the 
+  * ``height_fraction``: height of the scale bar as a fraction of the
     axes's height (default: ``rcParams['scalebar.height_fraction']`` or ``0.01``)
   * ``location``: a location code (same as legend)
     (default: ``rcParams['scalebar.location']`` or ``upper right``)
@@ -88,7 +88,7 @@ Here are parameters of the **ScaleBar** class constructor.
     (default: ``rcParams['scalebar.border_pad']`` or ``0.1``)
   * ``sep``: separation between scale bar and label in points
     (default: ``rcParams['scalebar.sep']`` or ``5``)
-  * ``frameon``: if ``True``, will draw a box around the scale bar and label 
+  * ``frameon``: if ``True``, will draw a box around the scale bar and label
     (default: ``rcParams['scalebar.frameon']`` or ``True``)
   * ``color``: color for the scale bar and label
     (default: ``rcParams['scalebar.color']`` or ``k``)
@@ -100,25 +100,28 @@ Here are parameters of the **ScaleBar** class constructor.
     (default: ``rcParams['scalebar.scale_loc']`` or ``bottom``)
   * ``label_loc``: either ``bottom``, ``top``, ``left``, ``right``
     (default: ``rcParams['scalebar.label_loc']`` or ``top``)
-  * ``font_properties``: font properties of the label text, specified either as 
+  * ``font_properties``: font properties of the label text, specified either as
     dict or `fontconfig <http://www.fontconfig.org/>`_ pattern (XML).
+  * ``label_formatter``: custom function called to format the scalebar text.
+    Needs to take 2 arguments - the scale value and the unit.
+    (default: ``None`` which results in ``<value> <unit>``)
 
 matplotlibrc parameters
 -----------------------
 
 Here are parameters that can be customized in the matplotlibrc file.
 
-  * ``scalebar.length_fraction``: length of the scale bar as a fraction of the 
+  * ``scalebar.length_fraction``: length of the scale bar as a fraction of the
     axes's width (default: ``0.2``)
-  * ``scalebar.height_fraction``: height of the scale bar as a fraction of the 
+  * ``scalebar.height_fraction``: height of the scale bar as a fraction of the
     axes's height (default: ``0.01``)
   * ``scalebar.location``: a location code (same as legend)
     (default: ``upper right``)
   * ``scalebar.pad``: fraction of the font size (default: ``0.2``)
   * ``scalebar.border_pad``: fraction of the font size (default: ``0.1``)
-  * ``scalebar.sep``: separation between scale bar and label in points 
+  * ``scalebar.sep``: separation between scale bar and label in points
     (default: ``5``)
-  * ``scalebar.frameon``: if True, will draw a box around the scale bar 
+  * ``scalebar.frameon``: if True, will draw a box around the scale bar
     and label (default: ``True``)
   * ``scalebar.color``: color for the scale bar and label (default: ``k``)
   * ``scalebar.box_color``: color of the box (if *frameon*) (default: ``w``)
