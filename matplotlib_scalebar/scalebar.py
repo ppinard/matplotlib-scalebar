@@ -113,9 +113,20 @@ class ScaleBar(Artist):
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
-                 scale_loc=None, label_loc=None, font_properties=None, label_formatter=None):
+                 scale_loc=None, label_loc=None, font_properties=None,
+                 label_formatter=None, fixed_value=None, fixed_units=None):
         """
         Creates a new scale bar.
+        
+        There are two modes to operate the scale bar:
+          
+          1. the length, value and units of the scale bar are automatically
+             determined based on the specified pixel size *dx* and 
+             *length_fraction*. The value will only take the following numbers:
+             1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500 or 750.
+          2. The desired value and units are specified by the user 
+             (*fixed_value* and *fixed_units*) and the length is calculated
+             based on the specified pixel size *dx*
         
         :arg dx: size of one pixel in *units*
             Set ``dx`` to 1.0 if the axes image has already been calibrated by
@@ -139,7 +150,8 @@ class ScaleBar(Artist):
         :type label: :class:`str`
             
         :arg length_fraction: length of the scale bar as a fraction of the 
-            axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``)
+            axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``).
+            This argument is ignored if a *fixed_value* is specified.
         :type length_fraction: :class:`float`
             
         :arg height_fraction: height of the scale bar as a fraction of the 
@@ -196,6 +208,14 @@ class ScaleBar(Artist):
             the value (float) and the unit (str) as input and return the label
             string.
         :type label_formatter: :class:`func`
+        
+        :arg fixed_value: value for the scale bar. If ``None``, the value is 
+            automatically determined based on *length_fraction*.
+        :type fixed_value: :class:`float`
+        
+        :arg fixed_units: units of the *fixed_value*. If ``None`` and
+            *fixed_value* is not ``None``, the units of *dx* are used.
+        :type fixed_units: :class:`str`
         """
         Artist.__init__(self)
 
@@ -227,8 +247,10 @@ class ScaleBar(Artist):
             raise TypeError("Unsupported type for `font_properties`. Pass "
                             "either a dict or a font config pattern as string.")
         self.font_properties = font_properties
+        self.fixed_value = fixed_value
+        self.fixed_units = fixed_units
 
-    def _calculate_length(self, length_px):
+    def _calculate_best_length(self, length_px):
         dx = self.dx
         units = self.units
         value = length_px * dx
@@ -240,9 +262,12 @@ class ScaleBar(Artist):
         newvalue = self._PREFERRED_VALUES[index - 1]
 
         length_px = newvalue * factor / dx
-        label = self.label_formatter(newvalue, self.dimension.to_latex(newunits))
 
-        return length_px, label
+        return length_px, newvalue, newunits
+
+    def _calculate_exact_length(self, value, units):
+        newvalue = self.dimension.convert(value, units, self.units)
+        return newvalue / self.dx
 
     def draw(self, renderer, *args, **kwargs):
         if not self.get_visible():
@@ -274,6 +299,8 @@ class ScaleBar(Artist):
         scale_loc = _get_value('scale_loc', 'bottom')
         label_loc = _get_value('label_loc', 'top')
         font_properties = self.font_properties
+        fixed_value = self.fixed_value
+        fixed_units = self.fixed_units or self.units
 
         if font_properties is None:
             textprops = {'color': color}
@@ -281,21 +308,27 @@ class ScaleBar(Artist):
             textprops = {'color': color, 'fontproperties': font_properties}
 
         ax = self.axes
-        xlim, ylim = ax.get_xlim(), ax.get_ylim()
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
         label = self.label
 
-        # Create label
-        if label:
-            txtlabel = TextArea(label, minimumdescent=False, textprops=textprops)
-        else:
-            txtlabel = None
+        # Calculate value, units and length
+        # Mode 1: Auto
+        if self.fixed_value is None:
+            length_px = abs(xlim[1] - xlim[0]) * length_fraction
+            length_px, value, units = self._calculate_best_length(length_px)
 
-        # Create sizebar
-        length_px = abs(xlim[1] - xlim[0]) * length_fraction
-        length_px, scale_label = self._calculate_length(length_px)
+        # Mode 2: Fixed
+        else:
+            value = fixed_value
+            units = fixed_units
+            length_px = self._calculate_exact_length(value, units)
+
+        scale_label = self.label_formatter(value, self.dimension.to_latex(units))
 
         size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
 
+        # Create size bar
         sizebar = AuxTransformBox(ax.transData)
         sizebar.add_artist(Rectangle((0, 0), length_px, size_vertical,
                                      fill=True, facecolor=color,
@@ -312,6 +345,12 @@ class ScaleBar(Artist):
         else:
             Packer = HPacker
         boxsizebar = Packer(children=children, align='center', pad=0, sep=sep)
+
+        # Create text area
+        if label:
+            txtlabel = TextArea(label, minimumdescent=False, textprops=textprops)
+        else:
+            txtlabel = None
 
         # Create final offset box
         if txtlabel:
@@ -510,3 +549,19 @@ class ScaleBar(Artist):
         self._label_formatter = label_formatter
 
     label_formatter = property(get_label_formatter, set_label_formatter)
+
+    def get_fixed_value(self):
+        return self._fixed_value
+
+    def set_fixed_value(self, value):
+        self._fixed_value = value
+
+    fixed_value = property(get_fixed_value, set_fixed_value)
+
+    def get_fixed_units(self):
+        return self._fixed_units
+
+    def set_fixed_units(self, units):
+        self._fixed_units = units
+
+    fixed_units = property(get_fixed_units, set_fixed_units)
