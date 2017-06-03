@@ -28,6 +28,31 @@ For development installation from the git repository::
     $ git clone git@github.com:ppinard/matplotlib-scalebar.git
     $ pip install -e matplotlib-scalebar
 
+How to use
+----------
+
+There are two modes of operation:
+
+  1. Length, value and units of the scale bar are automatically
+     determined based on the specified pixel size *dx* and 
+     *length_fraction*. 
+     The value will only take the following numbers:
+     1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500 or 750.
+     
+  2. The desired value and units are specified by the user 
+     (*fixed_value* and *fixed_units*) and the length is calculated
+     based on the specified pixel size *dx*.
+     
+The constructor arguments *dx* and *units* specify the pixel dimension.
+For example ``scalebar = ScaleBar(0.2, 'um')`` indicates that each pixel is
+equal to 0.2 micrometer.
+If the the axes image has already been calibrated by setting its ``extent``,
+set *dx* to 1.0.
+
+The system of units (SI, imperial, etc.) is defined by the argument *dimension*.
+By default, the scale bar uses SI units of length (e.g. m, cm, um, km, etc.).
+See examples below for other system of units.
+
 Example
 -------
 
@@ -105,6 +130,10 @@ Here are parameters of the **ScaleBar** class constructor.
   * ``label_formatter``: custom function called to format the scalebar text.
     Needs to take 2 arguments - the scale value and the unit.
     (default: ``None`` which results in ``<value> <unit>``)
+  * ``fixed_value``: value for the scale bar. If ``None``, the value is 
+    automatically determined based on *length_fraction*.
+  * ``fixed_units``: units of the *fixed_value*. If ``None`` and
+    *fixed_value* is not ``None``, the units of *dx* are used.
 
 matplotlibrc parameters
 -----------------------
@@ -134,7 +163,10 @@ Here are parameters that can be customized in the matplotlibrc file.
 Contributors
 ------------
 
-`@crosbyla <https://github.com/crosbyla>`_, `@joschkazj <https://github.com/joschkazj>`_, `@AKuederle <https://github.com/AKuederle>`_
+`@crosbyla <https://github.com/crosbyla>`_, 
+`@joschkazj <https://github.com/joschkazj>`_, 
+`@AKuederle <https://github.com/AKuederle>`_ and
+`@habi <https://github.com/habi>`_
 
 License
 -------
