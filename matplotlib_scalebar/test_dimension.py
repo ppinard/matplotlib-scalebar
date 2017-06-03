@@ -69,6 +69,13 @@ class TestSILengthDimension(unittest.TestCase):
     def testto_latex_um(self):
         self.assertEqual('$\\mu$m', self.dim.to_latex(u'\u00b5m'))
 
+    def testconvert(self):
+        value = self.dim.convert(2, 'cm', 'um')
+        self.assertAlmostEqual(2e4, value, 6)
+
+        value = self.dim.convert(2, 'um', 'cm')
+        self.assertAlmostEqual(2e-4, value, 6)
+
 class TestImperialLengthDimension(unittest.TestCase):
 
     def setUp(self):
