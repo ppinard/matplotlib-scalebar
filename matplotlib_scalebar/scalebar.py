@@ -118,15 +118,15 @@ class ScaleBar(Artist):
         """
         Creates a new scale bar.
         
-        There are two modes to operate the scale bar:
+        There are two modes of operation:
           
-          1. the length, value and units of the scale bar are automatically
+          1. Length, value and units of the scale bar are automatically
              determined based on the specified pixel size *dx* and 
              *length_fraction*. The value will only take the following numbers:
              1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500 or 750.
           2. The desired value and units are specified by the user 
              (*fixed_value* and *fixed_units*) and the length is calculated
-             based on the specified pixel size *dx*
+             based on the specified pixel size *dx*.
         
         :arg dx: size of one pixel in *units*
             Set ``dx`` to 1.0 if the axes image has already been calibrated by
