@@ -7,9 +7,6 @@ matplotlib-scalebar
 .. image:: https://badge.fury.io/py/matplotlib-scalebar.svg
    :target: http://badge.fury.io/py/matplotlib-scalebar
    
-.. image:: https://www.versioneye.com/user/projects/593302b022f278005aa86f7f/badge.svg?style=flat-square
-   :target: https://www.versioneye.com/user/projects/593302b022f278005aa86f7f
-
 Provides a new artist for matplotlib to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
 plt.imshow(...).
