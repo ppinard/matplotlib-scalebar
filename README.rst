@@ -160,6 +160,13 @@ Here are parameters that can be customized in the matplotlibrc file.
 * ``scalebar.font_properties``: font properties of the label text, specified
   either as dict or `fontconfig <http://www.fontconfig.org/>`_ pattern (XML).
 
+Release notes
+-------------
+0.3.4
+^^^^^
+
+* Add possibility to specified a fixed value for the scale bar (`#9 <https://github.com/ppinard/matplotlib-scalebar/issues/9>`_)
+
 Contributors
 ------------
 
