@@ -162,7 +162,7 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
-0.3.4
+0.4.0
 ^^^^^
 
 * Add possibility to specified a fixed value for the scale bar (`#9 <https://github.com/ppinard/matplotlib-scalebar/issues/9>`_)
