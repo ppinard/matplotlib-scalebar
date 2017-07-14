@@ -63,6 +63,12 @@ class _Dimension(object):
 
         return base_value / factor, newunits
 
+    def convert(self, value, units, newunits):
+        """
+        Converts a value expressed in certain *units* to a new units.
+        """
+        return value * self._units[units] / self._units[newunits]
+
     def to_latex(self, units):
         if units not in self._latexrepr:
             raise ValueError('Unknown units: %s' % units)

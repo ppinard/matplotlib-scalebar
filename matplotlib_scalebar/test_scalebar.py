@@ -34,6 +34,19 @@ def create_figure():
 
 @cleanup
 def test_scalebar_draw():
+    fig = plt.figure()
+    ax = fig.add_subplot("111")
+
+    data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    ax.imshow(data)
+
+    scalebar = ScaleBar(0.5, fixed_value=5.0)
+    ax.add_artist(scalebar)
+
+    plt.draw()
+
+@cleanup
+def test_scalebar_draw_fixed():
     create_figure()
     plt.draw()
 
@@ -180,15 +193,52 @@ def test_matplotlibrc():
     matplotlib.rcParams['scalebar.box_color'] = 'r'
 
 @cleanup
+def test_scalebar_fixed_value():
+    _fig, _ax, scalebar = create_figure()
+
+    assert_is_none(scalebar.get_fixed_value())
+    assert_is_none(scalebar.fixed_value)
+
+    scalebar.set_fixed_value(0.2)
+    assert_almost_equal(0.2, scalebar.get_fixed_value())
+    assert_almost_equal(0.2, scalebar.fixed_value)
+
+    scalebar.fixed_value = 0.1
+    assert_almost_equal(0.1, scalebar.get_fixed_value())
+    assert_almost_equal(0.1, scalebar.fixed_value)
+
+@cleanup
+def test_scalebar_fixed_units():
+    _fig, _ax, scalebar = create_figure()
+
+    assert_is_none(scalebar.get_fixed_units())
+    assert_is_none(scalebar.fixed_units)
+
+    scalebar.set_fixed_units('m')
+    assert_equal('m', scalebar.get_fixed_units())
+    assert_equal('m', scalebar.fixed_units)
+
+    scalebar.fixed_units = 'um'
+    assert_equal('um', scalebar.get_fixed_units())
+    assert_equal('um', scalebar.fixed_units)
+
+@cleanup
 def test_custom_label_format():
     _fig, _ax, scalebar = create_figure()
     scalebar.dx = 1
     scalebar.units = 'm'
-    assert_equal(scalebar._calculate_length(10)[1], '5 m')
+    _length, value, units = scalebar._calculate_best_length(10)
+
+    scale_label = scalebar.label_formatter(value, units)
+    assert_equal(scale_label, '5 m')
+
     scalebar.label_formatter = lambda value, unit: 'test'
-    assert_equal(scalebar._calculate_length(1)[1], 'test')
+    scale_label = scalebar.label_formatter(value, units)
+    assert_equal(scale_label, 'test')
+
     scalebar.label_formatter = lambda value, unit: '{} {}'.format(unit, value)
-    assert_equal(scalebar._calculate_length(10)[1], 'm 5')
+    scale_label = scalebar.label_formatter(value, units)
+    assert_equal(scale_label, 'm 5')
 
 
 
