@@ -162,6 +162,11 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+0.4.1
+^^^^^
+
+* Fix deprecated usage of is_string_like (`#11 <https://github.com/ppinard/matplotlib-scalebar/pull/11>`_)
+
 0.4.0
 ^^^^^
 
@@ -170,6 +175,7 @@ Release notes
 Contributors
 ------------
 
+`@maweigert <https://github.com/maweigert>`_,
 `@crosbyla <https://github.com/crosbyla>`_, 
 `@joschkazj <https://github.com/joschkazj>`_, 
 `@AKuederle <https://github.com/AKuederle>`_ and
