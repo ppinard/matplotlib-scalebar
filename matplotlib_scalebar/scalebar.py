@@ -37,7 +37,6 @@ import bisect
 # Third party modules.
 import matplotlib
 from matplotlib.artist import Artist
-from matplotlib.cbook import is_string_like
 from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import \
     (defaultParams, validate_float, validate_legend_loc, validate_bool,
