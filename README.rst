@@ -163,11 +163,12 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
-Development
-^^^^^^^^^^^
+0.5.0
+^^^^^
 
 * Add pixel unit (`#12 <https://github.com/ppinard/matplotlib-scalebar/issues/12>`_)
 * Display micro symbol in text mode (`#15 <https://github.com/ppinard/matplotlib-scalebar/issues/15>`_)
+* Fix error in length of scale bar (`#14 <https://github.com/ppinard/matplotlib-scalebar/issues/14>`_). The bar was drawn with an edge around it which made it longer than the actual size.
 
 0.4.1
 ^^^^^
@@ -185,10 +186,12 @@ Contributors
 `@maweigert <https://github.com/maweigert>`_,
 `@crosbyla <https://github.com/crosbyla>`_, 
 `@joschkazj <https://github.com/joschkazj>`_, 
-`@AKuederle <https://github.com/AKuederle>`_ and
-`@habi <https://github.com/habi>`_
-`@huangziwei <https://github.com/huangziwei>`_
-`@SirJohnFranklin <https://github.com/SirJohnFranklin>`_
+`@AKuederle <https://github.com/AKuederle>`_,
+`@habi <https://github.com/habi>`_,
+`@huangziwei <https://github.com/huangziwei>`_,
+`@SirJohnFranklin <https://github.com/SirJohnFranklin>`_,
+`@alexandrejaguar <https://github.com/alexandrejaguar>`_ and
+`@parishcm <https://github.com/parishcm>`_
 
 License
 -------
