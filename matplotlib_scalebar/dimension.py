@@ -15,6 +15,7 @@ _PREFIXES_FACTORS = {'Y': 1e24, 'Z': 1e21, 'E': 1e18, 'P': 1e15, 'T': 1e12,
                      'm': 1e-3, u'\u00b5': 1e-6, 'u': 1e-6, 'n': 1e-9,
                      'p': 1e-12, 'f': 1e-15, 'a': 1e-18, 'z': 1e-21,
                      'y': 1e-24}
+_LATEX_MU = '$\\mathrm{\\mu}$'
 
 class _Dimension(object):
 
@@ -59,9 +60,13 @@ class _Dimension(object):
         units_factor = sorted(self._units.items(), key=itemgetter(1))
         factors = [item[1] for item in units_factor]
         index = bisect.bisect_right(factors, base_value)
-        newunits, factor = units_factor[index - 1]
 
-        return base_value / factor, newunits
+        if index:
+            newunits, factor = units_factor[index - 1]
+            return base_value / factor, newunits
+
+        else:
+            return value, units
 
     def convert(self, value, units, newunits):
         """
@@ -85,7 +90,7 @@ class SILengthDimension(_Dimension):
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = None
             if prefix == u'\u00b5' or prefix == 'u':
-                latexrepr = '$\\mu$m'
+                latexrepr = _LATEX_MU + 'm'
             self.add_units(prefix + 'm', factor, latexrepr)
 
 class SILengthReciprocalDimension(_Dimension):
@@ -95,7 +100,7 @@ class SILengthReciprocalDimension(_Dimension):
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = '{0}m$^{{-1}}$'.format(prefix)
             if prefix == u'\u00b5' or prefix == 'u':
-                latexrepr = '$\\mu$m$^{-1}$'
+                latexrepr = _LATEX_MU + 'm$^{-1}$'
             self.add_units('1/{0}m'.format(prefix), factor, latexrepr)
 
 class ImperialLengthDimension(_Dimension):
@@ -110,4 +115,11 @@ class ImperialLengthDimension(_Dimension):
         self.add_units('mi', 5280)
         self.add_units('lea', 15840)
 
+class PixelLengthDimension(_Dimension):
 
+    def __init__(self):
+        super(PixelLengthDimension, self).__init__('px')
+        for prefix, factor in _PREFIXES_FACTORS.items():
+            if factor < 1:
+                continue
+            self.add_units(prefix + 'px', factor)

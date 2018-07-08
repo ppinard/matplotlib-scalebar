@@ -97,6 +97,7 @@ Here are parameters of the **ScaleBar** class constructor.
   * ``SI_LENGTH``: scale bar showing km, m, cm, etc.
   * ``IMPERIAL_LENGTH``: scale bar showing in, ft, yd, mi, etc.
   * ``SI_LENGTH_RECIPROCAL``: scale bar showing 1/m, 1/cm, etc.
+  * ``PIXEL_LENGTH``: scale bar showing px, kpx, Mpx, etc.
   * a ``matplotlib_scalebar.dimension._Dimension`` object
 
 * ``label``: optional label associated with the scale bar
@@ -162,6 +163,12 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+Development
+^^^^^^^^^^^
+
+* Add pixel unit (`#12 <https://github.com/ppinard/matplotlib-scalebar/issues/12>`_)
+* Display micro symbol in text mode (`#15 <https://github.com/ppinard/matplotlib-scalebar/issues/15>`_)
+
 0.4.1
 ^^^^^
 
@@ -180,11 +187,13 @@ Contributors
 `@joschkazj <https://github.com/joschkazj>`_, 
 `@AKuederle <https://github.com/AKuederle>`_ and
 `@habi <https://github.com/habi>`_
+`@huangziwei <https://github.com/huangziwei>`_
+`@SirJohnFranklin <https://github.com/SirJohnFranklin>`_
 
 License
 -------
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2017 Philippe Pinard
+Copyright (c) 2015-2018 Philippe Pinard
 

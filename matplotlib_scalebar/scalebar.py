@@ -50,7 +50,7 @@ import six
 # Local modules.
 from matplotlib_scalebar.dimension import \
     (_Dimension, SILengthDimension, SILengthReciprocalDimension,
-     ImperialLengthDimension)
+     ImperialLengthDimension, PixelLengthDimension)
 
 # Globals and constants variables.
 
@@ -85,10 +85,12 @@ matplotlib.rcParams.validate = \
 SI_LENGTH = 'si-length'
 SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
 IMPERIAL_LENGTH = 'imperial-length'
+PIXEL_LENGTH = 'pixel-length'
 
 _DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
                      SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
-                     IMPERIAL_LENGTH: ImperialLengthDimension}
+                     IMPERIAL_LENGTH: ImperialLengthDimension,
+                     PIXEL_LENGTH: PixelLengthDimension}
 
 class ScaleBar(Artist):
 
@@ -140,6 +142,7 @@ class ScaleBar(Artist):
                 * ``:const:`SI_LENGTH```: scale bar showing km, m, cm, etc.
                 * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
+                * ``:const:`PIXEL_LENGTH```: scale bar showing px, kpx, Mpx, etc.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
         :type dimension: :class:`str` or 
             :class:`matplotlib_scalebar.dimension._Dimension`
