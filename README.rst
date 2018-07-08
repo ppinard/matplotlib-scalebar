@@ -167,6 +167,7 @@ Development
 ^^^^^^^^^^^
 
 * Add pixel unit (`#12 <https://github.com/ppinard/matplotlib-scalebar/issues/12>`_)
+* Display micro symbol in text mode (`#15 <https://github.com/ppinard/matplotlib-scalebar/issues/15>`_)
 
 0.4.1
 ^^^^^
@@ -187,6 +188,7 @@ Contributors
 `@AKuederle <https://github.com/AKuederle>`_ and
 `@habi <https://github.com/habi>`_
 `@huangziwei <https://github.com/huangziwei>`_
+`@SirJohnFranklin <https://github.com/SirJohnFranklin>`_
 
 License
 -------

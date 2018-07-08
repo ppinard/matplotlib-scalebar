@@ -10,7 +10,7 @@ import logging
 # Local modules.
 from matplotlib_scalebar.dimension import \
     (SILengthDimension, SILengthReciprocalDimension, ImperialLengthDimension,
-     PixelLengthDimension)
+     PixelLengthDimension, _LATEX_MU)
 
 # Globals and constants variables.
 
@@ -68,7 +68,7 @@ class TestSILengthDimension(unittest.TestCase):
         self.assertEqual('cm', self.dim.to_latex('cm'))
 
     def testto_latex_um(self):
-        self.assertEqual('$\\mu$m', self.dim.to_latex(u'\u00b5m'))
+        self.assertEqual(_LATEX_MU + 'm', self.dim.to_latex(u'\u00b5m'))
 
     def testconvert(self):
         value = self.dim.convert(2, 'cm', 'um')
@@ -126,7 +126,7 @@ class TestSILengthReciprocalDimension(unittest.TestCase):
         self.assertEqual('cm$^{-1}$', self.dim.to_latex('1/cm'))
 
     def testto_latex_um(self):
-        self.assertEqual('$\mu$m$^{-1}$', self.dim.to_latex(u'1/\u00b5m'))
+        self.assertEqual(_LATEX_MU + 'm$^{-1}$', self.dim.to_latex(u'1/\u00b5m'))
 
 class TestPixelLengthDimension(unittest.TestCase):
 
