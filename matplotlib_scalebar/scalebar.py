@@ -316,6 +316,7 @@ class ScaleBar(Artist):
         if self.fixed_value is None:
             length_px = abs(xlim[1] - xlim[0]) * length_fraction
             length_px, value, units = self._calculate_best_length(length_px)
+            print(length_px)
 
         # Mode 2: Fixed
         else:
@@ -331,7 +332,7 @@ class ScaleBar(Artist):
         sizebar = AuxTransformBox(ax.transData)
         sizebar.add_artist(Rectangle((0, 0), length_px, size_vertical,
                                      fill=True, facecolor=color,
-                                     edgecolor=color))
+                                     edgecolor='none'))
 
         txtscale = TextArea(scale_label, minimumdescent=False, textprops=textprops)
 
