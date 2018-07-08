@@ -9,7 +9,8 @@ import logging
 
 # Local modules.
 from matplotlib_scalebar.dimension import \
-    (SILengthDimension, SILengthReciprocalDimension, ImperialLengthDimension)
+    (SILengthDimension, SILengthReciprocalDimension, ImperialLengthDimension,
+     PixelLengthDimension)
 
 # Globals and constants variables.
 
@@ -126,6 +127,43 @@ class TestSILengthReciprocalDimension(unittest.TestCase):
 
     def testto_latex_um(self):
         self.assertEqual('$\mu$m$^{-1}$', self.dim.to_latex(u'1/\u00b5m'))
+
+class TestPixelLengthDimension(unittest.TestCase):
+
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+
+        self.dim = PixelLengthDimension()
+
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+
+    def testcalculate_preferred_kpx(self):
+        value, units = self.dim.calculate_preferred(2000, 'px')
+        self.assertAlmostEqual(2.0, value, 2)
+        self.assertEqual('kpx', units)
+
+    def testcalculate_preferred_px(self):
+        value, units = self.dim.calculate_preferred(200, 'px')
+        self.assertAlmostEqual(200.0, value, 2)
+        self.assertEqual('px', units)
+
+    def testcalculate_preferred_subpx(self):
+        value, units = self.dim.calculate_preferred(0.02, 'px')
+        self.assertEqual('px', units)
+        self.assertAlmostEqual(0.02, value, 2)
+
+    def testcalculate_preferred_subpx2(self):
+        value, units = self.dim.calculate_preferred(0.001, 'px')
+        self.assertAlmostEqual(0.001, value, 3)
+        self.assertEqual('px', units)
+
+    def testconvert(self):
+        value = self.dim.convert(2, 'kpx', 'px')
+        self.assertAlmostEqual(2000, value, 6)
+
+        value = self.dim.convert(2, 'px', 'kpx')
+        self.assertAlmostEqual(2e-3, value, 6)
 
 if __name__ == '__main__': #pragma: no cover
     logging.getLogger().setLevel(logging.DEBUG)

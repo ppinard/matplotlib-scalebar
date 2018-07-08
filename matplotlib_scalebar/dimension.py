@@ -59,9 +59,13 @@ class _Dimension(object):
         units_factor = sorted(self._units.items(), key=itemgetter(1))
         factors = [item[1] for item in units_factor]
         index = bisect.bisect_right(factors, base_value)
-        newunits, factor = units_factor[index - 1]
 
-        return base_value / factor, newunits
+        if index:
+            newunits, factor = units_factor[index - 1]
+            return base_value / factor, newunits
+
+        else:
+            return value, units
 
     def convert(self, value, units, newunits):
         """
@@ -110,4 +114,11 @@ class ImperialLengthDimension(_Dimension):
         self.add_units('mi', 5280)
         self.add_units('lea', 15840)
 
+class PixelLengthDimension(_Dimension):
 
+    def __init__(self):
+        super(PixelLengthDimension, self).__init__('px')
+        for prefix, factor in _PREFIXES_FACTORS.items():
+            if factor < 1:
+                continue
+            self.add_units(prefix + 'px', factor)
