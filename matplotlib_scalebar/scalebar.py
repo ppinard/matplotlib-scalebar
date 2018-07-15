@@ -319,7 +319,6 @@ class ScaleBar(Artist):
         if self.fixed_value is None:
             length_px = abs(xlim[1] - xlim[0]) * length_fraction
             length_px, value, units = self._calculate_best_length(length_px)
-            print(length_px)
 
         # Mode 2: Fixed
         else:
