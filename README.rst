@@ -163,6 +163,11 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+0.5.1
+^^^^^
+
+* Remove leftover print statement (`#18 <https://github.com/ppinard/matplotlib-scalebar/issues/18>`_)
+
 0.5.0
 ^^^^^
 
@@ -190,8 +195,9 @@ Contributors
 `@habi <https://github.com/habi>`_,
 `@huangziwei <https://github.com/huangziwei>`_,
 `@SirJohnFranklin <https://github.com/SirJohnFranklin>`_,
-`@alexandrejaguar <https://github.com/alexandrejaguar>`_ and
-`@parishcm <https://github.com/parishcm>`_
+`@alexandrejaguar <https://github.com/alexandrejaguar>`_,
+`@parishcm <https://github.com/parishcm>`_ and 
+`@wiai <https://github.com/wiai>`_
 
 License
 -------

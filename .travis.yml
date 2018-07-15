@@ -34,6 +34,6 @@ deploy:
   on:
     tags: true
     repo: ppinard/matplotlib-scalebar
-    all_branches: true
+    condition: $DEPLOY = yes
   password:
     secure: H/8UKobwsKhiehInS9wMDTFnrMrJ/Q1sLa1BWj5yhliBc8F5BgsVbRIGktLE+5ifkpnODqH52Jj4b5BkankjjxFNHUxN+b7kl859isVmm1ywKO+eqaKJtSEOTVDfqLM17yxnp/fo+nXFiP/3Z+V/slANSDsmLvkKkxeJnV4K2OLv1DNRPmko49KGYEsoahjXAjAyBTthA5gVMw6Xl7RK19ApeQa7YhJ6nz/JC5xQwQ/d4XsyWkD3+yVDPDu2g0cKh0F6l9vmDSAw27RDEnBfM1XgLmcbEoPZqH4BY9u/IE2+gnhk/Kg8J6ZiupK+HZETzAY1wkNYVzluex+Pb8AfTsSwRlgLQ0cDy5fremopRjYULWAajySzMki8+K6QKnsKIfBA9ejlKYdyzfL3dgbyboBFW82Jh/T/tWMi2w+hyuTcEM+L7VLtTuDm/V8UZYKKJNNaJkjl3jxvDRNNvaxQF/HgvmDY6jFDXdNYRb0Jbe7ilMWmHgacQD+6fdQCtqy4EKzg77GFBlF4VF/CVMItKdq0oKnoT5xUcZEStkRIOhpuOW2WttXnqdd7GLPAis/o2zhlu8XNFjR3LOm67IwlW5uGaYh+COwKdhoSmmRCWj8BJF7RbrDEK+HQ767VdjzCM5UBYisobcrIa2/+MtvG/BoZXlADUTKWwbNMBXkhjk0=
