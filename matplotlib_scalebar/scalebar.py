@@ -48,7 +48,7 @@ from matplotlib.patches import Rectangle
 # Local modules.
 from matplotlib_scalebar.dimension import \
     (_Dimension, SILengthDimension, SILengthReciprocalDimension,
-     ImperialLengthDimension, PixelLengthDimension)
+     ImperialLengthDimension, PixelLengthDimension, AngularDimension)
 
 # Globals and constants variables.
 
@@ -84,11 +84,13 @@ SI_LENGTH = 'si-length'
 SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
 IMPERIAL_LENGTH = 'imperial-length'
 PIXEL_LENGTH = 'pixel-length'
+ANGULAR = 'angular'
 
 _DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
                      SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
                      IMPERIAL_LENGTH: ImperialLengthDimension,
-                     PIXEL_LENGTH: PixelLengthDimension}
+                     PIXEL_LENGTH: PixelLengthDimension,
+                     ANGULAR: AngularDimension}
 
 class ScaleBar(Artist):
 
@@ -141,6 +143,7 @@ class ScaleBar(Artist):
                 * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
                 * ``:const:`PIXEL_LENGTH```: scale bar showing px, kpx, Mpx, etc.
+                * ``:const:`ANGULAR```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
         :type dimension: :class:`str` or
             :class:`matplotlib_scalebar.dimension._Dimension`
@@ -235,8 +238,8 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        default_formatter = lambda value, unit: '{} {}'.format(value, unit)
-        self.label_formatter = label_formatter or default_formatter
+        self.label_formatter = label_formatter
+
         if font_properties is None:
             font_properties = FontProperties()
         elif isinstance(font_properties, dict):
@@ -247,6 +250,7 @@ class ScaleBar(Artist):
             raise TypeError("Unsupported type for `font_properties`. Pass "
                             "either a dict or a font config pattern as string.")
         self.font_properties = font_properties
+
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
 
@@ -543,6 +547,8 @@ class ScaleBar(Artist):
     font_properties = property(get_font_properties, set_font_properties)
 
     def get_label_formatter(self):
+        if self._label_formatter is None:
+            return self.dimension.create_label
         return self._label_formatter
 
     def set_label_formatter(self, label_formatter):

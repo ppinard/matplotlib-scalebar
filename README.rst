@@ -6,7 +6,7 @@ matplotlib-scalebar
 
 .. image:: https://badge.fury.io/py/matplotlib-scalebar.svg
    :target: http://badge.fury.io/py/matplotlib-scalebar
-   
+
 Provides a new artist for matplotlib to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
 plt.imshow(...).
@@ -34,15 +34,15 @@ How to use
 There are two modes of operation:
 
 1. Length, value and units of the scale bar are automatically
-   determined based on the specified pixel size *dx* and 
-   *length_fraction*. 
+   determined based on the specified pixel size *dx* and
+   *length_fraction*.
    The value will only take the following numbers:
    1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500 or 750.
-     
-2. The desired value and units are specified by the user 
+
+2. The desired value and units are specified by the user
    (*fixed_value* and *fixed_units*) and the length is calculated
    based on the specified pixel size *dx*.
-     
+
 The constructor arguments *dx* and *units* specify the pixel dimension.
 For example ``scalebar = ScaleBar(0.2, 'um')`` indicates that each pixel is
 equal to 0.2 micrometer.
@@ -98,6 +98,7 @@ Here are parameters of the **ScaleBar** class constructor.
   * ``IMPERIAL_LENGTH``: scale bar showing in, ft, yd, mi, etc.
   * ``SI_LENGTH_RECIPROCAL``: scale bar showing 1/m, 1/cm, etc.
   * ``PIXEL_LENGTH``: scale bar showing px, kpx, Mpx, etc.
+  * ``ANGULAR``: scale bar showing \u00b0, \u2032 or \u2032\u2032.
   * a ``matplotlib_scalebar.dimension._Dimension`` object
 
 * ``label``: optional label associated with the scale bar
@@ -131,7 +132,7 @@ Here are parameters of the **ScaleBar** class constructor.
 * ``label_formatter``: custom function called to format the scalebar text.
   Needs to take 2 arguments - the scale value and the unit.
   (default: ``None`` which results in ``<value> <unit>``)
-* ``fixed_value``: value for the scale bar. If ``None``, the value is 
+* ``fixed_value``: value for the scale bar. If ``None``, the value is
   automatically determined based on *length_fraction*.
 * ``fixed_units``: units of the *fixed_value*. If ``None`` and
   *fixed_value* is not ``None``, the units of *dx* are used.
@@ -189,14 +190,14 @@ Contributors
 ------------
 
 `@maweigert <https://github.com/maweigert>`_,
-`@crosbyla <https://github.com/crosbyla>`_, 
-`@joschkazj <https://github.com/joschkazj>`_, 
+`@crosbyla <https://github.com/crosbyla>`_,
+`@joschkazj <https://github.com/joschkazj>`_,
 `@AKuederle <https://github.com/AKuederle>`_,
 `@habi <https://github.com/habi>`_,
 `@huangziwei <https://github.com/huangziwei>`_,
 `@SirJohnFranklin <https://github.com/SirJohnFranklin>`_,
 `@alexandrejaguar <https://github.com/alexandrejaguar>`_,
-`@parishcm <https://github.com/parishcm>`_ and 
+`@parishcm <https://github.com/parishcm>`_ and
 `@wiai <https://github.com/wiai>`_
 
 License

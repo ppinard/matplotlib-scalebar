@@ -22,6 +22,7 @@ class _Dimension(object):
     def __init__(self, base_units, latexrepr=None):
         self._base_units = base_units
         self._units = {base_units: 1.0}
+
         if latexrepr is None:
             latexrepr = base_units
         self._latexrepr = {base_units: latexrepr}
@@ -79,6 +80,9 @@ class _Dimension(object):
             raise ValueError('Unknown units: %s' % units)
         return self._latexrepr[units]
 
+    def create_label(self, value, latexrepr):
+        return '{} {}'.format(value, latexrepr)
+
     @property
     def base_units(self):
         return self._base_units
@@ -123,3 +127,14 @@ class PixelLengthDimension(_Dimension):
             if factor < 1:
                 continue
             self.add_units(prefix + 'px', factor)
+
+class AngularDimension(_Dimension):
+
+    def __init__(self):
+        super().__init__('deg', '$^\\circ$')
+        self.add_units("'", 1 / 60, '$^\\prime$')
+        self.add_units("''", 1 / 3600, '$^{\\prime\\prime}$')
+
+    def create_label(self, value, latexrepr):
+        # Overriden to remove space between value and units.
+        return '{}{}'.format(value, latexrepr)
