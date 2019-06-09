@@ -29,13 +29,13 @@ class _Dimension(object):
     def add_units(self, units, factor, latexrepr=None):
         """
         Add new possible units.
-        
+
         :arg units: units
         :type units: :class:`str`
-        
-        :arg factor: multiplication factor to convert new units into base units 
+
+        :arg factor: multiplication factor to convert new units into base units
         :type factor: :class:`float`
-        
+
         :arg latexrepr: LaTeX representation of units (if ``None``, use *units)
         :type latexrepr: :class:`str`
         """
@@ -86,7 +86,7 @@ class _Dimension(object):
 class SILengthDimension(_Dimension):
 
     def __init__(self):
-        super(SILengthDimension, self).__init__('m')
+        super().__init__('m')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = None
             if prefix == u'\u00b5' or prefix == 'u':
@@ -96,7 +96,7 @@ class SILengthDimension(_Dimension):
 class SILengthReciprocalDimension(_Dimension):
 
     def __init__(self):
-        super(SILengthReciprocalDimension, self).__init__('1/m', 'm$^{-1}$')
+        super().__init__('1/m', 'm$^{-1}$')
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = '{0}m$^{{-1}}$'.format(prefix)
             if prefix == u'\u00b5' or prefix == 'u':
@@ -106,7 +106,7 @@ class SILengthReciprocalDimension(_Dimension):
 class ImperialLengthDimension(_Dimension):
 
     def __init__(self):
-        super(ImperialLengthDimension, self).__init__('ft')
+        super().__init__('ft')
         self.add_units('th', 1 / 12000)
         self.add_units('in', 1 / 12)
         self.add_units('yd', 3)
@@ -118,7 +118,7 @@ class ImperialLengthDimension(_Dimension):
 class PixelLengthDimension(_Dimension):
 
     def __init__(self):
-        super(PixelLengthDimension, self).__init__('px')
+        super().__init__('px')
         for prefix, factor in _PREFIXES_FACTORS.items():
             if factor < 1:
                 continue
