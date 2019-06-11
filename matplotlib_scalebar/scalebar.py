@@ -110,7 +110,7 @@ class ScaleBar(Artist):
                   'center':       10,
               }
 
-    def __init__(self, dx, units='m', dimension=SI_LENGTH, label=None,
+    def __init__(self, dx, units='m', dimension='si-length', label=None,
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
@@ -140,11 +140,10 @@ class ScaleBar(Artist):
         
         :arg dimension: dimension of *dx* and *units*. 
             It can either be equal 
-                * ``:const:`SI_LENGTH```: scale bar showing km, m, cm, etc.
-                * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
-                * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
-                * ``:const:`PIXEL_LENGTH```: scale bar showing px, kpx, Mpx, etc.
-                * a :class:`matplotlib_scalebar.dimension._Dimension` object
+                * ``:const:`si-length```: scale bar showing km, m, cm, etc.
+                * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
+                * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
+                * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
         :type dimension: :class:`str` or 
             :class:`matplotlib_scalebar.dimension._Dimension`
                 
