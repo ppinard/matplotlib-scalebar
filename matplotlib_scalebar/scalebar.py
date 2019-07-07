@@ -251,7 +251,7 @@ class ScaleBar(Artist):
         self.font_properties = font_properties
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
-        self.animated = animated
+        self.set_animated(animated)
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -380,7 +380,6 @@ class ScaleBar(Artist):
         box.patch.set_color(box_color)
         box.patch.set_alpha(box_alpha)
         box.draw(renderer)
-        self.set_animated(self.animated)
 
     def get_dx(self):
         return self._dx
