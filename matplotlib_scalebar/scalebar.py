@@ -116,7 +116,7 @@ class ScaleBar(Artist):
                  frameon=None, color=None, box_color=None, box_alpha=None,
                  scale_loc=None, label_loc=None, font_properties=None,
                  label_formatter=None, fixed_value=None, fixed_units=None,
-                 use_blit=False):
+                 animated=False):
         """
         Creates a new scale bar.
         
@@ -251,7 +251,7 @@ class ScaleBar(Artist):
         self.font_properties = font_properties
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
-        self.use_blit = use_blit
+        self.animated = animated
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -380,7 +380,7 @@ class ScaleBar(Artist):
         box.patch.set_color(box_color)
         box.patch.set_alpha(box_alpha)
         box.draw(renderer)
-        self.set_animated(self.use_blit)
+        self.set_animated(self.animated)
 
     def get_dx(self):
         return self._dx
