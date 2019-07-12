@@ -29,7 +29,7 @@ parameters.
 """
 
 __all__ = ['ScaleBar',
-           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH']
+           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH', 'PIXEL_LENGTH']
 
 # Standard library modules.
 import bisect
@@ -110,12 +110,13 @@ class ScaleBar(Artist):
                   'center':       10,
               }
 
-    def __init__(self, dx, units='m', dimension=SI_LENGTH, label=None,
+    def __init__(self, dx, units='m', dimension='si-length', label=None,
                  length_fraction=None, height_fraction=None,
                  location=None, pad=None, border_pad=None, sep=None,
                  frameon=None, color=None, box_color=None, box_alpha=None,
                  scale_loc=None, label_loc=None, font_properties=None,
-                 label_formatter=None, fixed_value=None, fixed_units=None):
+                 label_formatter=None, fixed_value=None, fixed_units=None,
+                 animated=False):
         """
         Creates a new scale bar.
         
@@ -139,10 +140,10 @@ class ScaleBar(Artist):
         
         :arg dimension: dimension of *dx* and *units*. 
             It can either be equal 
-                * ``:const:`SI_LENGTH```: scale bar showing km, m, cm, etc.
-                * ``:const:`IMPERIAL_LENGTH```: scale bar showing in, ft, yd, mi, etc.
-                * ``:const:`SI_LENGTH_RECIPROCAL```: scale bar showing 1/m, 1/cm, etc.
-                * ``:const:`PIXEL_LENGTH```: scale bar showing px, kpx, Mpx, etc.
+                * ``:const:`si-length```: scale bar showing km, m, cm, etc.
+                * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
+                * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
+                * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
         :type dimension: :class:`str` or 
             :class:`matplotlib_scalebar.dimension._Dimension`
@@ -218,6 +219,9 @@ class ScaleBar(Artist):
         :arg fixed_units: units of the *fixed_value*. If ``None`` and
             *fixed_value* is not ``None``, the units of *dx* are used.
         :type fixed_units: :class:`str`
+        
+        :arg animated: animation state (default: ``False``)
+        :type animated: :class`bool`
         """
         Artist.__init__(self)
 
@@ -251,6 +255,7 @@ class ScaleBar(Artist):
         self.font_properties = font_properties
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
+        self.set_animated(animated)
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
