@@ -48,7 +48,7 @@ from matplotlib.patches import Rectangle
 # Local modules.
 from matplotlib_scalebar.dimension import \
     (_Dimension, SILengthDimension, SILengthReciprocalDimension,
-     ImperialLengthDimension, PixelLengthDimension, AngularDimension)
+     ImperialLengthDimension, PixelLengthDimension, AngleDimension)
 
 # Globals and constants variables.
 
@@ -84,13 +84,13 @@ SI_LENGTH = 'si-length'
 SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
 IMPERIAL_LENGTH = 'imperial-length'
 PIXEL_LENGTH = 'pixel-length'
-ANGULAR = 'angular'
+ANGLE = 'angle'
 
 _DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
                      SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
                      IMPERIAL_LENGTH: ImperialLengthDimension,
                      PIXEL_LENGTH: PixelLengthDimension,
-                     ANGULAR: AngularDimension}
+                     ANGLE: AngleDimension}
 
 class ScaleBar(Artist):
 
@@ -144,7 +144,7 @@ class ScaleBar(Artist):
                 * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
                 * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
-                * ``:const:`ANGULAR```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
+                * ``:const:`angle```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
         :type dimension: :class:`str` or
             :class:`matplotlib_scalebar.dimension._Dimension`

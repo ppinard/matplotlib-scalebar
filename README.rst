@@ -98,7 +98,7 @@ Here are parameters of the **ScaleBar** class constructor.
   * ``imperial-length``: scale bar showing in, ft, yd, mi, etc.
   * ``si-length-reciprocal``: scale bar showing 1/m, 1/cm, etc.
   * ``pixel-length``: scale bar showing px, kpx, Mpx, etc.
-  * ``angular``: scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
+  * ``angle``: scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc).
   * a ``matplotlib_scalebar.dimension._Dimension`` object
 
 * ``label``: optional label associated with the scale bar

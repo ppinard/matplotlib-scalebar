@@ -128,7 +128,7 @@ class PixelLengthDimension(_Dimension):
                 continue
             self.add_units(prefix + 'px', factor)
 
-class AngularDimension(_Dimension):
+class AngleDimension(_Dimension):
 
     def __init__(self):
         super().__init__('deg', '$^\\circ$')
