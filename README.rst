@@ -208,8 +208,8 @@ Contributors
 `@alexandrejaguar <https://github.com/alexandrejaguar>`_,
 `@parishcm <https://github.com/parishcm>`_
 `@wiai <https://github.com/wiai>`_,
-`@cosmicshear <https://github.com/cosmicshear>_`,
-`@ericore <https://github.com/ericpre>`
+`@cosmicshear <https://github.com/cosmicshear>`_,
+`@ericore <https://github.com/ericpre>`_
 
 License
 -------
