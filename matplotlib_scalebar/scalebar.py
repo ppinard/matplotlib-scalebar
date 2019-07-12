@@ -29,7 +29,7 @@ parameters.
 """
 
 __all__ = ['ScaleBar',
-           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH']
+           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH', 'PIXEL_LENGTH']
 
 # Standard library modules.
 import bisect
@@ -144,6 +144,7 @@ class ScaleBar(Artist):
                 * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
                 * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
+                * a :class:`matplotlib_scalebar.dimension._Dimension` object
         :type dimension: :class:`str` or 
             :class:`matplotlib_scalebar.dimension._Dimension`
                 
@@ -218,6 +219,9 @@ class ScaleBar(Artist):
         :arg fixed_units: units of the *fixed_value*. If ``None`` and
             *fixed_value* is not ``None``, the units of *dx* are used.
         :type fixed_units: :class:`str`
+        
+        :arg animated: animation state (default: ``False``)
+        :type animated: :class`bool`
         """
         Artist.__init__(self)
 

@@ -98,6 +98,7 @@ Here are parameters of the **ScaleBar** class constructor.
   * ``imperial-length``: scale bar showing in, ft, yd, mi, etc.
   * ``si-length-reciprocal``: scale bar showing 1/m, 1/cm, etc.
   * ``pixel-length``: scale bar showing px, kpx, Mpx, etc.
+  * a ``matplotlib_scalebar.dimension._Dimension`` object
 
 * ``label``: optional label associated with the scale bar
   (default: ``None``, no label is shown)
@@ -134,6 +135,7 @@ Here are parameters of the **ScaleBar** class constructor.
   automatically determined based on *length_fraction*.
 * ``fixed_units``: units of the *fixed_value*. If ``None`` and
   *fixed_value* is not ``None``, the units of *dx* are used.
+* ``animated``: animation state (default: ``False``)
 
 matplotlibrc parameters
 -----------------------
