@@ -165,6 +165,14 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+0.6.0
+^^^^^
+
+* Add angular units (`#19 <https://github.com/ppinard/matplotlib-scalebar/issues/19>`_)
+* Add blit support and fix documentation (`PR#22 <https://github.com/ppinard/matplotlib-scalebar/pull/22>`_)
+* Fix issue with getting the wrong preferred values for the scale bar. (`PR#23 <https://github.com/ppinard/matplotlib-scalebar/pull/23>`_)
+* Package LICENSE file to distribution. (`PR#24 <https://github.com/ppinard/matplotlib-scalebar/pull/24>`_)
+
 0.5.1
 ^^^^^
 
@@ -198,13 +206,15 @@ Contributors
 `@huangziwei <https://github.com/huangziwei>`_,
 `@SirJohnFranklin <https://github.com/SirJohnFranklin>`_,
 `@alexandrejaguar <https://github.com/alexandrejaguar>`_,
-`@parishcm <https://github.com/parishcm>`_ and
-`@wiai <https://github.com/wiai>`_
+`@parishcm <https://github.com/parishcm>`_
+`@wiai <https://github.com/wiai>`_,
+`@cosmicshear <https://github.com/cosmicshear>_`,
+`@ericore <https://github.com/ericpre>`
 
 License
 -------
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2018 Philippe Pinard
+Copyright (c) 2015-2019 Philippe Pinard
 
