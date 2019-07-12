@@ -266,7 +266,11 @@ class ScaleBar(Artist):
         factor = value / newvalue
 
         index = bisect.bisect_left(self._PREFERRED_VALUES, newvalue)
-        newvalue = self._PREFERRED_VALUES[index - 1]
+        if index > 0:
+            # When we get the lowest index of the list, removing -1 will
+            # return the last index.
+            index -= 1
+        newvalue = self._PREFERRED_VALUES[index]
 
         length_px = newvalue * factor / dx
 
