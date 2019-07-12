@@ -23,9 +23,9 @@ The following parameters are available for customization in the matplotlibrc:
     - scalebar.box_alpha
     - scalebar.scale_loc
     - scalebar.label_loc
-    
-See the class documentation (:class:`.Scalebar`) for a description of the 
-parameters. 
+
+See the class documentation (:class:`.Scalebar`) for a description of the
+parameters.
 """
 
 __all__ = ['ScaleBar',
@@ -45,12 +45,10 @@ from matplotlib.offsetbox import \
     AuxTransformBox, TextArea, VPacker, HPacker, AnchoredOffsetbox
 from matplotlib.patches import Rectangle
 
-import six
-
 # Local modules.
 from matplotlib_scalebar.dimension import \
     (_Dimension, SILengthDimension, SILengthReciprocalDimension,
-     ImperialLengthDimension, PixelLengthDimension)
+     ImperialLengthDimension, PixelLengthDimension, AngleDimension)
 
 # Globals and constants variables.
 
@@ -78,7 +76,7 @@ defaultParams.update(
 # Recreate the validate function
 matplotlib.rcParams.validate = \
     dict((key, converter) for key, (default, converter) in
-         six.iteritems(defaultParams)
+         defaultParams.items()
          if key not in matplotlib._all_deprecated)
 
 # Dimension lookup
@@ -86,11 +84,13 @@ SI_LENGTH = 'si-length'
 SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
 IMPERIAL_LENGTH = 'imperial-length'
 PIXEL_LENGTH = 'pixel-length'
+ANGLE = 'angle'
 
 _DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
                      SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
                      IMPERIAL_LENGTH: ImperialLengthDimension,
-                     PIXEL_LENGTH: PixelLengthDimension}
+                     PIXEL_LENGTH: PixelLengthDimension,
+                     ANGLE: AngleDimension}
 
 class ScaleBar(Artist):
 
@@ -119,84 +119,85 @@ class ScaleBar(Artist):
                  animated=False):
         """
         Creates a new scale bar.
-        
+
         There are two modes of operation:
-          
+
           1. Length, value and units of the scale bar are automatically
-             determined based on the specified pixel size *dx* and 
+             determined based on the specified pixel size *dx* and
              *length_fraction*. The value will only take the following numbers:
              1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500 or 750.
-          2. The desired value and units are specified by the user 
+          2. The desired value and units are specified by the user
              (*fixed_value* and *fixed_units*) and the length is calculated
              based on the specified pixel size *dx*.
-        
+
         :arg dx: size of one pixel in *units*
             Set ``dx`` to 1.0 if the axes image has already been calibrated by
             setting its ``extent``.
         :type dx: :class:`float`
-            
+
         :arg units: units of *dx* (default: ``m``)
         :type units: :class:`str`
-        
-        :arg dimension: dimension of *dx* and *units*. 
-            It can either be equal 
+
+        :arg dimension: dimension of *dx* and *units*.
+            It can either be equal
                 * ``:const:`si-length```: scale bar showing km, m, cm, etc.
                 * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
                 * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
+                * ``:const:`angle```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
-        :type dimension: :class:`str` or 
+        :type dimension: :class:`str` or
             :class:`matplotlib_scalebar.dimension._Dimension`
-                
-        :arg label: optional label associated with the scale bar 
+
+        :arg label: optional label associated with the scale bar
             (default: ``None``, no label is shown)
         :type label: :class:`str`
-            
-        :arg length_fraction: length of the scale bar as a fraction of the 
+
+        :arg length_fraction: length of the scale bar as a fraction of the
             axes's width (default: rcParams['scalebar.lenght_fraction'] or ``0.2``).
             This argument is ignored if a *fixed_value* is specified.
         :type length_fraction: :class:`float`
-            
-        :arg height_fraction: height of the scale bar as a fraction of the 
+
+        :arg height_fraction: height of the scale bar as a fraction of the
             axes's height (default: rcParams['scalebar.height_fraction'] or ``0.01``)
         :type length_fraction: :class:`float`
-            
+
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
         :type location: :class:`str`
-            
+
         :arg pad: fraction of the font size
             (default: rcParams['scalebar.pad'] or ``0.2``)
         :type pad: :class:`float`
-            
+
         :arg border_pad : fraction of the font size
             (default: rcParams['scalebar.border_pad'] or ``0.1``)
         :type border_pad: :class:`float`
-            
+
         :arg sep : separation between scale bar and label in points
             (default: rcParams['scalebar.sep'] or ``5``)
         :type sep: :class:`float`
-            
-        :arg frameon : if True, will draw a box around the scale bar 
+
+        :arg frameon : if True, will draw a box around the scale bar
             and label (default: rcParams['scalebar.frameon'] or ``True``)
         :type frameon: :class:`bool`
-            
+
         :arg color : color for the scale bar and label
             (default: rcParams['scalebar.color'] or ``k``)
         :type color: :class:`str`
-            
+
         :arg box_color: color of the box (if *frameon*)
             (default: rcParams['scalebar.box_color'] or ``w``)
         :type box_color: :class:`str`
-            
+
         :arg box_alpha: transparency of box
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
         :type box_alpha: :class:`float`
-            
+
         :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.scale_loc'] or ``bottom``)
         :type scale_loc: :class:`str`
-            
+
         :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
             (default: rcParams['scalebar.label_loc'] or ``top``)
         :type label_loc: :class:`str`
@@ -211,15 +212,15 @@ class ScaleBar(Artist):
             the value (float) and the unit (str) as input and return the label
             string.
         :type label_formatter: :class:`func`
-        
-        :arg fixed_value: value for the scale bar. If ``None``, the value is 
+
+        :arg fixed_value: value for the scale bar. If ``None``, the value is
             automatically determined based on *length_fraction*.
         :type fixed_value: :class:`float`
-        
+
         :arg fixed_units: units of the *fixed_value*. If ``None`` and
             *fixed_value* is not ``None``, the units of *dx* are used.
         :type fixed_units: :class:`str`
-        
+
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
         """
@@ -241,18 +242,19 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        default_formatter = lambda value, unit: '{} {}'.format(value, unit)
-        self.label_formatter = label_formatter or default_formatter
+        self.label_formatter = label_formatter
+
         if font_properties is None:
             font_properties = FontProperties()
         elif isinstance(font_properties, dict):
             font_properties = FontProperties(**font_properties)
-        elif isinstance(font_properties, six.string_types):
+        elif isinstance(font_properties, str):
             font_properties = FontProperties(font_properties)
         else:
             raise TypeError("Unsupported type for `font_properties`. Pass "
                             "either a dict or a font config pattern as string.")
         self.font_properties = font_properties
+
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
         self.set_animated(animated)
@@ -298,7 +300,7 @@ class ScaleBar(Artist):
         length_fraction = _get_value('length_fraction', 0.2)
         height_fraction = _get_value('height_fraction', 0.01)
         location = _get_value('location', 'upper right')
-        if isinstance(location, six.string_types):
+        if isinstance(location, str):
             location = self._LOCATIONS[location]
         pad = _get_value('pad', 0.2)
         border_pad = _get_value('border_pad', 0.1)
@@ -457,7 +459,7 @@ class ScaleBar(Artist):
         return self._location
 
     def set_location(self, loc):
-        if isinstance(loc, six.string_types):
+        if isinstance(loc, str):
             if loc not in self._LOCATIONS:
                 raise ValueError('Unknown location code: %s' % loc)
             loc = self._LOCATIONS[loc]
@@ -554,6 +556,8 @@ class ScaleBar(Artist):
     font_properties = property(get_font_properties, set_font_properties)
 
     def get_label_formatter(self):
+        if self._label_formatter is None:
+            return self.dimension.create_label
         return self._label_formatter
 
     def set_label_formatter(self, label_formatter):
