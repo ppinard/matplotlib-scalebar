@@ -49,6 +49,12 @@ equal to 0.2 micrometer.
 If the the axes image has already been calibrated by setting its ``extent``,
 set *dx* to 1.0.
 
+**Special notes for geospatial plots**:
+If you are plotting geospatial coordinates (such as scatterplots of the location of structures, `geopandas <http://geopandas.org/>`_ geodataframe plots, etc.), ``dx`` needs to be set differently depending on the coordinate system:
+
+* For UTM based coordinate system, where the X and Y are in meters, simply set ``dx = 1``.
+* For WGS or NAD based coordinate system, where X and Y are in latitude (Y) and longitude (X), compute the distance between two points at the latitude (Y) you wish to have the scale represented and are also one full degree of longitude (X) apart, in meters. For example ``dx = great_circle_distance((X, Y), (X + 1, Y))``
+
 The system of units (SI, imperial, etc.) is defined by the argument *dimension*.
 By default, the scale bar uses SI units of length (e.g. m, cm, um, km, etc.).
 See examples below for other system of units.
@@ -165,6 +171,11 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+0.6.1
+^^^^^
+
+* Add notes about for geospatial plots (`#20 <https://github.com/ppinard/matplotlib-scalebar/issues/20>`_)
+
 0.6.0
 ^^^^^
 
@@ -209,7 +220,9 @@ Contributors
 `@parishcm <https://github.com/parishcm>`_
 `@wiai <https://github.com/wiai>`_,
 `@cosmicshear <https://github.com/cosmicshear>`_,
-`@ericore <https://github.com/ericpre>`_
+`@ericore <https://github.com/ericpre>`_,
+`@seangrogan <https://github.com/seangrogan>`_,
+`@PhilipeRLeal <https://github.com/PhilipeRLeal>`_
 
 License
 -------
