@@ -1,11 +1,11 @@
 matplotlib-scalebar
 ===================
 
-.. image:: https://travis-ci.org/ppinard/matplotlib-scalebar.svg
-   :target: https://travis-ci.org/ppinard/matplotlib-scalebar
+.. image:: https://img.shields.io/github/workflow/status/ppinard/matplotlib-scalebar/CI
+   :alt: GitHub Workflow Status
 
-.. image:: https://badge.fury.io/py/matplotlib-scalebar.svg
-   :target: http://badge.fury.io/py/matplotlib-scalebar
+.. image:: https://img.shields.io/pypi/v/matplotlib-scalebar
+   :alt: PyPI
 
 Provides a new artist for matplotlib to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
