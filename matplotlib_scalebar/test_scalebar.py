@@ -5,20 +5,28 @@
 
 # Third party modules.
 import matplotlib
-matplotlib.use('agg')
+
+matplotlib.use("agg")
 import matplotlib.pyplot as plt
 from matplotlib.testing.decorators import cleanup
 
 import numpy as np
 
-from nose.tools import \
-    (assert_equal, assert_almost_equal, assert_is_none, assert_true,
-     assert_false, assert_raises, raises)
+from nose.tools import (
+    assert_equal,
+    assert_almost_equal,
+    assert_is_none,
+    assert_true,
+    assert_false,
+    assert_raises,
+    raises,
+)
 
 # Local modules.
 from matplotlib_scalebar.scalebar import ScaleBar
 
 # Globals and constants variables.
+
 
 def create_figure():
     fig = plt.figure()
@@ -31,6 +39,7 @@ def create_figure():
     ax.add_artist(scalebar)
 
     return fig, ax, scalebar
+
 
 @cleanup
 def test_scalebar_draw():
@@ -45,10 +54,12 @@ def test_scalebar_draw():
 
     plt.draw()
 
+
 @cleanup
 def test_scalebar_draw_fixed():
     create_figure()
     plt.draw()
+
 
 @cleanup
 def test_scalebar_dx_m():
@@ -64,6 +75,7 @@ def test_scalebar_dx_m():
     scalebar.dx = 0.1
     assert_almost_equal(0.1, scalebar.get_dx())
     assert_almost_equal(0.1, scalebar.dx)
+
 
 @cleanup
 def test_scalebar_length_fraction():
@@ -83,6 +95,7 @@ def test_scalebar_length_fraction():
     assert_raises(ValueError, scalebar.set_length_fraction, 0.0)
     assert_raises(ValueError, scalebar.set_length_fraction, 1.1)
 
+
 @cleanup
 def test_scalebar_height_fraction():
     _fig, _ax, scalebar = create_figure()
@@ -101,6 +114,7 @@ def test_scalebar_height_fraction():
     assert_raises(ValueError, scalebar.set_height_fraction, 0.0)
     assert_raises(ValueError, scalebar.set_height_fraction, 1.1)
 
+
 @cleanup
 def test_scalebar_location():
     _fig, _ax, scalebar = create_figure()
@@ -108,13 +122,14 @@ def test_scalebar_location():
     assert_is_none(scalebar.get_location())
     assert_is_none(scalebar.location)
 
-    scalebar.set_location('upper right')
+    scalebar.set_location("upper right")
     assert_equal(1, scalebar.get_location())
     assert_equal(1, scalebar.location)
 
-    scalebar.location = 'lower left'
+    scalebar.location = "lower left"
     assert_equal(3, scalebar.get_location())
     assert_equal(3, scalebar.location)
+
 
 @cleanup
 def test_scalebar_pad():
@@ -131,6 +146,7 @@ def test_scalebar_pad():
     assert_almost_equal(5, scalebar.get_pad())
     assert_almost_equal(5, scalebar.pad)
 
+
 @cleanup
 def test_scalebar_border_pad():
     _fig, _ax, scalebar = create_figure()
@@ -145,6 +161,7 @@ def test_scalebar_border_pad():
     scalebar.border_pad = 5
     assert_almost_equal(5, scalebar.get_border_pad())
     assert_almost_equal(5, scalebar.border_pad)
+
 
 @cleanup
 def test_scalebar_sep():
@@ -161,6 +178,7 @@ def test_scalebar_sep():
     assert_almost_equal(5, scalebar.get_sep())
     assert_almost_equal(5, scalebar.sep)
 
+
 @cleanup
 def test_scalebar_frameon():
     _fig, _ax, scalebar = create_figure()
@@ -176,21 +194,25 @@ def test_scalebar_frameon():
     assert_false(scalebar.get_frameon())
     assert_false(scalebar.frameon)
 
+
 @cleanup
 def test_scalebar_font_properties():
-    font_settings = dict(family='serif', size=9)
+    font_settings = dict(family="serif", size=9)
     scalebar = ScaleBar(0.5, font_properties=font_settings)
 
-    assert_equal(scalebar.font_properties.get_family(), ['serif'])
+    assert_equal(scalebar.font_properties.get_family(), ["serif"])
     assert_equal(scalebar.font_properties.get_size(), 9)
+
 
 @cleanup
 @raises(TypeError)
 def test_scalebar_font_properties_invalid_type():
     ScaleBar(0.5, font_properties=2.0)
 
+
 def test_matplotlibrc():
-    matplotlib.rcParams['scalebar.box_color'] = 'r'
+    matplotlib.rcParams["scalebar.box_color"] = "r"
+
 
 @cleanup
 def test_scalebar_fixed_value():
@@ -207,6 +229,7 @@ def test_scalebar_fixed_value():
     assert_almost_equal(0.1, scalebar.get_fixed_value())
     assert_almost_equal(0.1, scalebar.fixed_value)
 
+
 @cleanup
 def test_scalebar_fixed_units():
     _fig, _ax, scalebar = create_figure()
@@ -214,40 +237,39 @@ def test_scalebar_fixed_units():
     assert_is_none(scalebar.get_fixed_units())
     assert_is_none(scalebar.fixed_units)
 
-    scalebar.set_fixed_units('m')
-    assert_equal('m', scalebar.get_fixed_units())
-    assert_equal('m', scalebar.fixed_units)
+    scalebar.set_fixed_units("m")
+    assert_equal("m", scalebar.get_fixed_units())
+    assert_equal("m", scalebar.fixed_units)
 
-    scalebar.fixed_units = 'um'
-    assert_equal('um', scalebar.get_fixed_units())
-    assert_equal('um', scalebar.fixed_units)
+    scalebar.fixed_units = "um"
+    assert_equal("um", scalebar.get_fixed_units())
+    assert_equal("um", scalebar.fixed_units)
+
 
 @cleanup
 def test_custom_label_format():
     _fig, _ax, scalebar = create_figure()
     scalebar.dx = 1
-    scalebar.units = 'm'
+    scalebar.units = "m"
     _length, value, units = scalebar._calculate_best_length(10)
 
     scale_label = scalebar.label_formatter(value, units)
-    assert_equal(scale_label, '5 m')
+    assert_equal(scale_label, "5 m")
 
-    scalebar.label_formatter = lambda value, unit: 'test'
+    scalebar.label_formatter = lambda value, unit: "test"
     scale_label = scalebar.label_formatter(value, units)
-    assert_equal(scale_label, 'test')
+    assert_equal(scale_label, "test")
 
-    scalebar.label_formatter = lambda value, unit: '{} {}'.format(unit, value)
+    scalebar.label_formatter = lambda value, unit: "{} {}".format(unit, value)
     scale_label = scalebar.label_formatter(value, units)
-    assert_equal(scale_label, 'm 5')
+    assert_equal(scale_label, "m 5")
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     import nose
     import sys
 
-    args = ['-s', '--with-doctest']
+    args = ["-s", "--with-doctest"]
     argv = sys.argv
     argv = argv[:1] + args + argv[1:]
     nose.runmodule(argv=argv, exit=False)

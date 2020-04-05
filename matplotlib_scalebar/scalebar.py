@@ -28,8 +28,13 @@ See the class documentation (:class:`.Scalebar`) for a description of the
 parameters.
 """
 
-__all__ = ['ScaleBar',
-           'SI_LENGTH', 'SI_LENGTH_RECIPROCAL', 'IMPERIAL_LENGTH', 'PIXEL_LENGTH']
+__all__ = [
+    "ScaleBar",
+    "SI_LENGTH",
+    "SI_LENGTH_RECIPROCAL",
+    "IMPERIAL_LENGTH",
+    "PIXEL_LENGTH",
+]
 
 # Standard library modules.
 import bisect
@@ -38,59 +43,82 @@ import bisect
 import matplotlib
 from matplotlib.artist import Artist
 from matplotlib.font_manager import FontProperties
-from matplotlib.rcsetup import \
-    (defaultParams, validate_float, validate_legend_loc, validate_bool,
-     validate_color, ValidateInStrings)
-from matplotlib.offsetbox import \
-    AuxTransformBox, TextArea, VPacker, HPacker, AnchoredOffsetbox
+from matplotlib.rcsetup import (
+    defaultParams,
+    validate_float,
+    validate_legend_loc,
+    validate_bool,
+    validate_color,
+    ValidateInStrings,
+)
+from matplotlib.offsetbox import (
+    AuxTransformBox,
+    TextArea,
+    VPacker,
+    HPacker,
+    AnchoredOffsetbox,
+)
 from matplotlib.patches import Rectangle
 
 # Local modules.
-from matplotlib_scalebar.dimension import \
-    (_Dimension, SILengthDimension, SILengthReciprocalDimension,
-     ImperialLengthDimension, PixelLengthDimension, AngleDimension)
+from matplotlib_scalebar.dimension import (
+    _Dimension,
+    SILengthDimension,
+    SILengthReciprocalDimension,
+    ImperialLengthDimension,
+    PixelLengthDimension,
+    AngleDimension,
+)
 
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-validate_scale_loc = ValidateInStrings('scale_loc', ['bottom', 'top', 'right', 'left'],
-                                       ignorecase=True)
-validate_label_loc = ValidateInStrings('label_loc', ['bottom', 'top', 'right', 'left'],
-                                       ignorecase=True)
+validate_scale_loc = ValidateInStrings(
+    "scale_loc", ["bottom", "top", "right", "left"], ignorecase=True
+)
+validate_label_loc = ValidateInStrings(
+    "label_loc", ["bottom", "top", "right", "left"], ignorecase=True
+)
 
 defaultParams.update(
-    {'scalebar.length_fraction': [0.2, validate_float],
-     'scalebar.height_fraction': [0.01, validate_float],
-     'scalebar.location': ['upper right', validate_legend_loc],
-     'scalebar.pad': [0.2, validate_float],
-     'scalebar.border_pad': [0.1, validate_float],
-     'scalebar.sep': [5, validate_float],
-     'scalebar.frameon': [True, validate_bool],
-     'scalebar.color': ['k', validate_color],
-     'scalebar.box_color': ['w', validate_color],
-     'scalebar.box_alpha': [1.0, validate_float],
-     'scalebar.scale_loc': ['bottom', validate_scale_loc],
-     'scalebar.label_loc': ['top', validate_label_loc],
-     })
+    {
+        "scalebar.length_fraction": [0.2, validate_float],
+        "scalebar.height_fraction": [0.01, validate_float],
+        "scalebar.location": ["upper right", validate_legend_loc],
+        "scalebar.pad": [0.2, validate_float],
+        "scalebar.border_pad": [0.1, validate_float],
+        "scalebar.sep": [5, validate_float],
+        "scalebar.frameon": [True, validate_bool],
+        "scalebar.color": ["k", validate_color],
+        "scalebar.box_color": ["w", validate_color],
+        "scalebar.box_alpha": [1.0, validate_float],
+        "scalebar.scale_loc": ["bottom", validate_scale_loc],
+        "scalebar.label_loc": ["top", validate_label_loc],
+    }
+)
 
 # Recreate the validate function
-matplotlib.rcParams.validate = \
-    dict((key, converter) for key, (default, converter) in
-         defaultParams.items()
-         if key not in matplotlib._all_deprecated)
+matplotlib.rcParams.validate = dict(
+    (key, converter)
+    for key, (default, converter) in defaultParams.items()
+    if key not in matplotlib._all_deprecated
+)
 
 # Dimension lookup
-SI_LENGTH = 'si-length'
-SI_LENGTH_RECIPROCAL = 'si-length-reciprocal'
-IMPERIAL_LENGTH = 'imperial-length'
-PIXEL_LENGTH = 'pixel-length'
-ANGLE = 'angle'
+SI_LENGTH = "si-length"
+SI_LENGTH_RECIPROCAL = "si-length-reciprocal"
+IMPERIAL_LENGTH = "imperial-length"
+PIXEL_LENGTH = "pixel-length"
+ANGLE = "angle"
 
-_DIMENSION_LOOKUP = {SI_LENGTH: SILengthDimension,
-                     SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
-                     IMPERIAL_LENGTH: ImperialLengthDimension,
-                     PIXEL_LENGTH: PixelLengthDimension,
-                     ANGLE: AngleDimension}
+_DIMENSION_LOOKUP = {
+    SI_LENGTH: SILengthDimension,
+    SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
+    IMPERIAL_LENGTH: ImperialLengthDimension,
+    PIXEL_LENGTH: PixelLengthDimension,
+    ANGLE: AngleDimension,
+}
+
 
 class ScaleBar(Artist):
 
@@ -98,25 +126,43 @@ class ScaleBar(Artist):
 
     _PREFERRED_VALUES = [1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500, 750]
 
-    _LOCATIONS = {'upper right':  1,
-                  'upper left':   2,
-                  'lower left':   3,
-                  'lower right':  4,
-                  'right':        5,
-                  'center left':  6,
-                  'center right': 7,
-                  'lower center': 8,
-                  'upper center': 9,
-                  'center':       10,
-              }
+    _LOCATIONS = {
+        "upper right": 1,
+        "upper left": 2,
+        "lower left": 3,
+        "lower right": 4,
+        "right": 5,
+        "center left": 6,
+        "center right": 7,
+        "lower center": 8,
+        "upper center": 9,
+        "center": 10,
+    }
 
-    def __init__(self, dx, units='m', dimension='si-length', label=None,
-                 length_fraction=None, height_fraction=None,
-                 location=None, pad=None, border_pad=None, sep=None,
-                 frameon=None, color=None, box_color=None, box_alpha=None,
-                 scale_loc=None, label_loc=None, font_properties=None,
-                 label_formatter=None, fixed_value=None, fixed_units=None,
-                 animated=False):
+    def __init__(
+        self,
+        dx,
+        units="m",
+        dimension="si-length",
+        label=None,
+        length_fraction=None,
+        height_fraction=None,
+        location=None,
+        pad=None,
+        border_pad=None,
+        sep=None,
+        frameon=None,
+        color=None,
+        box_color=None,
+        box_alpha=None,
+        scale_loc=None,
+        label_loc=None,
+        font_properties=None,
+        label_formatter=None,
+        fixed_value=None,
+        fixed_units=None,
+        animated=False,
+    ):
         """
         Creates a new scale bar.
 
@@ -227,7 +273,7 @@ class ScaleBar(Artist):
         Artist.__init__(self)
 
         self.dx = dx
-        self.dimension = dimension # Should be initialize before units
+        self.dimension = dimension  # Should be initialize before units
         self.units = units
         self.label = label
         self.length_fraction = length_fraction
@@ -251,8 +297,10 @@ class ScaleBar(Artist):
         elif isinstance(font_properties, str):
             font_properties = FontProperties(font_properties)
         else:
-            raise TypeError("Unsupported type for `font_properties`. Pass "
-                            "either a dict or a font config pattern as string.")
+            raise TypeError(
+                "Unsupported type for `font_properties`. Pass "
+                "either a dict or a font config pattern as string."
+            )
         self.font_properties = font_properties
 
         self.fixed_value = fixed_value
@@ -289,36 +337,36 @@ class ScaleBar(Artist):
             return
 
         # Get parameters
-        from matplotlib import rcParams # late import
+        from matplotlib import rcParams  # late import
 
         def _get_value(attr, default):
             value = getattr(self, attr)
             if value is None:
-                value = rcParams.get('scalebar.' + attr, default)
+                value = rcParams.get("scalebar." + attr, default)
             return value
 
-        length_fraction = _get_value('length_fraction', 0.2)
-        height_fraction = _get_value('height_fraction', 0.01)
-        location = _get_value('location', 'upper right')
+        length_fraction = _get_value("length_fraction", 0.2)
+        height_fraction = _get_value("height_fraction", 0.01)
+        location = _get_value("location", "upper right")
         if isinstance(location, str):
             location = self._LOCATIONS[location]
-        pad = _get_value('pad', 0.2)
-        border_pad = _get_value('border_pad', 0.1)
-        sep = _get_value('sep', 5)
-        frameon = _get_value('frameon', True)
-        color = _get_value('color', 'k')
-        box_color = _get_value('box_color', 'w')
-        box_alpha = _get_value('box_alpha', 1.0)
-        scale_loc = _get_value('scale_loc', 'bottom')
-        label_loc = _get_value('label_loc', 'top')
+        pad = _get_value("pad", 0.2)
+        border_pad = _get_value("border_pad", 0.1)
+        sep = _get_value("sep", 5)
+        frameon = _get_value("frameon", True)
+        color = _get_value("color", "k")
+        box_color = _get_value("box_color", "w")
+        box_alpha = _get_value("box_alpha", 1.0)
+        scale_loc = _get_value("scale_loc", "bottom")
+        label_loc = _get_value("label_loc", "top")
         font_properties = self.font_properties
         fixed_value = self.fixed_value
         fixed_units = self.fixed_units or self.units
 
         if font_properties is None:
-            textprops = {'color': color}
+            textprops = {"color": color}
         else:
-            textprops = {'color': color, 'fontproperties': font_properties}
+            textprops = {"color": color, "fontproperties": font_properties}
 
         ax = self.axes
         xlim = ax.get_xlim()
@@ -343,21 +391,28 @@ class ScaleBar(Artist):
 
         # Create size bar
         sizebar = AuxTransformBox(ax.transData)
-        sizebar.add_artist(Rectangle((0, 0), length_px, size_vertical,
-                                     fill=True, facecolor=color,
-                                     edgecolor='none'))
+        sizebar.add_artist(
+            Rectangle(
+                (0, 0),
+                length_px,
+                size_vertical,
+                fill=True,
+                facecolor=color,
+                edgecolor="none",
+            )
+        )
 
         txtscale = TextArea(scale_label, minimumdescent=False, textprops=textprops)
 
-        if scale_loc in ['bottom', 'right']:
+        if scale_loc in ["bottom", "right"]:
             children = [sizebar, txtscale]
         else:
             children = [txtscale, sizebar]
-        if scale_loc in ['bottom', 'top']:
+        if scale_loc in ["bottom", "top"]:
             Packer = VPacker
         else:
             Packer = HPacker
-        boxsizebar = Packer(children=children, align='center', pad=0, sep=sep)
+        boxsizebar = Packer(children=children, align="center", pad=0, sep=sep)
 
         # Create text area
         if label:
@@ -367,23 +422,21 @@ class ScaleBar(Artist):
 
         # Create final offset box
         if txtlabel:
-            if label_loc in ['bottom', 'right']:
+            if label_loc in ["bottom", "right"]:
                 children = [boxsizebar, txtlabel]
             else:
                 children = [txtlabel, boxsizebar]
-            if label_loc in ['bottom', 'top']:
+            if label_loc in ["bottom", "top"]:
                 Packer = VPacker
             else:
                 Packer = HPacker
-            child = Packer(children=children, align='center', pad=0, sep=sep)
+            child = Packer(children=children, align="center", pad=0, sep=sep)
         else:
             child = boxsizebar
 
-        box = AnchoredOffsetbox(loc=location,
-                                pad=pad,
-                                borderpad=border_pad,
-                                child=child,
-                                frameon=frameon)
+        box = AnchoredOffsetbox(
+            loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon
+        )
 
         box.axes = ax
         box.set_figure(self.get_figure())
@@ -407,7 +460,7 @@ class ScaleBar(Artist):
             dimension = _DIMENSION_LOOKUP[dimension]()
 
         if not isinstance(dimension, _Dimension):
-            raise ValueError('Unknown dimension: %s' % dimension)
+            raise ValueError("Unknown dimension: %s" % dimension)
 
         self._dimension = dimension
 
@@ -418,7 +471,7 @@ class ScaleBar(Artist):
 
     def set_units(self, units):
         if not self.dimension.is_valid_units(units):
-            raise ValueError('Invalid unit with dimension')
+            raise ValueError("Invalid unit with dimension")
         self._units = units
 
     units = property(get_units, set_units)
@@ -438,7 +491,7 @@ class ScaleBar(Artist):
         if fraction is not None:
             fraction = float(fraction)
             if fraction <= 0.0 or fraction > 1.0:
-                raise ValueError('Length fraction must be between [0.0, 1.0]')
+                raise ValueError("Length fraction must be between [0.0, 1.0]")
         self._length_fraction = fraction
 
     length_fraction = property(get_length_fraction, set_length_fraction)
@@ -450,7 +503,7 @@ class ScaleBar(Artist):
         if fraction is not None:
             fraction = float(fraction)
             if fraction <= 0.0 or fraction > 1.0:
-                raise ValueError('Height fraction must be between [0.0, 1.0]')
+                raise ValueError("Height fraction must be between [0.0, 1.0]")
         self._height_fraction = fraction
 
     height_fraction = property(get_height_fraction, set_height_fraction)
@@ -461,7 +514,7 @@ class ScaleBar(Artist):
     def set_location(self, loc):
         if isinstance(loc, str):
             if loc not in self._LOCATIONS:
-                raise ValueError('Unknown location code: %s' % loc)
+                raise ValueError("Unknown location code: %s" % loc)
             loc = self._LOCATIONS[loc]
         self._location = loc
 
@@ -522,7 +575,7 @@ class ScaleBar(Artist):
         if alpha is not None:
             alpha = float(alpha)
             if alpha < 0.0 or alpha > 1.0:
-                raise ValueError('Alpha must be between [0.0, 1.0]')
+                raise ValueError("Alpha must be between [0.0, 1.0]")
         self._box_alpha = alpha
 
     box_alpha = property(get_box_alpha, set_box_alpha)
@@ -531,8 +584,8 @@ class ScaleBar(Artist):
         return self._scale_loc
 
     def set_scale_loc(self, loc):
-        if loc is not None and loc not in ['bottom', 'top', 'right', 'left']:
-            raise ValueError('Unknown location: %s' % loc)
+        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
+            raise ValueError("Unknown location: %s" % loc)
         self._scale_loc = loc
 
     scale_loc = property(get_scale_loc, set_scale_loc)
@@ -541,8 +594,8 @@ class ScaleBar(Artist):
         return self._label_loc
 
     def set_label_loc(self, loc):
-        if loc is not None and loc not in ['bottom', 'top', 'right', 'left']:
-            raise ValueError('Unknown location: %s' % loc)
+        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
+            raise ValueError("Unknown location: %s" % loc)
         self._label_loc = loc
 
     label_loc = property(get_label_loc, set_label_loc)
