@@ -32,9 +32,10 @@ jobs:
             ${{ runner.os }}-
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip codecov pytest
-          pip install --upgrade -e .[dev]
-      - name: Test with pytest
-        run: pytest
+          python -m pip install --upgrade pip codecov
+          pip install --upgrade -e .
+          pip install -r requirements-test.txt
+      - name: Test with nose
+        run: nosetests
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
