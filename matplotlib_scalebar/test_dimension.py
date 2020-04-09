@@ -118,13 +118,13 @@ class TestSILengthReciprocalDimension(unittest.TestCase):
 
     def testcalculate_preferred_cm(self):
         value, units = self.dim.calculate_preferred(0.02, "1/m")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("1/cm", units)
+        self.assertAlmostEqual(20.0, value, 2)
+        self.assertEqual("1/km", units)
 
     def testcalculate_preferred_mm1(self):
         value, units = self.dim.calculate_preferred(0.002, "1/m")
         self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("1/mm", units)
+        self.assertEqual("1/km", units)
 
     def testto_latex_cm(self):
         self.assertEqual("cm$^{-1}$", self.dim.to_latex("1/cm"))
