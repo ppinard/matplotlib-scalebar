@@ -171,6 +171,11 @@ Here are parameters that can be customized in the matplotlibrc file.
 
 Release notes
 -------------
+0.6.2
+^^^^^
+
+* Fix reciprocal unit (`PR# <https://github.com/ppinard/matplotlib-scalebar/pull/29>`_)
+
 0.6.1
 ^^^^^
 
@@ -222,12 +227,13 @@ Contributors
 `@cosmicshear <https://github.com/cosmicshear>`_,
 `@ericore <https://github.com/ericpre>`_,
 `@seangrogan <https://github.com/seangrogan>`_,
-`@PhilipeRLeal <https://github.com/PhilipeRLeal>`_
+`@PhilipeRLeal <https://github.com/PhilipeRLeal>`_,
+`@din14970 <https://github.com/din14970>`_
 
 License
 -------
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2019 Philippe Pinard
+Copyright (c) 2015-2020 Philippe Pinard
 
