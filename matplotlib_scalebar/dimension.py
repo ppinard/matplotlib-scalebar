@@ -121,7 +121,7 @@ class SILengthReciprocalDimension(_Dimension):
             latexrepr = "{0}m$^{{-1}}$".format(prefix)
             if prefix == "\u00b5" or prefix == "u":
                 latexrepr = _LATEX_MU + "m$^{-1}$"
-            self.add_units("1/{0}m".format(prefix), factor, latexrepr)
+            self.add_units("1/{0}m".format(prefix), 1/factor, latexrepr)
 
 
 class ImperialLengthDimension(_Dimension):
