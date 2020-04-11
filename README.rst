@@ -174,7 +174,7 @@ Release notes
 0.6.2
 ^^^^^
 
-* Fix reciprocal unit (`PR# <https://github.com/ppinard/matplotlib-scalebar/pull/29>`_)
+* Fix reciprocal unit (`PR#29 <https://github.com/ppinard/matplotlib-scalebar/pull/29>`_)
 
 0.6.1
 ^^^^^
