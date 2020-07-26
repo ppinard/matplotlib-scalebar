@@ -164,10 +164,8 @@ Here are parameters that can be customized in the matplotlibrc file.
 * ``scalebar.color``: color for the scale bar and label (default: ``k``)
 * ``scalebar.box_color``: color of the box (if *frameon*) (default: ``w``)
 * ``scalebar.box_alpha``: transparency of box (default: ``1.0``)
-* ``scalebar.label_top``: if True, the label will be over the scale bar
-  (default: ``False``)
-* ``scalebar.font_properties``: font properties of the label text, specified
-  either as dict or `fontconfig <http://www.fontconfig.org/>`_ pattern (XML).
+* ``scale_loc``: either ``bottom``, ``top``, ``left``, ``right`` (default: ``bottom``)
+* ``label_loc``: either ``bottom``, ``top``, ``left``, ``right`` (default: ``top``)
 
 Release notes
 -------------
