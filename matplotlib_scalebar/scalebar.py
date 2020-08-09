@@ -551,7 +551,7 @@ class ScaleBar(Artist):
         )
         self.width_fraction = fraction
 
-    height_fraction = width_fraction
+    height_fraction = property(get_height_fraction, set_height_fraction)
 
     def get_location(self):
         return self._location
