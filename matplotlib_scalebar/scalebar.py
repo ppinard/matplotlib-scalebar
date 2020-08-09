@@ -410,52 +410,58 @@ class ScaleBar(Artist):
 
         scale_label = self.label_formatter(value, self.dimension.to_latex(units))
 
-        size_vertical = abs(ylim[1] - ylim[0]) * width_fraction
+        width_px = abs(ylim[1] - ylim[0]) * width_fraction
 
-        # Create size bar
-        sizebar = AuxTransformBox(ax.transData)
-        sizebar.add_artist(
+        # Create scale bar
+        scale_bar_box = AuxTransformBox(ax.transData)
+        scale_bar_box.add_artist(
             Rectangle(
                 (0, 0),
                 length_px,
-                size_vertical,
+                width_px,
                 fill=True,
                 facecolor=color,
                 edgecolor="none",
             )
         )
 
-        txtscale = TextArea(scale_label, minimumdescent=False, textprops=textprops)
+        scale_label_box = TextArea(
+            scale_label, minimumdescent=False, textprops=textprops
+        )
 
         if scale_loc in ["bottom", "right"]:
-            children = [sizebar, txtscale]
+            children = [scale_bar_box, scale_label_box]
         else:
-            children = [txtscale, sizebar]
+            children = [scale_label_box, scale_bar_box]
+
         if scale_loc in ["bottom", "top"]:
             Packer = VPacker
         else:
             Packer = HPacker
-        boxsizebar = Packer(children=children, align="center", pad=0, sep=sep)
 
-        # Create text area
+        scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+
+        # Create label
         if label:
-            txtlabel = TextArea(label, minimumdescent=False, textprops=textprops)
+            label_box = TextArea(label, minimumdescent=False, textprops=textprops)
         else:
-            txtlabel = None
+            label_box = None
 
         # Create final offset box
-        if txtlabel:
+        if label_box:
             if label_loc in ["bottom", "right"]:
-                children = [boxsizebar, txtlabel]
+                children = [scale_box, label_box]
             else:
-                children = [txtlabel, boxsizebar]
+                children = [label_box, scale_box]
+
             if label_loc in ["bottom", "top"]:
                 Packer = VPacker
             else:
                 Packer = HPacker
+
             child = Packer(children=children, align="center", pad=0, sep=sep)
         else:
-            child = boxsizebar
+            child = scale_box
 
         box = AnchoredOffsetbox(
             loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon
