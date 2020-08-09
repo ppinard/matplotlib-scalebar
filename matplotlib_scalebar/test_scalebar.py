@@ -25,7 +25,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 @cleanup
 def scalebar():
     fig = plt.figure()
-    ax = fig.add_subplot("111")
+    ax = fig.add_subplot(111)
 
     data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     ax.imshow(data)
