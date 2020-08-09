@@ -15,16 +15,6 @@ import numpy as np
 
 import pytest
 
-# from nose.tools import (
-#     assert_equal,
-#     assert_almost_equal,
-#     assert_is_none,
-#     assert_true,
-#     assert_false,
-#     assert_raises,
-#     raises,
-# )
-
 # Local modules.
 from matplotlib_scalebar.scalebar import ScaleBar
 
