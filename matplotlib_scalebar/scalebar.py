@@ -38,6 +38,7 @@ __all__ = [
 
 # Standard library modules.
 import bisect
+import warnings
 
 # Third party modules.
 import matplotlib
@@ -83,7 +84,8 @@ validate_label_loc = ValidateInStrings(
 defaultParams.update(
     {
         "scalebar.length_fraction": [0.2, validate_float],
-        "scalebar.height_fraction": [0.01, validate_float],
+        "scalebar.height_fraction": [0.01, validate_float],  # deprecated
+        "scalebar.width_fraction": [0.01, validate_float],
         "scalebar.location": ["upper right", validate_legend_loc],
         "scalebar.pad": [0.2, validate_float],
         "scalebar.border_pad": [0.1, validate_float],
@@ -147,6 +149,7 @@ class ScaleBar(Artist):
         label=None,
         length_fraction=None,
         height_fraction=None,
+        width_fraction=None,
         location=None,
         pad=None,
         border_pad=None,
@@ -204,9 +207,9 @@ class ScaleBar(Artist):
             This argument is ignored if a *fixed_value* is specified.
         :type length_fraction: :class:`float`
 
-        :arg height_fraction: height of the scale bar as a fraction of the
-            axes's height (default: rcParams['scalebar.height_fraction'] or ``0.01``)
-        :type length_fraction: :class:`float`
+        :arg width_fraction: width of the scale bar as a fraction of the
+            axes's height (default: rcParams['scalebar.width_fraction'] or ``0.01``)
+        :type width_fraction: :class:`float`
 
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
@@ -272,12 +275,20 @@ class ScaleBar(Artist):
         """
         Artist.__init__(self)
 
+        # Deprecation
+        if height_fraction is not None:
+            warnings.warn(
+                "The height_fraction argument was deprecated. Use width_fraction instead.",
+                DeprecationWarning,
+            )
+            width_fraction = width_fraction or height_fraction
+
         self.dx = dx
         self.dimension = dimension  # Should be initialize before units
         self.units = units
         self.label = label
         self.length_fraction = length_fraction
-        self.height_fraction = height_fraction
+        self.width_fraction = width_fraction
         self.location = location
         self.pad = pad
         self.border_pad = border_pad
@@ -336,9 +347,21 @@ class ScaleBar(Artist):
         if self.dx == 0:
             return
 
-        # Get parameters
-        from matplotlib import rcParams  # late import
+        # Late import
+        from matplotlib import rcParams
 
+        # Deprecation
+        if rcParams.get("scalebar.height_fraction") is not None:
+            warnings.warn(
+                "The scalebar.height_fraction parameter in matplotlibrc is deprecated. "
+                "Use scalebar.width_fraction instead.",
+                DeprecationWarning,
+            )
+            rcParams.setdefault(
+                "scalebar.width_fraction", rcParams["scalebar.height_fraction"]
+            )
+
+        # Get parameters
         def _get_value(attr, default):
             value = getattr(self, attr)
             if value is None:
@@ -346,7 +369,7 @@ class ScaleBar(Artist):
             return value
 
         length_fraction = _get_value("length_fraction", 0.2)
-        height_fraction = _get_value("height_fraction", 0.01)
+        width_fraction = _get_value("width_fraction", 0.01)
         location = _get_value("location", "upper right")
         if isinstance(location, str):
             location = self._LOCATIONS[location]
@@ -387,7 +410,7 @@ class ScaleBar(Artist):
 
         scale_label = self.label_formatter(value, self.dimension.to_latex(units))
 
-        size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
+        size_vertical = abs(ylim[1] - ylim[0]) * width_fraction
 
         # Create size bar
         sizebar = AuxTransformBox(ax.transData)
@@ -496,17 +519,33 @@ class ScaleBar(Artist):
 
     length_fraction = property(get_length_fraction, set_length_fraction)
 
-    def get_height_fraction(self):
-        return self._height_fraction
+    def get_width_fraction(self):
+        return self._width_fraction
 
-    def set_height_fraction(self, fraction):
+    def set_width_fraction(self, fraction):
         if fraction is not None:
             fraction = float(fraction)
             if fraction <= 0.0 or fraction > 1.0:
-                raise ValueError("Height fraction must be between [0.0, 1.0]")
-        self._height_fraction = fraction
+                raise ValueError("Width fraction must be between [0.0, 1.0]")
+        self._width_fraction = fraction
 
-    height_fraction = property(get_height_fraction, set_height_fraction)
+    width_fraction = property(get_width_fraction, set_width_fraction)
+
+    def get_height_fraction(self):
+        warnings.warn(
+            "The get_height_fraction method is deprecated. Use get_width_fraction instead.",
+            DeprecationWarning,
+        )
+        return self.width_fraction
+
+    def set_height_fraction(self, fraction):
+        warnings.warn(
+            "The set_height_fraction method is deprecated. Use set_width_fraction instead.",
+            DeprecationWarning,
+        )
+        self.width_fraction = fraction
+
+    height_fraction = width_fraction
 
     def get_location(self):
         return self._location
