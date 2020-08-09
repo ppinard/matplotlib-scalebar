@@ -9,6 +9,7 @@ import matplotlib
 matplotlib.use("agg")
 import matplotlib.pyplot as plt
 from matplotlib.testing.decorators import cleanup
+from matplotlib.font_manager import FontProperties
 
 import numpy as np
 
@@ -172,20 +173,23 @@ def test_scalebar_frameon(scalebar):
     assert not scalebar.frameon
 
 
-# def test_scalebar_font_properties(scalebar):
-#     font_settings = dict(family="serif", size=9)
-#     scalebar = ScaleBar(0.5, font_properties=font_settings)
-#
-#     assert_equal(scalebar.font_properties.get_family(), ["serif"])
-#     assert_equal(scalebar.font_properties.get_size(), 9)
-#
-#
-#
-#
-# @cleanup
-# @raises(TypeError)
-# def test_scalebar_font_properties_invalid_type():
-#     ScaleBar(0.5, font_properties=2.0)
+def test_scalebar_font_properties(scalebar):
+    assert isinstance(scalebar.get_font_properties(), FontProperties)
+    assert isinstance(scalebar.font_properties, FontProperties)
+
+    scalebar.set_font_properties(dict(family="serif", size=9))
+    assert scalebar.font_properties.get_family() == ["serif"]
+    assert scalebar.font_properties.get_size() == 9
+
+    scalebar.font_properties = dict(family="sans serif", size=12)
+    assert scalebar.font_properties.get_family() == ["sans serif"]
+    assert scalebar.font_properties.get_size() == 12
+
+    with pytest.raises(ValueError):
+        scalebar.set_font_properties(2.0)
+
+    with pytest.raises(ValueError):
+        scalebar.font_properties = 2.0
 
 
 def test_matplotlibrc(scalebar):

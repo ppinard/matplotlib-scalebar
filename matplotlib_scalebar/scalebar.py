@@ -300,20 +300,7 @@ class ScaleBar(Artist):
         self.scale_loc = scale_loc
         self.label_loc = label_loc
         self.label_formatter = label_formatter
-
-        if font_properties is None:
-            font_properties = FontProperties()
-        elif isinstance(font_properties, dict):
-            font_properties = FontProperties(**font_properties)
-        elif isinstance(font_properties, str):
-            font_properties = FontProperties(font_properties)
-        else:
-            raise TypeError(
-                "Unsupported type for `font_properties`. Pass "
-                "either a dict or a font config pattern as string."
-            )
         self.font_properties = font_properties
-
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
         self.set_animated(animated)
@@ -649,6 +636,17 @@ class ScaleBar(Artist):
         return self._font_properties
 
     def set_font_properties(self, props):
+        if props is None:
+            props = FontProperties()
+        elif isinstance(props, dict):
+            props = FontProperties(**props)
+        elif isinstance(props, str):
+            props = FontProperties(props)
+        else:
+            raise ValueError(
+                "Unsupported `font_properties`. Pass "
+                "either a dict or a font config pattern as string."
+            )
         self._font_properties = props
 
     font_properties = property(get_font_properties, set_font_properties)
