@@ -40,6 +40,5 @@ setup(
     package_data={},
     install_requires=["matplotlib"],
     zip_safe=True,
-    test_suite="nose.collector",
     cmdclass=versioneer.get_cmdclass(),
 )
