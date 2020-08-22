@@ -74,15 +74,18 @@ from matplotlib_scalebar.dimension import (
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-validate_scale_loc = ValidateInStrings(
-    "scale_loc", ["bottom", "top", "right", "left"], ignorecase=True
+_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left"]
+_validate_scale_loc = ValidateInStrings(
+    "scale_loc", _VALID_SCALE_LOCATIONS, ignorecase=True
 )
-validate_label_loc = ValidateInStrings(
-    "label_loc", ["bottom", "top", "right", "left"], ignorecase=True
+
+_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left"]
+_validate_label_loc = ValidateInStrings(
+    "label_loc", _VALID_LABEL_LOCATIONS, ignorecase=True
 )
-validate_rotation = ValidateInStrings(
-    "rotation", ["horizontal", "vertical"], ignorecase=True
-)
+
+_VALID_ROTATIONS = ["horizontal", "vertical"]
+_validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=True)
 
 defaultParams.update(
     {
@@ -97,9 +100,9 @@ defaultParams.update(
         "scalebar.color": ["k", validate_color],
         "scalebar.box_color": ["w", validate_color],
         "scalebar.box_alpha": [1.0, validate_float],
-        "scalebar.scale_loc": ["bottom", validate_scale_loc],
-        "scalebar.label_loc": ["top", validate_label_loc],
-        "scalebar.rotation": ["horizontal", validate_rotation],
+        "scalebar.scale_loc": ["bottom", _validate_scale_loc],
+        "scalebar.label_loc": ["top", _validate_label_loc],
+        "scalebar.rotation": ["horizontal", _validate_rotation],
     }
 )
 
@@ -499,7 +502,10 @@ class ScaleBar(Artist):
             dimension = _DIMENSION_LOOKUP[dimension]()
 
         if not isinstance(dimension, _Dimension):
-            raise ValueError("Unknown dimension: %s" % dimension)
+            raise ValueError(
+                f"Unknown dimension: {dimension}. "
+                f"Known dimensions: {', '.join(_DIMENSION_LOOKUP)}"
+            )
 
         self._dimension = dimension
 
@@ -510,7 +516,7 @@ class ScaleBar(Artist):
 
     def set_units(self, units):
         if not self.dimension.is_valid_units(units):
-            raise ValueError("Invalid unit with dimension")
+            raise ValueError(f"Invalid unit ({units}) with dimension")
         self._units = units
 
     units = property(get_units, set_units)
@@ -569,7 +575,10 @@ class ScaleBar(Artist):
     def set_location(self, loc):
         if isinstance(loc, str):
             if loc not in self._LOCATIONS:
-                raise ValueError("Unknown location code: %s" % loc)
+                raise ValueError(
+                    f"Unknown location: {loc}. "
+                    f"Valid locations: {', '.join(self._LOCATIONS)}"
+                )
             loc = self._LOCATIONS[loc]
         self._location = loc
 
@@ -639,8 +648,11 @@ class ScaleBar(Artist):
         return self._scale_loc
 
     def set_scale_loc(self, loc):
-        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
-            raise ValueError("Unknown location: %s" % loc)
+        if loc is not None and loc not in _VALID_SCALE_LOCATIONS:
+            raise ValueError(
+                f"Unknown location: {loc}. "
+                f"Valid locations: {', '.join(_VALID_SCALE_LOCATIONS)}"
+            )
         self._scale_loc = loc
 
     scale_loc = property(get_scale_loc, set_scale_loc)
@@ -649,8 +661,12 @@ class ScaleBar(Artist):
         return self._label_loc
 
     def set_label_loc(self, loc):
-        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
-            raise ValueError("Unknown location: %s" % loc)
+        if loc is not None and loc not in _VALID_LABEL_LOCATIONS:
+            raise ValueError(
+                f"Unknown location: {loc}. "
+                f"Valid locations: {', '.join(_VALID_LABEL_LOCATIONS)}"
+            )
+
         self._label_loc = loc
 
     label_loc = property(get_label_loc, set_label_loc)
@@ -667,8 +683,8 @@ class ScaleBar(Artist):
             props = FontProperties(props)
         else:
             raise ValueError(
-                "Unsupported `font_properties`. Pass "
-                "either a dict or a font config pattern as string."
+                "Unsupported `font_properties`. "
+                "Pass either a dict or a font config pattern as string."
             )
         self._font_properties = props
 
@@ -704,8 +720,11 @@ class ScaleBar(Artist):
         return self._rotation
 
     def set_rotation(self, rotation):
-        if rotation is not None and rotation not in ["horizontal", "vertical"]:
-            raise ValueError("Unknown rotation: %s" % rotation)
+        if rotation is not None and rotation not in _VALID_ROTATIONS:
+            raise ValueError(
+                f"Unknown rotation: {rotation}. "
+                f"Valid locations: {', '.join(_VALID_ROTATIONS)}"
+            )
         self._rotation = rotation
 
     rotation = property(get_rotation, set_rotation)
