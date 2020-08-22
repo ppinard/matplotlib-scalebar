@@ -225,3 +225,16 @@ def test_custom_label_format(scalebar):
     scalebar.label_formatter = lambda value, unit: "{} {}".format(unit, value)
     scale_label = scalebar.label_formatter(value, units)
     assert scale_label == "m 5"
+
+
+@pytest.mark.parametrize("rotation", ["horizontal", "vertical"])
+def test_rotation(scalebar, rotation):
+    assert scalebar.get_rotation() is None
+    assert scalebar.rotation is None
+
+    scalebar.set_rotation(rotation)
+    assert scalebar.get_rotation() == rotation
+    assert scalebar.rotation == rotation
+
+    with pytest.raises(ValueError):
+        scalebar.set_rotation("h")

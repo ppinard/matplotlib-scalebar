@@ -80,6 +80,9 @@ validate_scale_loc = ValidateInStrings(
 validate_label_loc = ValidateInStrings(
     "label_loc", ["bottom", "top", "right", "left"], ignorecase=True
 )
+validate_rotation = ValidateInStrings(
+    "rotation", ["horizontal", "vertical"], ignorecase=True
+)
 
 defaultParams.update(
     {
@@ -96,6 +99,7 @@ defaultParams.update(
         "scalebar.box_alpha": [1.0, validate_float],
         "scalebar.scale_loc": ["bottom", validate_scale_loc],
         "scalebar.label_loc": ["top", validate_label_loc],
+        "scalebar.rotation": ["horizontal", validate_rotation],
     }
 )
 
@@ -165,6 +169,7 @@ class ScaleBar(Artist):
         fixed_value=None,
         fixed_units=None,
         animated=False,
+        rotation=None,
     ):
         """
         Creates a new scale bar.
@@ -272,6 +277,10 @@ class ScaleBar(Artist):
 
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
+        
+        :arg rotation: either ``horizontal`` or ``vertical`` 
+            (default: rcParams['scalebar.rotation'] or ``horizontal``)
+        :type rotation: :class:`str`
         """
         Artist.__init__(self)
 
@@ -304,6 +313,7 @@ class ScaleBar(Artist):
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
         self.set_animated(animated)
+        self.rotation = rotation
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -372,18 +382,21 @@ class ScaleBar(Artist):
         font_properties = self.font_properties
         fixed_value = self.fixed_value
         fixed_units = self.fixed_units or self.units
+        rotation = _get_value("rotation", "horizontal")
+        label = self.label
 
-        if font_properties is None:
-            textprops = {"color": color}
-        else:
-            textprops = {"color": color, "fontproperties": font_properties}
+        # Create text properties
+        textprops = {"color": color, "rotation": rotation}
+        if font_properties is not None:
+            textprops["fontproperties"] = font_properties
 
+        # Calculate value, units and length
         ax = self.axes
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
-        label = self.label
+        if rotation == "vertical":
+            xlim, ylim = ylim, xlim
 
-        # Calculate value, units and length
         # Mode 1: Auto
         if self.fixed_value is None:
             length_px = abs(xlim[1] - xlim[0]) * length_fraction
@@ -400,9 +413,8 @@ class ScaleBar(Artist):
         width_px = abs(ylim[1] - ylim[0]) * width_fraction
 
         # Create scale bar
-        scale_bar_box = AuxTransformBox(ax.transData)
-        scale_bar_box.add_artist(
-            Rectangle(
+        if rotation == "horizontal":
+            scale_rect = Rectangle(
                 (0, 0),
                 length_px,
                 width_px,
@@ -410,7 +422,18 @@ class ScaleBar(Artist):
                 facecolor=color,
                 edgecolor="none",
             )
-        )
+        else:
+            scale_rect = Rectangle(
+                (0, 0),
+                width_px,
+                length_px,
+                fill=True,
+                facecolor=color,
+                edgecolor="none",
+            )
+
+        scale_bar_box = AuxTransformBox(ax.transData)
+        scale_bar_box.add_artist(scale_rect)
 
         scale_label_box = TextArea(
             scale_label, minimumdescent=False, textprops=textprops
@@ -676,3 +699,13 @@ class ScaleBar(Artist):
         self._fixed_units = units
 
     fixed_units = property(get_fixed_units, set_fixed_units)
+
+    def get_rotation(self):
+        return self._rotation
+
+    def set_rotation(self, rotation):
+        if rotation is not None and rotation not in ["horizontal", "vertical"]:
+            raise ValueError("Unknown rotation: %s" % rotation)
+        self._rotation = rotation
+
+    rotation = property(get_rotation, set_rotation)
