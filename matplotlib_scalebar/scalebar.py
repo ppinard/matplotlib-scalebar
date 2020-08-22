@@ -372,7 +372,7 @@ class ScaleBar(Artist):
         width_fraction = _get_value("width_fraction", 0.01)
         location = _get_value("location", "upper right")
         if isinstance(location, str):
-            location = self._LOCATIONS[location]
+            location = self._LOCATIONS[location.lower()]
         pad = _get_value("pad", 0.2)
         border_pad = _get_value("border_pad", 0.1)
         sep = _get_value("sep", 5)
@@ -380,12 +380,12 @@ class ScaleBar(Artist):
         color = _get_value("color", "k")
         box_color = _get_value("box_color", "w")
         box_alpha = _get_value("box_alpha", 1.0)
-        scale_loc = _get_value("scale_loc", "bottom")
-        label_loc = _get_value("label_loc", "top")
+        scale_loc = _get_value("scale_loc", "bottom").lower()
+        label_loc = _get_value("label_loc", "top").lower()
         font_properties = self.font_properties
         fixed_value = self.fixed_value
         fixed_units = self.fixed_units or self.units
-        rotation = _get_value("rotation", "horizontal")
+        rotation = _get_value("rotation", "horizontal").lower()
         label = self.label
 
         # Create text properties
