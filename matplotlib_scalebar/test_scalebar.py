@@ -71,8 +71,6 @@ def test_scalebar_length_fraction(scalebar):
 
 
 def test_scalebar_height_fraction(scalebar):
-    print(scalebar.width_fraction)
-
     with pytest.deprecated_call():
         assert scalebar.get_height_fraction() is None
 
