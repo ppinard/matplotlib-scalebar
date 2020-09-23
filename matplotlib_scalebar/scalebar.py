@@ -47,7 +47,6 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import (
     defaultParams,
     validate_float,
-    validate_legend_loc,
     validate_bool,
     validate_color,
     ValidateInStrings,
