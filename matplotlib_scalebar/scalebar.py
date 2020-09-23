@@ -46,7 +46,6 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import (
     defaultParams,
     validate_float,
-    validate_legend_loc,
     validate_bool,
     validate_color,
     ValidateInStrings,
@@ -80,11 +79,31 @@ validate_label_loc = ValidateInStrings(
     "label_loc", ["bottom", "top", "right", "left"], ignorecase=True
 )
 
+# validate_legend_loc in deprecated in matplotlib >=3.3
+# this is a direct copy (without the deprecation warning) 
+# of the validate_legend_loc in matplotlib
+_validate_legend_loc = ValidateInStrings(
+    'legend_loc',[
+        'best',
+        'upper right',
+        'upper left',
+        'lower left',
+        'lower right',
+        'right',
+        'center left',
+        'center right',
+        'lower center',
+        'upper center',
+        'center'
+    ],
+    ignorecase=True
+)
+
 defaultParams.update(
     {
         "scalebar.length_fraction": [0.2, validate_float],
         "scalebar.height_fraction": [0.01, validate_float],
-        "scalebar.location": ["upper right", validate_legend_loc],
+        "scalebar.location": ["upper right", _validate_legend_loc],
         "scalebar.pad": [0.2, validate_float],
         "scalebar.border_pad": [0.1, validate_float],
         "scalebar.sep": [5, validate_float],
