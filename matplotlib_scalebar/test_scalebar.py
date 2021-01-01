@@ -109,6 +109,33 @@ def test_scalebar_location(scalebar):
     assert scalebar.location == 3
 
 
+def test_scalebar_loc(scalebar):
+    assert scalebar.get_loc() is None
+    assert scalebar.loc is None
+
+    scalebar.set_location("upper right")
+    assert scalebar.get_loc() == 1
+    assert scalebar.loc == 1
+
+    scalebar.location = "lower left"
+    assert scalebar.get_loc() == 3
+    assert scalebar.loc == 3
+
+    scalebar.set_loc("lower right")
+    assert scalebar.get_loc() == 4
+    assert scalebar.loc == 4
+
+    scalebar.location = "upper left"
+    assert scalebar.get_loc() == 2
+    assert scalebar.loc == 2
+
+    with pytest.raises(ValueError):
+        ScaleBar(1.0, loc="upper right", location="upper left")
+
+    with pytest.raises(ValueError):
+        ScaleBar(1.0, loc="upper right", location=2)
+
+
 def test_scalebar_pad(scalebar):
     assert scalebar.get_pad() is None
     assert scalebar.pad is None

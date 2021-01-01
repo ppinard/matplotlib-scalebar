@@ -194,7 +194,7 @@ Default: `None`, value from matplotlibrc or `upper right`.
 
 ### loc
 
-Same as *location*.
+Alias for *location*.
 
 ### pad
 

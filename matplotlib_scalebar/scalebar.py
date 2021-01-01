@@ -158,6 +158,7 @@ class ScaleBar(Artist):
         height_fraction=None,
         width_fraction=None,
         location=None,
+        loc=None,
         pad=None,
         border_pad=None,
         sep=None,
@@ -223,6 +224,9 @@ class ScaleBar(Artist):
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
         :type location: :class:`str`
+        
+        :arg loc: alias for location
+        :type loc: :class:`str`
 
         :arg pad: fraction of the font size
             (default: rcParams['scalebar.pad'] or ``0.2``)
@@ -303,13 +307,18 @@ class ScaleBar(Artist):
             )
             scale_formatter = scale_formatter or label_formatter
 
+        if loc is not None and self._convert_location(loc) != self._convert_location(
+            location
+        ):
+            raise ValueError("loc and location are specified and not equal")
+
         self.dx = dx
         self.dimension = dimension  # Should be initialize before units
         self.units = units
         self.label = label
         self.length_fraction = length_fraction
         self.width_fraction = width_fraction
-        self.location = location
+        self.location = location or loc
         self.pad = pad
         self.border_pad = border_pad
         self.sep = sep
@@ -575,20 +584,28 @@ class ScaleBar(Artist):
 
     height_fraction = property(get_height_fraction, set_height_fraction)
 
+    @classmethod
+    def _convert_location(cls, loc):
+        if isinstance(loc, str):
+            if loc not in cls._LOCATIONS:
+                raise ValueError(
+                    f"Unknown location: {loc}. "
+                    f"Valid locations: {', '.join(cls._LOCATIONS)}"
+                )
+            loc = cls._LOCATIONS[loc]
+        return loc
+
     def get_location(self):
         return self._location
 
     def set_location(self, loc):
-        if isinstance(loc, str):
-            if loc not in self._LOCATIONS:
-                raise ValueError(
-                    f"Unknown location: {loc}. "
-                    f"Valid locations: {', '.join(self._LOCATIONS)}"
-                )
-            loc = self._LOCATIONS[loc]
-        self._location = loc
+        self._location = self._convert_location(loc)
 
     location = property(get_location, set_location)
+
+    get_loc = get_location
+    set_loc = set_location
+    loc = location
 
     def get_pad(self):
         return self._pad
