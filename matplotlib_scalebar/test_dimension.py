@@ -2,10 +2,9 @@
 """ """
 
 # Standard library modules.
-import unittest
-import logging
 
 # Third party modules.
+import pytest
 
 # Local modules.
 from matplotlib_scalebar.dimension import (
@@ -19,157 +18,56 @@ from matplotlib_scalebar.dimension import (
 # Globals and constants variables.
 
 
-class TestSILengthDimension(unittest.TestCase):
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-
-        self.dim = SILengthDimension()
-
-    def tearDown(self):
-        unittest.TestCase.tearDown(self)
-
-    def testcalculate_preferred_km(self):
-        value, units = self.dim.calculate_preferred(2000, "m")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("km", units)
-
-    def testcalculate_preferred_m(self):
-        value, units = self.dim.calculate_preferred(200, "m")
-        self.assertAlmostEqual(200.0, value, 2)
-        self.assertEqual("m", units)
-
-    def testcalculate_preferred_cm(self):
-        value, units = self.dim.calculate_preferred(0.02, "m")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("cm", units)
-
-    def testcalculate_preferred_cm2(self):
-        value, units = self.dim.calculate_preferred(0.01, "m")
-        self.assertAlmostEqual(1.0, value, 2)
-        self.assertEqual("cm", units)
-
-    def testcalculate_preferred_mm1(self):
-        value, units = self.dim.calculate_preferred(0.002, "m")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("mm", units)
-
-    def testcalculate_preferred_mm2(self):
-        value, units = self.dim.calculate_preferred(0.001, "m")
-        self.assertAlmostEqual(1.0, value, 2)
-        self.assertEqual("mm", units)
-
-    def testcalculate_preferred_mm3(self):
-        value, units = self.dim.calculate_preferred(0.009, "m")
-        self.assertAlmostEqual(9.0, value, 2)
-        self.assertEqual("mm", units)
-
-    def testcalculate_preferred_nm(self):
-        value, units = self.dim.calculate_preferred(2e-7, "m")
-        self.assertAlmostEqual(200.0, value, 2)
-        self.assertEqual("nm", units)
-
-    def testto_latex_cm(self):
-        self.assertEqual("cm", self.dim.to_latex("cm"))
-
-    def testto_latex_um(self):
-        self.assertEqual(_LATEX_MU + "m", self.dim.to_latex(u"\u00b5m"))
-
-    def testconvert(self):
-        value = self.dim.convert(2, "cm", "um")
-        self.assertAlmostEqual(2e4, value, 6)
-
-        value = self.dim.convert(2, "um", "cm")
-        self.assertAlmostEqual(2e-4, value, 6)
+@pytest.mark.parametrize(
+    "dim,value,units,expected_value,expected_units",
+    [
+        (SILengthDimension(), 2000, "m", 2.0, "km"),
+        (SILengthDimension(), 200, "m", 200, "m"),
+        (SILengthDimension(), 0.02, "m", 2.0, "cm"),
+        (SILengthDimension(), 0.01, "m", 1.0, "cm"),
+        (SILengthDimension(), 0.002, "m", 2, "mm"),
+        (SILengthDimension(), 0.001, "m", 1, "mm"),
+        (SILengthDimension(), 0.009, "m", 9, "mm"),
+        (SILengthDimension(), 2e-7, "m", 200, "nm"),
+        (ImperialLengthDimension(), 18, "in", 1.5, "ft"),
+        (ImperialLengthDimension(), 120, "in", 3.333, "yd"),
+        (ImperialLengthDimension(), 10000, "ft", 1.8939, "mi"),
+        (SILengthReciprocalDimension(), 0.02, "1/m", 20.0, "1/km"),
+        (SILengthReciprocalDimension(), 0.002, "1/m", 2.0, "1/km"),
+        (PixelLengthDimension(), 2000, "px", 2.0, "kpx"),
+        (PixelLengthDimension(), 200, "px", 200.0, "px"),
+        (PixelLengthDimension(), 0.02, "px", 0.02, "px"),
+        (PixelLengthDimension(), 0.001, "px", 0.001, "px"),
+    ],
+)
+def test_calculate_preferred(dim, value, units, expected_value, expected_units):
+    value, units = dim.calculate_preferred(value, units)
+    assert value == pytest.approx(expected_value, abs=1e-3)
+    assert units == expected_units
 
 
-class TestImperialLengthDimension(unittest.TestCase):
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-
-        self.dim = ImperialLengthDimension()
-
-    def tearDown(self):
-        unittest.TestCase.tearDown(self)
-
-    def testcalculate_preferred_ft(self):
-        value, units = self.dim.calculate_preferred(18, "in")
-        self.assertAlmostEqual(1.5, value, 2)
-        self.assertEqual("ft", units)
-
-    def testcalculate_preferred_yd(self):
-        value, units = self.dim.calculate_preferred(120, "in")
-        self.assertAlmostEqual(3.33, value, 2)
-        self.assertEqual("yd", units)
-
-    def testcalculate_preferred_mi(self):
-        value, units = self.dim.calculate_preferred(10000, "ft")
-        self.assertAlmostEqual(1.8939, value, 2)
-        self.assertEqual("mi", units)
+@pytest.mark.parametrize(
+    "dim,units,expected",
+    [
+        (SILengthDimension(), "cm", "cm"),
+        (SILengthDimension(), u"\u00b5m", _LATEX_MU + "m"),
+        (SILengthReciprocalDimension(), "1/cm", "cm$^{-1}$"),
+        (SILengthReciprocalDimension(), u"1/\u00b5m", _LATEX_MU + "m$^{-1}$"),
+    ],
+)
+def test_to_latex(dim, units, expected):
+    assert dim.to_latex(units) == expected
 
 
-class TestSILengthReciprocalDimension(unittest.TestCase):
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-
-        self.dim = SILengthReciprocalDimension()
-
-    def tearDown(self):
-        unittest.TestCase.tearDown(self)
-
-    def testcalculate_preferred_cm(self):
-        value, units = self.dim.calculate_preferred(0.02, "1/m")
-        self.assertAlmostEqual(20.0, value, 2)
-        self.assertEqual("1/km", units)
-
-    def testcalculate_preferred_mm1(self):
-        value, units = self.dim.calculate_preferred(0.002, "1/m")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("1/km", units)
-
-    def testto_latex_cm(self):
-        self.assertEqual("cm$^{-1}$", self.dim.to_latex("1/cm"))
-
-    def testto_latex_um(self):
-        self.assertEqual(_LATEX_MU + "m$^{-1}$", self.dim.to_latex(u"1/\u00b5m"))
-
-
-class TestPixelLengthDimension(unittest.TestCase):
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-
-        self.dim = PixelLengthDimension()
-
-    def tearDown(self):
-        unittest.TestCase.tearDown(self)
-
-    def testcalculate_preferred_kpx(self):
-        value, units = self.dim.calculate_preferred(2000, "px")
-        self.assertAlmostEqual(2.0, value, 2)
-        self.assertEqual("kpx", units)
-
-    def testcalculate_preferred_px(self):
-        value, units = self.dim.calculate_preferred(200, "px")
-        self.assertAlmostEqual(200.0, value, 2)
-        self.assertEqual("px", units)
-
-    def testcalculate_preferred_subpx(self):
-        value, units = self.dim.calculate_preferred(0.02, "px")
-        self.assertEqual("px", units)
-        self.assertAlmostEqual(0.02, value, 2)
-
-    def testcalculate_preferred_subpx2(self):
-        value, units = self.dim.calculate_preferred(0.001, "px")
-        self.assertAlmostEqual(0.001, value, 3)
-        self.assertEqual("px", units)
-
-    def testconvert(self):
-        value = self.dim.convert(2, "kpx", "px")
-        self.assertAlmostEqual(2000, value, 6)
-
-        value = self.dim.convert(2, "px", "kpx")
-        self.assertAlmostEqual(2e-3, value, 6)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    logging.getLogger().setLevel(logging.DEBUG)
-    unittest.main()
+@pytest.mark.parametrize(
+    "dim,value,units,newunits,expected_value",
+    [
+        (SILengthDimension(), 2, "cm", "um", 2e4),
+        (SILengthDimension(), 2, "um", "cm", 2e-4),
+        (PixelLengthDimension(), 2, "kpx", "px", 2000),
+        (PixelLengthDimension(), 2, "px", "kpx", 2e-3),
+    ],
+)
+def test_convert(dim, value, units, newunits, expected_value):
+    value = dim.convert(value, units, newunits)
+    assert value == pytest.approx(expected_value, abs=1e-6)

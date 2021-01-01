@@ -13,7 +13,7 @@ import versioneer
 BASEDIR = Path(__file__).parent.resolve()
 
 # Get the long description from the relevant file
-with open(BASEDIR.joinpath("README.rst"), "r") as f:
+with open(BASEDIR.joinpath("README.md"), "r") as f:
     long_description = f.read()
 
 setup(
@@ -21,6 +21,7 @@ setup(
     version=versioneer.get_version(),
     description="Artist for matplotlib to display a scale bar",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Philippe Pinard",
     author_email="philippe.pinard@gmail.com",
     maintainer="Philippe Pinard",
@@ -40,6 +41,5 @@ setup(
     package_data={},
     install_requires=["matplotlib"],
     zip_safe=True,
-    test_suite="nose.collector",
     cmdclass=versioneer.get_cmdclass(),
 )

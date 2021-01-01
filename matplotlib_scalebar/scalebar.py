@@ -38,6 +38,7 @@ __all__ = [
 
 # Standard library modules.
 import bisect
+import warnings
 
 # Third party modules.
 import matplotlib
@@ -73,17 +74,24 @@ from matplotlib_scalebar.dimension import (
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-validate_scale_loc = ValidateInStrings(
-    "scale_loc", ["bottom", "top", "right", "left"], ignorecase=True
+_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left"]
+_validate_scale_loc = ValidateInStrings(
+    "scale_loc", _VALID_SCALE_LOCATIONS, ignorecase=True
 )
-validate_label_loc = ValidateInStrings(
-    "label_loc", ["bottom", "top", "right", "left"], ignorecase=True
+
+_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left"]
+_validate_label_loc = ValidateInStrings(
+    "label_loc", _VALID_LABEL_LOCATIONS, ignorecase=True
 )
+
+_VALID_ROTATIONS = ["horizontal", "vertical"]
+_validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=True)
 
 defaultParams.update(
     {
         "scalebar.length_fraction": [0.2, validate_float],
-        "scalebar.height_fraction": [0.01, validate_float],
+        "scalebar.height_fraction": [0.01, validate_float],  # deprecated
+        "scalebar.width_fraction": [0.01, validate_float],
         "scalebar.location": ["upper right", validate_legend_loc],
         "scalebar.pad": [0.2, validate_float],
         "scalebar.border_pad": [0.1, validate_float],
@@ -92,8 +100,9 @@ defaultParams.update(
         "scalebar.color": ["k", validate_color],
         "scalebar.box_color": ["w", validate_color],
         "scalebar.box_alpha": [1.0, validate_float],
-        "scalebar.scale_loc": ["bottom", validate_scale_loc],
-        "scalebar.label_loc": ["top", validate_label_loc],
+        "scalebar.scale_loc": ["bottom", _validate_scale_loc],
+        "scalebar.label_loc": ["top", _validate_label_loc],
+        "scalebar.rotation": ["horizontal", _validate_rotation],
     }
 )
 
@@ -147,7 +156,9 @@ class ScaleBar(Artist):
         label=None,
         length_fraction=None,
         height_fraction=None,
+        width_fraction=None,
         location=None,
+        loc=None,
         pad=None,
         border_pad=None,
         sep=None,
@@ -159,9 +170,11 @@ class ScaleBar(Artist):
         label_loc=None,
         font_properties=None,
         label_formatter=None,
+        scale_formatter=None,
         fixed_value=None,
         fixed_units=None,
         animated=False,
+        rotation=None,
     ):
         """
         Creates a new scale bar.
@@ -204,13 +217,16 @@ class ScaleBar(Artist):
             This argument is ignored if a *fixed_value* is specified.
         :type length_fraction: :class:`float`
 
-        :arg height_fraction: height of the scale bar as a fraction of the
-            axes's height (default: rcParams['scalebar.height_fraction'] or ``0.01``)
-        :type length_fraction: :class:`float`
+        :arg width_fraction: width of the scale bar as a fraction of the
+            axes's height (default: rcParams['scalebar.width_fraction'] or ``0.01``)
+        :type width_fraction: :class:`float`
 
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
         :type location: :class:`str`
+        
+        :arg loc: alias for location
+        :type loc: :class:`str`
 
         :arg pad: fraction of the font size
             (default: rcParams['scalebar.pad'] or ``0.2``)
@@ -254,10 +270,10 @@ class ScaleBar(Artist):
         :type font_properties: :class:`matplotlib.font_manager.FontProperties`,
             :class:`str` or :class:`dict`
 
-        :arg label_formatter: function used to format the label. Needs to take
+        :arg scale_formatter: function used to format the label. Needs to take
             the value (float) and the unit (str) as input and return the label
             string.
-        :type label_formatter: :class:`func`
+        :type scale_formatter: :class:`func`
 
         :arg fixed_value: value for the scale bar. If ``None``, the value is
             automatically determined based on *length_fraction*.
@@ -269,16 +285,40 @@ class ScaleBar(Artist):
 
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
+        
+        :arg rotation: either ``horizontal`` or ``vertical`` 
+            (default: rcParams['scalebar.rotation'] or ``horizontal``)
+        :type rotation: :class:`str`
         """
         Artist.__init__(self)
+
+        # Deprecation
+        if height_fraction is not None:
+            warnings.warn(
+                "The height_fraction argument was deprecated. Use width_fraction instead.",
+                DeprecationWarning,
+            )
+            width_fraction = width_fraction or height_fraction
+
+        if label_formatter is not None:
+            warnings.warn(
+                "The label_formatter argument was deprecated. Use scale_formatter instead.",
+                DeprecationWarning,
+            )
+            scale_formatter = scale_formatter or label_formatter
+
+        if loc is not None and self._convert_location(loc) != self._convert_location(
+            location
+        ):
+            raise ValueError("loc and location are specified and not equal")
 
         self.dx = dx
         self.dimension = dimension  # Should be initialize before units
         self.units = units
         self.label = label
         self.length_fraction = length_fraction
-        self.height_fraction = height_fraction
-        self.location = location
+        self.width_fraction = width_fraction
+        self.location = location or loc
         self.pad = pad
         self.border_pad = border_pad
         self.sep = sep
@@ -288,24 +328,12 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        self.label_formatter = label_formatter
-
-        if font_properties is None:
-            font_properties = FontProperties()
-        elif isinstance(font_properties, dict):
-            font_properties = FontProperties(**font_properties)
-        elif isinstance(font_properties, str):
-            font_properties = FontProperties(font_properties)
-        else:
-            raise TypeError(
-                "Unsupported type for `font_properties`. Pass "
-                "either a dict or a font config pattern as string."
-            )
+        self.scale_formatter = scale_formatter
         self.font_properties = font_properties
-
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
         self.set_animated(animated)
+        self.rotation = rotation
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -336,9 +364,21 @@ class ScaleBar(Artist):
         if self.dx == 0:
             return
 
-        # Get parameters
-        from matplotlib import rcParams  # late import
+        # Late import
+        from matplotlib import rcParams
 
+        # Deprecation
+        if rcParams.get("scalebar.height_fraction") is not None:
+            warnings.warn(
+                "The scalebar.height_fraction parameter in matplotlibrc is deprecated. "
+                "Use scalebar.width_fraction instead.",
+                DeprecationWarning,
+            )
+            rcParams.setdefault(
+                "scalebar.width_fraction", rcParams["scalebar.height_fraction"]
+            )
+
+        # Get parameters
         def _get_value(attr, default):
             value = getattr(self, attr)
             if value is None:
@@ -346,10 +386,10 @@ class ScaleBar(Artist):
             return value
 
         length_fraction = _get_value("length_fraction", 0.2)
-        height_fraction = _get_value("height_fraction", 0.01)
+        width_fraction = _get_value("width_fraction", 0.01)
         location = _get_value("location", "upper right")
         if isinstance(location, str):
-            location = self._LOCATIONS[location]
+            location = self._LOCATIONS[location.lower()]
         pad = _get_value("pad", 0.2)
         border_pad = _get_value("border_pad", 0.1)
         sep = _get_value("sep", 5)
@@ -357,23 +397,26 @@ class ScaleBar(Artist):
         color = _get_value("color", "k")
         box_color = _get_value("box_color", "w")
         box_alpha = _get_value("box_alpha", 1.0)
-        scale_loc = _get_value("scale_loc", "bottom")
-        label_loc = _get_value("label_loc", "top")
+        scale_loc = _get_value("scale_loc", "bottom").lower()
+        label_loc = _get_value("label_loc", "top").lower()
         font_properties = self.font_properties
         fixed_value = self.fixed_value
         fixed_units = self.fixed_units or self.units
+        rotation = _get_value("rotation", "horizontal").lower()
+        label = self.label
 
-        if font_properties is None:
-            textprops = {"color": color}
-        else:
-            textprops = {"color": color, "fontproperties": font_properties}
+        # Create text properties
+        textprops = {"color": color, "rotation": rotation}
+        if font_properties is not None:
+            textprops["fontproperties"] = font_properties
 
+        # Calculate value, units and length
         ax = self.axes
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
-        label = self.label
+        if rotation == "vertical":
+            xlim, ylim = ylim, xlim
 
-        # Calculate value, units and length
         # Mode 1: Auto
         if self.fixed_value is None:
             length_px = abs(xlim[1] - xlim[0]) * length_fraction
@@ -385,54 +428,68 @@ class ScaleBar(Artist):
             units = fixed_units
             length_px = self._calculate_exact_length(value, units)
 
-        scale_label = self.label_formatter(value, self.dimension.to_latex(units))
+        scale_text = self.scale_formatter(value, self.dimension.to_latex(units))
 
-        size_vertical = abs(ylim[1] - ylim[0]) * height_fraction
+        width_px = abs(ylim[1] - ylim[0]) * width_fraction
 
-        # Create size bar
-        sizebar = AuxTransformBox(ax.transData)
-        sizebar.add_artist(
-            Rectangle(
+        # Create scale bar
+        if rotation == "horizontal":
+            scale_rect = Rectangle(
                 (0, 0),
                 length_px,
-                size_vertical,
+                width_px,
                 fill=True,
                 facecolor=color,
                 edgecolor="none",
             )
-        )
+        else:
+            scale_rect = Rectangle(
+                (0, 0),
+                width_px,
+                length_px,
+                fill=True,
+                facecolor=color,
+                edgecolor="none",
+            )
 
-        txtscale = TextArea(scale_label, minimumdescent=False, textprops=textprops)
+        scale_bar_box = AuxTransformBox(ax.transData)
+        scale_bar_box.add_artist(scale_rect)
+
+        scale_text_box = TextArea(scale_text, minimumdescent=False, textprops=textprops)
 
         if scale_loc in ["bottom", "right"]:
-            children = [sizebar, txtscale]
+            children = [scale_bar_box, scale_text_box]
         else:
-            children = [txtscale, sizebar]
+            children = [scale_text_box, scale_bar_box]
+
         if scale_loc in ["bottom", "top"]:
             Packer = VPacker
         else:
             Packer = HPacker
-        boxsizebar = Packer(children=children, align="center", pad=0, sep=sep)
 
-        # Create text area
+        scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+
+        # Create label
         if label:
-            txtlabel = TextArea(label, minimumdescent=False, textprops=textprops)
+            label_box = TextArea(label, minimumdescent=False, textprops=textprops)
         else:
-            txtlabel = None
+            label_box = None
 
         # Create final offset box
-        if txtlabel:
+        if label_box:
             if label_loc in ["bottom", "right"]:
-                children = [boxsizebar, txtlabel]
+                children = [scale_box, label_box]
             else:
-                children = [txtlabel, boxsizebar]
+                children = [label_box, scale_box]
+
             if label_loc in ["bottom", "top"]:
                 Packer = VPacker
             else:
                 Packer = HPacker
+
             child = Packer(children=children, align="center", pad=0, sep=sep)
         else:
-            child = boxsizebar
+            child = scale_box
 
         box = AnchoredOffsetbox(
             loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon
@@ -460,7 +517,10 @@ class ScaleBar(Artist):
             dimension = _DIMENSION_LOOKUP[dimension]()
 
         if not isinstance(dimension, _Dimension):
-            raise ValueError("Unknown dimension: %s" % dimension)
+            raise ValueError(
+                f"Unknown dimension: {dimension}. "
+                f"Known dimensions: {', '.join(_DIMENSION_LOOKUP)}"
+            )
 
         self._dimension = dimension
 
@@ -471,7 +531,7 @@ class ScaleBar(Artist):
 
     def set_units(self, units):
         if not self.dimension.is_valid_units(units):
-            raise ValueError("Invalid unit with dimension")
+            raise ValueError(f"Invalid unit ({units}) with dimension")
         self._units = units
 
     units = property(get_units, set_units)
@@ -496,29 +556,56 @@ class ScaleBar(Artist):
 
     length_fraction = property(get_length_fraction, set_length_fraction)
 
-    def get_height_fraction(self):
-        return self._height_fraction
+    def get_width_fraction(self):
+        return self._width_fraction
 
-    def set_height_fraction(self, fraction):
+    def set_width_fraction(self, fraction):
         if fraction is not None:
             fraction = float(fraction)
             if fraction <= 0.0 or fraction > 1.0:
-                raise ValueError("Height fraction must be between [0.0, 1.0]")
-        self._height_fraction = fraction
+                raise ValueError("Width fraction must be between [0.0, 1.0]")
+        self._width_fraction = fraction
+
+    width_fraction = property(get_width_fraction, set_width_fraction)
+
+    def get_height_fraction(self):
+        warnings.warn(
+            "The get_height_fraction method is deprecated. Use get_width_fraction instead.",
+            DeprecationWarning,
+        )
+        return self.width_fraction
+
+    def set_height_fraction(self, fraction):
+        warnings.warn(
+            "The set_height_fraction method is deprecated. Use set_width_fraction instead.",
+            DeprecationWarning,
+        )
+        self.width_fraction = fraction
 
     height_fraction = property(get_height_fraction, set_height_fraction)
+
+    @classmethod
+    def _convert_location(cls, loc):
+        if isinstance(loc, str):
+            if loc not in cls._LOCATIONS:
+                raise ValueError(
+                    f"Unknown location: {loc}. "
+                    f"Valid locations: {', '.join(cls._LOCATIONS)}"
+                )
+            loc = cls._LOCATIONS[loc]
+        return loc
 
     def get_location(self):
         return self._location
 
     def set_location(self, loc):
-        if isinstance(loc, str):
-            if loc not in self._LOCATIONS:
-                raise ValueError("Unknown location code: %s" % loc)
-            loc = self._LOCATIONS[loc]
-        self._location = loc
+        self._location = self._convert_location(loc)
 
     location = property(get_location, set_location)
+
+    get_loc = get_location
+    set_loc = set_location
+    loc = location
 
     def get_pad(self):
         return self._pad
@@ -584,8 +671,11 @@ class ScaleBar(Artist):
         return self._scale_loc
 
     def set_scale_loc(self, loc):
-        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
-            raise ValueError("Unknown location: %s" % loc)
+        if loc is not None and loc not in _VALID_SCALE_LOCATIONS:
+            raise ValueError(
+                f"Unknown location: {loc}. "
+                f"Valid locations: {', '.join(_VALID_SCALE_LOCATIONS)}"
+            )
         self._scale_loc = loc
 
     scale_loc = property(get_scale_loc, set_scale_loc)
@@ -594,8 +684,12 @@ class ScaleBar(Artist):
         return self._label_loc
 
     def set_label_loc(self, loc):
-        if loc is not None and loc not in ["bottom", "top", "right", "left"]:
-            raise ValueError("Unknown location: %s" % loc)
+        if loc is not None and loc not in _VALID_LABEL_LOCATIONS:
+            raise ValueError(
+                f"Unknown location: {loc}. "
+                f"Valid locations: {', '.join(_VALID_LABEL_LOCATIONS)}"
+            )
+
         self._label_loc = loc
 
     label_loc = property(get_label_loc, set_label_loc)
@@ -604,17 +698,44 @@ class ScaleBar(Artist):
         return self._font_properties
 
     def set_font_properties(self, props):
+        if props is None:
+            props = FontProperties()
+        elif isinstance(props, dict):
+            props = FontProperties(**props)
+        elif isinstance(props, str):
+            props = FontProperties(props)
+        else:
+            raise ValueError(
+                "Unsupported `font_properties`. "
+                "Pass either a dict or a font config pattern as string."
+            )
         self._font_properties = props
 
     font_properties = property(get_font_properties, set_font_properties)
 
-    def get_label_formatter(self):
-        if self._label_formatter is None:
+    def get_scale_formatter(self):
+        if self._scale_formatter is None:
             return self.dimension.create_label
-        return self._label_formatter
+        return self._scale_formatter
 
-    def set_label_formatter(self, label_formatter):
-        self._label_formatter = label_formatter
+    def set_scale_formatter(self, scale_formatter):
+        self._scale_formatter = scale_formatter
+
+    scale_formatter = property(get_scale_formatter, set_scale_formatter)
+
+    def get_label_formatter(self):
+        warnings.warn(
+            "The get_label_formatter method is deprecated. Use get_scale_formatter instead.",
+            DeprecationWarning,
+        )
+        return self.scale_formatter
+
+    def set_label_formatter(self, scale_formatter):
+        warnings.warn(
+            "The set_label_formatter method is deprecated. Use set_scale_formatter instead.",
+            DeprecationWarning,
+        )
+        self.scale_formatter = scale_formatter
 
     label_formatter = property(get_label_formatter, set_label_formatter)
 
@@ -633,3 +754,16 @@ class ScaleBar(Artist):
         self._fixed_units = units
 
     fixed_units = property(get_fixed_units, set_fixed_units)
+
+    def get_rotation(self):
+        return self._rotation
+
+    def set_rotation(self, rotation):
+        if rotation is not None and rotation not in _VALID_ROTATIONS:
+            raise ValueError(
+                f"Unknown rotation: {rotation}. "
+                f"Valid locations: {', '.join(_VALID_ROTATIONS)}"
+            )
+        self._rotation = rotation
+
+    rotation = property(get_rotation, set_rotation)
