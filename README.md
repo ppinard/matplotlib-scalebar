@@ -310,6 +310,14 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### dev
+
+* Add rotation to display scale bar for the y-axis (#30)
+* New documentation (#32)
+* Deprecate argument *height_fraction*, replaced by *width_fraction* (#32)
+* Deprecate argument *label_formatter*, replaced by *scale_formatter* (#32)
+* Add alias *loc* for *location* (#32)
+
 ### 0.6.2
 
 * Fix reciprocal unit (#29)
