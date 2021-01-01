@@ -169,6 +169,7 @@ class ScaleBar(Artist):
         label_loc=None,
         font_properties=None,
         label_formatter=None,
+        scale_formatter=None,
         fixed_value=None,
         fixed_units=None,
         animated=False,
@@ -265,10 +266,10 @@ class ScaleBar(Artist):
         :type font_properties: :class:`matplotlib.font_manager.FontProperties`,
             :class:`str` or :class:`dict`
 
-        :arg label_formatter: function used to format the label. Needs to take
+        :arg scale_formatter: function used to format the label. Needs to take
             the value (float) and the unit (str) as input and return the label
             string.
-        :type label_formatter: :class:`func`
+        :type scale_formatter: :class:`func`
 
         :arg fixed_value: value for the scale bar. If ``None``, the value is
             automatically determined based on *length_fraction*.
@@ -295,6 +296,13 @@ class ScaleBar(Artist):
             )
             width_fraction = width_fraction or height_fraction
 
+        if label_formatter is not None:
+            warnings.warn(
+                "The label_formatter argument was deprecated. Use scale_formatter instead.",
+                DeprecationWarning,
+            )
+            scale_formatter = scale_formatter or label_formatter
+
         self.dx = dx
         self.dimension = dimension  # Should be initialize before units
         self.units = units
@@ -311,7 +319,7 @@ class ScaleBar(Artist):
         self.box_alpha = box_alpha
         self.scale_loc = scale_loc
         self.label_loc = label_loc
-        self.label_formatter = label_formatter
+        self.scale_formatter = scale_formatter
         self.font_properties = font_properties
         self.fixed_value = fixed_value
         self.fixed_units = fixed_units
@@ -411,7 +419,7 @@ class ScaleBar(Artist):
             units = fixed_units
             length_px = self._calculate_exact_length(value, units)
 
-        scale_label = self.label_formatter(value, self.dimension.to_latex(units))
+        scale_text = self.scale_formatter(value, self.dimension.to_latex(units))
 
         width_px = abs(ylim[1] - ylim[0]) * width_fraction
 
@@ -438,14 +446,12 @@ class ScaleBar(Artist):
         scale_bar_box = AuxTransformBox(ax.transData)
         scale_bar_box.add_artist(scale_rect)
 
-        scale_label_box = TextArea(
-            scale_label, minimumdescent=False, textprops=textprops
-        )
+        scale_text_box = TextArea(scale_text, minimumdescent=False, textprops=textprops)
 
         if scale_loc in ["bottom", "right"]:
-            children = [scale_bar_box, scale_label_box]
+            children = [scale_bar_box, scale_text_box]
         else:
-            children = [scale_label_box, scale_bar_box]
+            children = [scale_text_box, scale_bar_box]
 
         if scale_loc in ["bottom", "top"]:
             Packer = VPacker
@@ -690,13 +696,29 @@ class ScaleBar(Artist):
 
     font_properties = property(get_font_properties, set_font_properties)
 
-    def get_label_formatter(self):
-        if self._label_formatter is None:
+    def get_scale_formatter(self):
+        if self._scale_formatter is None:
             return self.dimension.create_label
-        return self._label_formatter
+        return self._scale_formatter
 
-    def set_label_formatter(self, label_formatter):
-        self._label_formatter = label_formatter
+    def set_scale_formatter(self, scale_formatter):
+        self._scale_formatter = scale_formatter
+
+    scale_formatter = property(get_scale_formatter, set_scale_formatter)
+
+    def get_label_formatter(self):
+        warnings.warn(
+            "The get_label_formatter method is deprecated. Use get_scale_formatter instead.",
+            DeprecationWarning,
+        )
+        return self.scale_formatter
+
+    def set_label_formatter(self, scale_formatter):
+        warnings.warn(
+            "The set_label_formatter method is deprecated. Use set_scale_formatter instead.",
+            DeprecationWarning,
+        )
+        self.scale_formatter = scale_formatter
 
     label_formatter = property(get_label_formatter, set_label_formatter)
 

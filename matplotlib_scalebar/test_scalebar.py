@@ -210,21 +210,35 @@ def test_scalebar_fixed_units(scalebar):
     assert scalebar.fixed_units == "um"
 
 
-def test_custom_label_format(scalebar):
+def test_scale_formatter(scalebar):
     scalebar.dx = 1
     scalebar.units = "m"
     _length, value, units = scalebar._calculate_best_length(10)
 
-    scale_label = scalebar.label_formatter(value, units)
-    assert scale_label == "5 m"
+    assert scalebar.scale_formatter(value, units) == "5 m"
 
-    scalebar.label_formatter = lambda *_: "test"
-    scale_label = scalebar.label_formatter(value, units)
-    assert scale_label == "test"
+    scalebar.scale_formatter = lambda *_: "test"
+    assert scalebar.scale_formatter(value, units) == "test"
 
-    scalebar.label_formatter = lambda value, unit: "{} {}".format(unit, value)
-    scale_label = scalebar.label_formatter(value, units)
-    assert scale_label == "m 5"
+    scalebar.scale_formatter = lambda value, unit: "{} {}".format(unit, value)
+    assert scalebar.scale_formatter(value, units) == "m 5"
+
+
+def test_label_formatter(scalebar):
+    scalebar.dx = 1
+    scalebar.units = "m"
+    _length, value, units = scalebar._calculate_best_length(10)
+
+    with pytest.deprecated_call():
+        assert scalebar.label_formatter(value, units) == "5 m"
+
+    with pytest.deprecated_call():
+        scalebar.label_formatter = lambda *_: "test"
+        assert scalebar.label_formatter(value, units) == "test"
+
+    with pytest.deprecated_call():
+        scalebar.label_formatter = lambda value, unit: "{} {}".format(unit, value)
+        assert scalebar.label_formatter(value, units) == "m 5"
 
 
 @pytest.mark.parametrize("rotation", ["horizontal", "vertical"])
