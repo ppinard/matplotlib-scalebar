@@ -317,6 +317,7 @@ ax.add_artist(scalebar)
 * Deprecate argument *height_fraction*, replaced by *width_fraction* ([#32][i32])
 * Deprecate argument *label_formatter*, replaced by *scale_formatter* ([#32][i32])
 * Add alias *loc* for *location* ([#32][i32])
+* Fix deprecation warning in matplotlib >= 3.3 of `validate_legend_loc` ([#33][i33])
 
 ### 0.6.2
 
@@ -367,7 +368,9 @@ ax.add_artist(scalebar)
 [@ericore](https://github.com/ericore),
 [@seangrogan](https://github.com/seangrogan),
 [@PhilipeRLeal](https://github.com/PhilipeRLeal),
-[@din14970](https://github.com/din14970)
+[@din14970](https://github.com/din14970),
+[@SarthakJariwala](https://github.com/SarthakJariwala),
+[@k1moradi](https://github.com/k1moradi)
 
 ## License
 
@@ -389,3 +392,4 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i29]: https://github.com/ppinard/matplotlib-scalebar/issues/29
 [i30]: https://github.com/ppinard/matplotlib-scalebar/issues/30
 [i32]: https://github.com/ppinard/matplotlib-scalebar/issues/32
+[i33]: https://github.com/ppinard/matplotlib-scalebar/issues/33
