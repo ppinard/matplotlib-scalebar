@@ -47,7 +47,6 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.rcsetup import (
     defaultParams,
     validate_float,
-    validate_legend_loc,
     validate_bool,
     validate_color,
     ValidateInStrings,
@@ -87,12 +86,16 @@ _validate_label_loc = ValidateInStrings(
 _VALID_ROTATIONS = ["horizontal", "vertical"]
 _validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=True)
 
+def _validate_legend_loc(loc):
+    rc = matplotlib.RcParams()
+    rc["legend.loc"] = loc
+
 defaultParams.update(
     {
         "scalebar.length_fraction": [0.2, validate_float],
         "scalebar.height_fraction": [0.01, validate_float],  # deprecated
         "scalebar.width_fraction": [0.01, validate_float],
-        "scalebar.location": ["upper right", validate_legend_loc],
+        "scalebar.location": ["upper right", _validate_legend_loc],
         "scalebar.pad": [0.2, validate_float],
         "scalebar.border_pad": [0.1, validate_float],
         "scalebar.sep": [5, validate_float],
