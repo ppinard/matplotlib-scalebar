@@ -353,7 +353,21 @@ ax.add_artist(scalebar)
 
 ## Contributors
 
-@maweigert, @crosbyla, @joschkazj, @AKuederle, @habi, @huangziwei,@SirJohnFranklin, @alexandrejaguar, @parishcm, @wiai, @cosmicshear,@ericore, @seangrogan, @PhilipeRLeal, @din14970
+[@maweigert](https://github.com/maweigert),
+[@crosbyla](https://github.com/crosbyla),
+[@joschkazj](https://github.com/joschkazj),
+[@AKuederle](https://github.com/AKuederle),
+[@habi](https://github.com/habi),
+[@huangziwei](https://github.com/huangziwei),
+[@SirJohnFranklin](https://github.com/SirJohnFranklin),
+[@alexandrejaguar](https://github.com/alexandrejaguar),
+[@parishcm](https://github.com/parishcm),
+[@wiai](https://github.com/wiai),
+[@cosmicshear](https://github.com/cosmicshear),
+[@ericore](https://github.com/ericore),
+[@seangrogan](https://github.com/seangrogan),
+[@PhilipeRLeal](https://github.com/PhilipeRLeal),
+[@din14970](https://github.com/din14970)
 
 ## License
 
