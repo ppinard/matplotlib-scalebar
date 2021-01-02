@@ -310,46 +310,46 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
-### dev
+### 0.7.0
 
-* Add rotation to display scale bar for the y-axis (#30)
-* New documentation (#32)
-* Deprecate argument *height_fraction*, replaced by *width_fraction* (#32)
-* Deprecate argument *label_formatter*, replaced by *scale_formatter* (#32)
-* Add alias *loc* for *location* (#32)
+* Add rotation to display scale bar for the y-axis ([#30][i30])
+* New documentation ([#32][i32])
+* Deprecate argument *height_fraction*, replaced by *width_fraction* ([#32][i32])
+* Deprecate argument *label_formatter*, replaced by *scale_formatter* ([#32][i32])
+* Add alias *loc* for *location* ([#32][i32])
 
 ### 0.6.2
 
-* Fix reciprocal unit (#29)
+* Fix reciprocal unit ([#29][i29])
 
 ### 0.6.1
 
-* Add notes about for geospatial plots (#20)
+* Add notes about for geospatial plots ([#20][i20])
 
 ### 0.6.0
 
-* Add angular units (#19)
-* Add blit support and fix documentation (#22)
-* Fix issue with getting the wrong preferred values for the scale bar (#23)
-* Package LICENSE file to distribution (#24)
+* Add angular units ([#19][i19])
+* Add blit support and fix documentation ([#22][i22])
+* Fix issue with getting the wrong preferred values for the scale bar ([#23][i23])
+* Package LICENSE file to distribution ([#24][i24])
 
 ### 0.5.1
 
-* Remove leftover print statement (#18)
+* Remove leftover print statement ([#18][i18])
 
 ### 0.5.0
 
-* Add pixel unit (#12)
-* Display micro symbol in text mode (#15)
-* Fix error in length of scale bar (#14), the bar was drawn with an edge around it which made it longer than the actual size.
+* Add pixel unit ([#12][i12])
+* Display micro symbol in text mode ([#15][i15])
+* Fix error in length of scale bar; the bar was drawn with an edge around it which made it longer than the actual size ([#14][i14])
 
 ### 0.4.1
 
-* Fix deprecated usage of is_string_like (#11)
+* Fix deprecated usage of is_string_like ([#11][i11])
 
 ### 0.4.0
 
-* Add possibility to specified a fixed value for the scale bar (#9))
+* Add possibility to specified a fixed value for the scale bar ([#9][i9])
 
 ## Contributors
 
@@ -360,3 +360,18 @@ ax.add_artist(scalebar)
 License under the BSD License, compatible with matplotlib.
 
 Copyright (c) 2015-2021 Philippe Pinard
+
+[i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
+[i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
+[i12]: https://github.com/ppinard/matplotlib-scalebar/issues/12
+[i14]: https://github.com/ppinard/matplotlib-scalebar/issues/14
+[i15]: https://github.com/ppinard/matplotlib-scalebar/issues/15
+[i18]: https://github.com/ppinard/matplotlib-scalebar/issues/18
+[i19]: https://github.com/ppinard/matplotlib-scalebar/issues/19
+[i20]: https://github.com/ppinard/matplotlib-scalebar/issues/20
+[i22]: https://github.com/ppinard/matplotlib-scalebar/issues/22
+[i23]: https://github.com/ppinard/matplotlib-scalebar/issues/23
+[i24]: https://github.com/ppinard/matplotlib-scalebar/issues/24
+[i29]: https://github.com/ppinard/matplotlib-scalebar/issues/29
+[i30]: https://github.com/ppinard/matplotlib-scalebar/issues/30
+[i32]: https://github.com/ppinard/matplotlib-scalebar/issues/32
