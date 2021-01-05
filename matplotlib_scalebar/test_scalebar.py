@@ -38,6 +38,33 @@ def scalebar():
     plt.draw()
 
 
+def test_mpl_rcParams_update():
+    """
+    Test if scalebar params are updated accurately in matplotlib rcParams
+    """
+
+    params = {
+        "scalebar.length_fraction": 0.2,
+        "scalebar.height_fraction": 0.01,  # deprecated
+        "scalebar.width_fraction": 0.01,
+        "scalebar.location": "upper right",
+        "scalebar.pad": 0.2,
+        "scalebar.border_pad": 0.1,
+        "scalebar.sep": 5,
+        "scalebar.frameon": True,
+        "scalebar.color": "k",
+        "scalebar.box_color": "w",
+        "scalebar.box_alpha": 1.0,
+        "scalebar.scale_loc": "bottom",
+        "scalebar.label_loc": "top",
+        "scalebar.rotation": "horizontal",
+    }
+    matplotlib.rcParams.update(params)
+
+    for key, value in params.items():
+        assert matplotlib.rcParams[key] == value
+    
+
 def test_scalebar_dx_m(scalebar):
     assert scalebar.get_dx() == pytest.approx(0.5, abs=1e-2)
     assert scalebar.dx == pytest.approx(0.5, abs=1e-2)
