@@ -310,6 +310,10 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### 0.7.1
+
+* Fix scalebar location validation from rcParams ([#35](i35))
+
 ### 0.7.0
 
 * Add rotation to display scale bar for the y-axis ([#30][i30])
@@ -393,3 +397,4 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i30]: https://github.com/ppinard/matplotlib-scalebar/issues/30
 [i32]: https://github.com/ppinard/matplotlib-scalebar/issues/32
 [i33]: https://github.com/ppinard/matplotlib-scalebar/issues/33
+[i35]: https://github.com/ppinard/matplotlib-scalebar/issues/35
