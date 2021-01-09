@@ -89,6 +89,7 @@ _validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=
 def _validate_legend_loc(loc):
     rc = matplotlib.RcParams()
     rc["legend.loc"] = loc
+    return loc
 
 defaultParams.update(
     {
