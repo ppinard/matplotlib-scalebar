@@ -310,6 +310,10 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### 0.7.2
+
+* Fix deprecation warning in matplotlib >= 3.4 of `minimumdescent` ([#36][i36])
+
 ### 0.7.1
 
 * Fix scalebar location validation from rcParams ([#35](i35))
@@ -375,6 +379,7 @@ ax.add_artist(scalebar)
 [@din14970](https://github.com/din14970),
 [@SarthakJariwala](https://github.com/SarthakJariwala),
 [@k1moradi](https://github.com/k1moradi)
+[@anntzer](https://github.com/anntzer)
 
 ## License
 
@@ -398,3 +403,4 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i32]: https://github.com/ppinard/matplotlib-scalebar/issues/32
 [i33]: https://github.com/ppinard/matplotlib-scalebar/issues/33
 [i35]: https://github.com/ppinard/matplotlib-scalebar/issues/35
+[i36]: https://github.com/ppinard/matplotlib-scalebar/issues/36
