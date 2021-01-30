@@ -459,7 +459,7 @@ class ScaleBar(Artist):
         scale_bar_box = AuxTransformBox(ax.transData)
         scale_bar_box.add_artist(scale_rect)
 
-        scale_text_box = TextArea(scale_text, minimumdescent=False, textprops=textprops)
+        scale_text_box = TextArea(scale_text, textprops=textprops)
 
         if scale_loc in ["bottom", "right"]:
             children = [scale_bar_box, scale_text_box]
@@ -475,7 +475,7 @@ class ScaleBar(Artist):
 
         # Create label
         if label:
-            label_box = TextArea(label, minimumdescent=False, textprops=textprops)
+            label_box = TextArea(label, textprops=textprops)
         else:
             label_box = None
 
