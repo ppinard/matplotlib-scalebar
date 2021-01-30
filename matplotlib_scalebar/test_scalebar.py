@@ -45,7 +45,6 @@ def test_mpl_rcParams_update():
 
     params = {
         "scalebar.length_fraction": 0.2,
-        "scalebar.height_fraction": 0.01,  # deprecated
         "scalebar.width_fraction": 0.01,
         "scalebar.location": "upper right",
         "scalebar.pad": 0.2,
@@ -63,7 +62,7 @@ def test_mpl_rcParams_update():
 
     for key, value in params.items():
         assert matplotlib.rcParams[key] == value
-    
+
 
 def test_scalebar_dx_m(scalebar):
     assert scalebar.get_dx() == pytest.approx(0.5, abs=1e-2)
@@ -97,6 +96,7 @@ def test_scalebar_length_fraction(scalebar):
         scalebar.set_length_fraction(1.1)
 
 
+@pytest.mark.filterwarnings("ignore")
 def test_scalebar_height_fraction(scalebar):
     with pytest.deprecated_call():
         assert scalebar.get_height_fraction() is None
@@ -306,3 +306,21 @@ def test_rotation(scalebar, rotation):
 
     with pytest.raises(ValueError):
         scalebar.set_rotation("h")
+
+
+def test_warnings():
+    with pytest.warns(None) as record:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        ax.imshow(data)
+
+        scalebar = ScaleBar(0.5)
+        ax.add_artist(scalebar)
+
+        plt.draw()
+
+    assert len(record) == 0, "Warnings: " + ",".join(
+        f"{repr(w.message)}" for w in record
+    )
