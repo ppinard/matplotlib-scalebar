@@ -86,15 +86,16 @@ _validate_label_loc = ValidateInStrings(
 _VALID_ROTATIONS = ["horizontal", "vertical"]
 _validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=True)
 
+
 def _validate_legend_loc(loc):
     rc = matplotlib.RcParams()
     rc["legend.loc"] = loc
     return loc
 
+
 defaultParams.update(
     {
         "scalebar.length_fraction": [0.2, validate_float],
-        "scalebar.height_fraction": [0.01, validate_float],  # deprecated
         "scalebar.width_fraction": [0.01, validate_float],
         "scalebar.location": ["upper right", _validate_legend_loc],
         "scalebar.pad": [0.2, validate_float],
@@ -228,7 +229,7 @@ class ScaleBar(Artist):
         :arg location: a location code (same as legend)
             (default: rcParams['scalebar.location'] or ``upper right``)
         :type location: :class:`str`
-        
+
         :arg loc: alias for location
         :type loc: :class:`str`
 
@@ -289,8 +290,8 @@ class ScaleBar(Artist):
 
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
-        
-        :arg rotation: either ``horizontal`` or ``vertical`` 
+
+        :arg rotation: either ``horizontal`` or ``vertical``
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
         """
