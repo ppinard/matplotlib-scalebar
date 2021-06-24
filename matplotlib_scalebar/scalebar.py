@@ -180,6 +180,8 @@ class ScaleBar(Artist):
         fixed_units=None,
         animated=False,
         rotation=None,
+        bbox_to_anchor=None,  # bbox that the legend will be anchored.
+        bbox_transform=None,  # transform for the bbox
     ):
         """
         Creates a new scale bar.
@@ -294,6 +296,13 @@ class ScaleBar(Artist):
         :arg rotation: either ``horizontal`` or ``vertical``
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
+        
+        :arg bbox_to_anchor: Box that is used to position the scalebar in conjunction with loc.  If ``None``
+             the figure bbox is used
+        :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
+        
+        :arg bbox_transform: The transform for the bounding box
+        :type bbox_transform: : class:`matplotlib.transforms.Transform`
         """
         Artist.__init__(self)
 
@@ -339,6 +348,8 @@ class ScaleBar(Artist):
         self.fixed_units = fixed_units
         self.set_animated(animated)
         self.rotation = rotation
+        self.bbox_to_anchor = bbox_to_anchor
+        self.bbox_transform = bbox_transform
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -496,16 +507,21 @@ class ScaleBar(Artist):
         else:
             child = scale_box
 
-        box = AnchoredOffsetbox(
-            loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon
-        )
+        if self.bbox_to_anchor != None:
+            self.box = AnchoredOffsetbox(loc=location, pad=pad,  child=child, frameon=frameon, 
+                                        bbox_to_anchor=self.bbox_to_anchor, bbox_transform=self.bbox_transform)
+        else:
+            self.box = AnchoredOffsetbox(loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon)
 
-        box.axes = ax
-        box.set_figure(self.get_figure())
-        box.patch.set_color(box_color)
-        box.patch.set_alpha(box_alpha)
-        box.draw(renderer)
-
+        self.box.axes = ax
+        self.box.set_figure(self.get_figure())
+        self.box.patch.set_color(box_color)
+        self.box.patch.set_alpha(box_alpha)
+        self.box.draw(renderer)
+      
+    def get_window_extent(self, renderer):
+        return self.box.get_window_extent(renderer)
+        
     def get_dx(self):
         return self._dx
 
