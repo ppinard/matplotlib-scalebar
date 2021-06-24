@@ -788,3 +788,11 @@ class ScaleBar(Artist):
         self._rotation = rotation
 
     rotation = property(get_rotation, set_rotation)
+   
+    def get_bbox_to_anchor(self):
+         return self.bbox_to_anchor
+      
+    def set_bbox_to_anchor(self, bbox_to_anchor):
+      self.bbox_to_anchor = bbox_to_anchor
+    
+    bbox_to_anchor =  property(get_bbox_to_anchor, set_bbox_to_anchor)
