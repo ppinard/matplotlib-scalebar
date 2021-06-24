@@ -795,4 +795,4 @@ class ScaleBar(Artist):
     def set_bbox_to_anchor(self, bbox_to_anchor):
       self.bbox_to_anchor = bbox_to_anchor
     
-    bbox_to_anchor =  property(get_bbox_to_anchor, set_bbox_to_anchor)
+    #bbox_to_anchor =  property(get_bbox_to_anchor, set_bbox_to_anchor)
