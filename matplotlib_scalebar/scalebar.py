@@ -792,7 +792,9 @@ class ScaleBar(Artist):
     def get_bbox_to_anchor(self):
          return self.bbox_to_anchor
       
-    def set_bbox_to_anchor(self, bbox_to_anchor):
-      self.bbox_to_anchor = bbox_to_anchor
+    def set_bbox_to_anchor(self, bbox_to_anchor, bbox_transform):
+        self.bbox_to_anchor = bbox_to_anchor
+        self.bbox_transform = bbox_transform
+        self.box.set_bbox_to_anchor(bbox_to_anchor, bbox_transform)
     
-    #bbox_to_anchor =  property(get_bbox_to_anchor, set_bbox_to_anchor)
+    
