@@ -39,7 +39,6 @@ __all__ = [
 # Standard library modules.
 import bisect
 import warnings
-from packaging.version import Version
 
 # Third party modules.
 import matplotlib
@@ -113,10 +112,8 @@ defaultParams.update(
 )
 
 
-if Version(matplotlib.__version__ ) >= Version('3.5.dev'):
-    _all_deprecated = {}
-else:
-    _all_deprecated = matplotlib._all_deprecated
+_all_deprecated = getattr(matplotlib, "_all_deprecated", {})
+
 
 # Recreate the validate function
 matplotlib.rcParams.validate = dict(
