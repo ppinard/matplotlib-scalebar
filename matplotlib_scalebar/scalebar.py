@@ -111,11 +111,15 @@ defaultParams.update(
     }
 )
 
+
+_all_deprecated = getattr(matplotlib, "_all_deprecated", {})
+
+
 # Recreate the validate function
 matplotlib.rcParams.validate = dict(
     (key, converter)
     for key, (default, converter) in defaultParams.items()
-    if key not in matplotlib._all_deprecated
+    if key not in _all_deprecated
 )
 
 # Dimension lookup
