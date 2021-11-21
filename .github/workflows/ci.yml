@@ -19,10 +19,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Cache pip
         uses: actions/cache@v1
         with:
@@ -31,16 +33,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip codecov
           pip install --upgrade -e .
           pip install -r requirements-test.txt
+
       - name: Install matplotlib dev
-        if: ${{ matrix.matplotlib-version }} == "dev"
+        if: matrix.matplotlib-version == "dev"
         run: |
           pip install --upgrade git+https://github.com/matplotlib/matplotlib
+
       - name: Test
         run: pytest
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
