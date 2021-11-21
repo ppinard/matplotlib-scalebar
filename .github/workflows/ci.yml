@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [master]
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
 
 jobs:
   build:
@@ -15,6 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: [3.x]
+        matplotlib-version: [latest, dev]
 
     steps:
       - uses: actions/checkout@v2
@@ -35,6 +36,10 @@ jobs:
           python -m pip install --upgrade pip codecov
           pip install --upgrade -e .
           pip install -r requirements-test.txt
+      - name: Install matplotlib dev
+        if: ${{ matrix.matplotlib-version }} == "dev"
+        run: |
+          pip install --upgrade git+https://github.com/matplotlib/matplotlib
       - name: Test
         run: pytest
       - name: Upload coverage to Codecov
