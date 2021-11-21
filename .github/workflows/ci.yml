@@ -41,7 +41,7 @@ jobs:
           pip install -r requirements-test.txt
 
       - name: Install matplotlib dev
-        if: matrix.matplotlib-version == "dev"
+        if: matrix.matplotlib-version == 'dev'
         run: |
           pip install --upgrade git+https://github.com/matplotlib/matplotlib
 
