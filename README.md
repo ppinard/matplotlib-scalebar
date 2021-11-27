@@ -234,16 +234,18 @@ Default: `None`, value from matplotlibrc or `1.0` (opaque).
 ### scale_loc
 
 Location of the scale with respect to the scale bar.
-Either `bottom`, `top`, `left`, `right`.
+Either `bottom`, `top`, `left`, `right`, `none`.
 Default: `None`, value from matplotlibrc or `bottom`.
+If `"none"`, no scale is shown.
 
 ![scale_loc](doc/argument_scale_loc.png)
 
 ### label_loc
 
 Location of the label with respect to the scale bar.
-Either `bottom`, `top`, `left`, `right`.
+Either `bottom`, `top`, `left`, `right`, `none`.
 Default: `None`, value from matplotlibrc or `top`.
+If `"none"`, no label is shown.
 
 ### font_properties
 

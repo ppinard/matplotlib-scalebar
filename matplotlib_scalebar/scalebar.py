@@ -73,12 +73,12 @@ from matplotlib_scalebar.dimension import (
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left"]
+_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left", "none"]
 _validate_scale_loc = ValidateInStrings(
     "scale_loc", _VALID_SCALE_LOCATIONS, ignorecase=True
 )
 
-_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left"]
+_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left", "none"]
 _validate_label_loc = ValidateInStrings(
     "label_loc", _VALID_LABEL_LOCATIONS, ignorecase=True
 )
@@ -265,12 +265,14 @@ class ScaleBar(Artist):
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
         :type box_alpha: :class:`float`
 
-        :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``
-            (default: rcParams['scalebar.scale_loc'] or ``bottom``)
+        :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``, ``none``
+            (default: rcParams['scalebar.scale_loc'] or ``bottom``).
+            If ``none`` the scale is not shown.
         :type scale_loc: :class:`str`
 
-        :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
-            (default: rcParams['scalebar.label_loc'] or ``top``)
+        :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``, ``none``
+            (default: rcParams['scalebar.label_loc'] or ``top``).
+            If ``none`` the label is not shown.
         :type label_loc: :class:`str`
 
         :arg font_properties: font properties of the label text, specified
@@ -464,22 +466,27 @@ class ScaleBar(Artist):
         scale_bar_box = AuxTransformBox(ax.transData)
         scale_bar_box.add_artist(scale_rect)
 
-        scale_text_box = TextArea(scale_text, textprops=textprops)
+        # Create scale text
+        if scale_loc != "none":
+            scale_text_box = TextArea(scale_text, textprops=textprops)
 
-        if scale_loc in ["bottom", "right"]:
-            children = [scale_bar_box, scale_text_box]
+            if scale_loc in ["bottom", "right"]:
+                children = [scale_bar_box, scale_text_box]
+            else:
+                children = [scale_text_box, scale_bar_box]
+
+            if scale_loc in ["bottom", "top"]:
+                Packer = VPacker
+            else:
+                Packer = HPacker
+
+            scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+
         else:
-            children = [scale_text_box, scale_bar_box]
-
-        if scale_loc in ["bottom", "top"]:
-            Packer = VPacker
-        else:
-            Packer = HPacker
-
-        scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+            scale_box = scale_bar_box
 
         # Create label
-        if label:
+        if label and label_loc != "none":
             label_box = TextArea(label, textprops=textprops)
         else:
             label_box = None
