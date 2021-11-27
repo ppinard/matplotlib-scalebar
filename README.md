@@ -312,6 +312,11 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### 0.8.0
+
+* Fix missing `_all_deprecated` in future matplotlib (> 3.5) ([#44][i44])
+* Add ability to hide scale and label ([#41][i41])
+
 ### 0.7.2
 
 * Fix deprecation warning in matplotlib >= 3.4 of `minimumdescent` ([#36][i36])
@@ -380,8 +385,9 @@ ax.add_artist(scalebar)
 [@PhilipeRLeal](https://github.com/PhilipeRLeal),
 [@din14970](https://github.com/din14970),
 [@SarthakJariwala](https://github.com/SarthakJariwala),
-[@k1moradi](https://github.com/k1moradi)
-[@anntzer](https://github.com/anntzer)
+[@k1moradi](https://github.com/k1moradi),
+[@anntzer](https://github.com/anntzer),
+[@bugalo](https://github.com/bugalo)
 
 ## License
 
@@ -406,3 +412,5 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i33]: https://github.com/ppinard/matplotlib-scalebar/issues/33
 [i35]: https://github.com/ppinard/matplotlib-scalebar/issues/35
 [i36]: https://github.com/ppinard/matplotlib-scalebar/issues/36
+[i41]: https://github.com/ppinard/matplotlib-scalebar/issues/41
+[i44]: https://github.com/ppinard/matplotlib-scalebar/pull/44
