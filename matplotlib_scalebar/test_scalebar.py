@@ -264,6 +264,11 @@ def test_scalebar_fixed_units(scalebar):
     assert scalebar.fixed_units == "um"
 
 
+def test_scalebar_noscale_nolabel(scalebar):
+    scalebar.scale_loc = "none"
+    scalebar.label_loc = "none"
+
+
 def test_scale_formatter(scalebar):
     scalebar.dx = 1
     scalebar.units = "m"
