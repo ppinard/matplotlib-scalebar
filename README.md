@@ -312,6 +312,11 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### 0.8.1
+
+* Remove useless shebangs ([#47][i47])
+* Correct License trove classifier ([#48][i48])
+
 ### 0.8.0
 
 * Fix missing `_all_deprecated` in future matplotlib (> 3.5) ([#44][i44])
@@ -387,13 +392,14 @@ ax.add_artist(scalebar)
 [@SarthakJariwala](https://github.com/SarthakJariwala),
 [@k1moradi](https://github.com/k1moradi),
 [@anntzer](https://github.com/anntzer),
-[@bugalo](https://github.com/bugalo)
+[@bugalo](https://github.com/bugalo),
+[@musicinmybrain](https://github.com/musicinmybrain)
 
 ## License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2021 Philippe Pinard
+Copyright (c) 2015-2022 Philippe Pinard
 
 [i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
 [i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
@@ -414,3 +420,5 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i36]: https://github.com/ppinard/matplotlib-scalebar/issues/36
 [i41]: https://github.com/ppinard/matplotlib-scalebar/issues/41
 [i44]: https://github.com/ppinard/matplotlib-scalebar/pull/44
+[i47]: https://github.com/ppinard/matplotlib-scalebar/pull/47
+[i48]: https://github.com/ppinard/matplotlib-scalebar/pull/48
