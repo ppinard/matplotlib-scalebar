@@ -138,12 +138,12 @@ class ImperialLengthDimension(_Dimension):
 
 class AstronomicalLengthDimension(_Dimension):
     def __init__(self):
-        super.__init__("pc")
+        super().__init__("pc")
         for prefix, factor in _PREFIXES_FACTORS.items():
             latexrepr = None
             if prefix == "\u00b5" or prefix == "u":
-                latexrepr = _LATEX_MU + "kpc"
-            self.add_units(prefix + "m", factor, latexrepr)
+                latexrepr = _LATEX_MU + "pc"
+            self.add_units(prefix + "pc", factor, latexrepr)
         self.add_units("ly", 0.30659485)
         self.add_units("AU", 4.84813681e-06)
 
