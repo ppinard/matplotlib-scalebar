@@ -169,6 +169,7 @@ Dimension of *dx* and *units*. It can either be equal:
 
 * `si-length` (default): scale bar showing km, m, cm, etc.
 * `imperial-length`: scale bar showing in, ft, yd, mi, etc.
+* `astro-length`: scale bar showing pc, kpc, Mpc, ly, AU, etc.
 * `si-length-reciprocal`: scale bar showing 1/m, 1/cm, etc.
 * `pixel-length`: scale bar showing px, kpx, Mpx, etc.
 * `angle`: scale bar showing °, ʹ (minute of arc) or ʹʹ (second of arc)
