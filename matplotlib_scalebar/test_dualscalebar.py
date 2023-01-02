@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 
 # Local modules.
-from matplotlib_scalebar.scalebar import ScaleBar
+from matplotlib_scalebar.dualscalebar import DualScaleBar
 
 # Globals and constants variables.
 
@@ -29,7 +29,7 @@ def scalebar():
     data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     ax.imshow(data)
 
-    scalebar = ScaleBar(0.5)
+    scalebar = DualScaleBar(0.5, 0.5)
     ax.add_artist(scalebar)
 
     yield scalebar
@@ -43,19 +43,18 @@ def test_mpl_rcParams_update():
     """
 
     params = {
-        "scalebar.length_fraction": 0.2,
+        "scalebar.length_fraction": (0.2, 0.2),
         "scalebar.width_fraction": 0.01,
         "scalebar.location": "upper right",
         "scalebar.pad": 0.2,
         "scalebar.border_pad": 0.1,
-        "scalebar.sep": 5,
+        "scalebar.sep": 0.001,
         "scalebar.frameon": True,
         "scalebar.color": "k",
         "scalebar.box_color": "w",
         "scalebar.box_alpha": 1.0,
-        "scalebar.scale_loc": "bottom",
-        "scalebar.label_loc": "top",
-        "scalebar.rotation": "horizontal",
+        "scalebar.scale_loc": ("lower centre", "upper centre"),
+        "scalebar.label_loc": ("upper centre", "lower centre"),
     }
     matplotlib.rcParams.update(params)
 
@@ -76,23 +75,36 @@ def test_scalebar_dx_m(scalebar):
     assert scalebar.dx == pytest.approx(0.1, abs=1e-2)
 
 
+def test_scalebar_dy_m(scalebar):
+    assert scalebar.get_dy() == pytest.approx(0.5, abs=1e-2)
+    assert scalebar.dy == pytest.approx(0.5, abs=1e-2)
+
+    scalebar.set_dy(0.2)
+    assert scalebar.get_dy() == pytest.approx(0.2, abs=1e-2)
+    assert scalebar.dy == pytest.approx(0.2, abs=1e-2)
+
+    scalebar.dy = 0.1
+    assert scalebar.get_dy() == pytest.approx(0.1, abs=1e-2)
+    assert scalebar.dy == pytest.approx(0.1, abs=1e-2)
+
+
 def test_scalebar_length_fraction(scalebar):
-    assert scalebar.get_length_fraction() is None
-    assert scalebar.length_fraction is None
+    assert scalebar.get_length_fraction() == (None, None)
+    assert scalebar.length_fraction == (None, None)
 
-    scalebar.set_length_fraction(0.2)
-    assert scalebar.get_length_fraction() == pytest.approx(0.2, abs=1e-2)
-    assert scalebar.length_fraction == pytest.approx(0.2, abs=1e-2)
+    scalebar.set_length_fraction((0.2, 0.2))
+    assert scalebar.get_length_fraction() == pytest.approx((0.2, 0.2), abs=1e-2)
+    assert scalebar.length_fraction == pytest.approx((0.2, 0.2), abs=1e-2)
 
-    scalebar.length_fraction = 0.1
-    assert scalebar.get_length_fraction() == pytest.approx(0.1, abs=1e-2)
-    assert scalebar.length_fraction == pytest.approx(0.1, abs=1e-2)
-
-    with pytest.raises(ValueError):
-        scalebar.set_length_fraction(0.0)
+    scalebar.length_fraction = (0.1, 0.1)
+    assert scalebar.get_length_fraction() == pytest.approx((0.1, 0.1), abs=1e-2)
+    assert scalebar.length_fraction == pytest.approx((0.1, 0.1), abs=1e-2)
 
     with pytest.raises(ValueError):
-        scalebar.set_length_fraction(1.1)
+        scalebar.set_length_fraction((0.0, 0.0))
+
+    with pytest.raises(ValueError):
+        scalebar.set_length_fraction((1.1, 1.1))
 
 
 @pytest.mark.filterwarnings("ignore")
@@ -161,10 +173,10 @@ def test_scalebar_loc(scalebar):
     assert scalebar.loc == 2
 
     with pytest.raises(ValueError):
-        ScaleBar(1.0, loc="upper right", location="upper left")
+        DualScaleBar(1, 1, loc="upper right", location="upper left")
 
     with pytest.raises(ValueError):
-        ScaleBar(1.0, loc="upper right", location=2)
+        DualScaleBar(1, 1, loc="upper right", location=2)
 
 
 def test_scalebar_pad(scalebar):
@@ -246,13 +258,13 @@ def test_scalebar_fixed_value(scalebar):
     assert scalebar.get_fixed_value() is None
     assert scalebar.fixed_value is None
 
-    scalebar.set_fixed_value(0.2)
-    assert scalebar.get_fixed_value() == pytest.approx(0.2, abs=1e-2)
-    assert scalebar.fixed_value == pytest.approx(0.2, abs=1e-2)
+    scalebar.set_fixed_value((0.2, 0.2))
+    assert scalebar.get_fixed_value() == pytest.approx((0.2, 0.2), abs=1e-2)
+    assert scalebar.fixed_value == pytest.approx((0.2, 0.2), abs=1e-2)
 
-    scalebar.fixed_value = 0.1
-    assert scalebar.get_fixed_value() == pytest.approx(0.1, abs=1e-2)
-    assert scalebar.fixed_value == pytest.approx(0.1, abs=1e-2)
+    scalebar.fixed_value = (0.1, 0.1)
+    assert scalebar.get_fixed_value() == pytest.approx((0.1, 0.1), abs=1e-2)
+    assert scalebar.fixed_value == pytest.approx((0.1, 0.1), abs=1e-2)
 
 
 def test_scalebar_fixed_units(scalebar):
@@ -269,52 +281,45 @@ def test_scalebar_fixed_units(scalebar):
 
 
 def test_scalebar_noscale_nolabel(scalebar):
-    scalebar.scale_loc = "none"
-    scalebar.label_loc = "none"
+    scalebar.scale_loc = ("none", "none")
+    scalebar.label_loc = ("none", "none")
 
 
 def test_scale_formatter(scalebar):
     scalebar.dx = 1
-    scalebar.units = "m"
-    _length, value, units = scalebar._calculate_best_length(10)
+    scalebar.dy = 2
+    scalebar.units = ("m", "m")
+    _lengths, values, units = scalebar._calculate_best_length([10, 10])
 
-    assert scalebar.scale_formatter(value, units) == "5 m"
+    assert scalebar.label_formatter[0](values[0], units[0]) == "5 m"
+    assert scalebar.label_formatter[1](values[1], units[1]) == "15 m"
 
     scalebar.scale_formatter = lambda *_: "test"
-    assert scalebar.scale_formatter(value, units) == "test"
+    assert scalebar.scale_formatter(values[0], units[0]) == "test"
 
     scalebar.scale_formatter = lambda value, unit: "{} {}".format(unit, value)
-    assert scalebar.scale_formatter(value, units) == "m 5"
+    assert scalebar.scale_formatter(values[0], units[0]) == "m 5"
 
 
 def test_label_formatter(scalebar):
     scalebar.dx = 1
-    scalebar.units = "m"
-    _length, value, units = scalebar._calculate_best_length(10)
+    scalebar.dy = 2
+    scalebar.units = ("m", "m")
+    _lengths, values, units = scalebar._calculate_best_length([10, 10])
 
     with pytest.deprecated_call():
-        assert scalebar.label_formatter(value, units) == "5 m"
+        assert scalebar.label_formatter[0](values[0], units[0]) == "5 m"
+
+    with pytest.deprecated_call():
+        assert scalebar.label_formatter[1](values[1], units[1]) == "15 m"
 
     with pytest.deprecated_call():
         scalebar.label_formatter = lambda *_: "test"
-        assert scalebar.label_formatter(value, units) == "test"
+        assert scalebar.label_formatter(values[0], units[0]) == "test"
 
     with pytest.deprecated_call():
         scalebar.label_formatter = lambda value, unit: "{} {}".format(unit, value)
-        assert scalebar.label_formatter(value, units) == "m 5"
-
-
-@pytest.mark.parametrize("rotation", ["horizontal", "vertical"])
-def test_rotation(scalebar, rotation):
-    assert scalebar.get_rotation() is None
-    assert scalebar.rotation is None
-
-    scalebar.set_rotation(rotation)
-    assert scalebar.get_rotation() == rotation
-    assert scalebar.rotation == rotation
-
-    with pytest.raises(ValueError):
-        scalebar.set_rotation("h")
+        assert scalebar.label_formatter(values[0], units[0]) == "m 5"
 
 
 def test_warnings():
@@ -325,7 +330,7 @@ def test_warnings():
         data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         ax.imshow(data)
 
-        scalebar = ScaleBar(0.5)
+        scalebar = DualScaleBar(0.5, 0.5)
         ax.add_artist(scalebar)
 
         plt.draw()
