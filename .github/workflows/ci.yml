@@ -36,9 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip codecov
-          pip install --upgrade -e .
-          pip install -r requirements-test.txt
+          python -m pip install --upgrade pip hatch codecov
 
       - name: Install matplotlib dev
         if: matrix.matplotlib-version == 'dev'
@@ -46,7 +44,7 @@ jobs:
           pip install --upgrade git+https://github.com/matplotlib/matplotlib
 
       - name: Test
-        run: pytest
+        run: hatch run test
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

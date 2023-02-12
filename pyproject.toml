@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "matplotlib-scalebar"
+dynamic = ["version"]
+description = "Artist for matplotlib to display a scale bar"
+readme = "README.md"
+license = "BSD-2-clause"
+requires-python = ">=3.9"
+authors = [
+    { name = "Philippe Pinard", email = "philippe.pinard@gmail.com" },
+]
+maintainers = [
+    { name = "Philippe Pinard", email = "philippe.pinard@gmail.com" },
+]
+keywords = [
+    "bar",
+    "matplotlib",
+    "micron",
+    "scale",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Matplotlib",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "matplotlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/ppinard/matplotlib-scalebar"
+Tracker = "https://github.com/ppinard/matplotlib-scalebar/issues"
+Source = "https://github.com/ppinard/matplotlib-scalebar"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "matplotlib_scalebar/_version.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "pytest",
+  "pytest-cov"
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest --cov=matplotlib_scalebar --cov-report xml"
