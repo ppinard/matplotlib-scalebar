@@ -51,8 +51,16 @@ version-file = "matplotlib_scalebar/_version.py"
 [tool.hatch.envs.default]
 dependencies = [
   "pytest",
-  "pytest-cov"
+  "pytest-cov",
+  "ruff"
 ]
 
 [tool.hatch.envs.default.scripts]
 test = "pytest -W error::Warning --cov=matplotlib_scalebar --cov-report term --cov-report xml"
+lint = "ruff check ."
+
+[tool.ruff]
+ignore = ["E501", "E402"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]

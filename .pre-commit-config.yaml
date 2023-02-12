@@ -8,3 +8,7 @@ repos:
     hooks:
       - id: check-yaml
       - id: check-toml
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.245'
+    hooks:
+      - id: ruff

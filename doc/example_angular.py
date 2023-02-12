@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cbook as cbook
 from matplotlib_scalebar.scalebar import ScaleBar, ANGULAR
 
 delta = 0.025
