@@ -55,4 +55,4 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-test = "pytest --cov=matplotlib_scalebar --cov-report xml"
+test = "pytest -W error::Warning --cov=matplotlib_scalebar --cov-report xml"
