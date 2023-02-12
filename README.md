@@ -3,6 +3,14 @@
 ![CI](https://github.com/ppinard/matplotlib-scalebar/workflows/CI/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/matplotlib-scalebar)
 
+---
+
+**Documentation**: See below
+
+**Source Code**: https://github.com/ppinard/matplotlib-scalebar
+
+---
+
 Provides a new artist for [matplotlib](https://matplotlib.org) to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
 `plt.imshow(...)`.
@@ -23,7 +31,10 @@ For development installation from the git repository:
 
 ```bash
 git clone git@github.com:ppinard/matplotlib-scalebar.git
-pip install -e matplotlib-scalebar
+cd matplotlib-scalebar
+pip install hatch
+hatch env create
+hatch run test
 ```
 
 ## Getting started
