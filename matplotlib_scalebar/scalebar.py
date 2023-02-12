@@ -139,7 +139,6 @@ _DIMENSION_LOOKUP = {
 
 
 class ScaleBar(Artist):
-
     zorder = 6
 
     _PREFERRED_VALUES = [1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500, 750]

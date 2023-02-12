@@ -308,4 +308,3 @@ def test_rotation(scalebar, rotation):
 
     with pytest.raises(ValueError):
         scalebar.set_rotation("h")
-
