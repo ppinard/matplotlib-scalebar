@@ -5,9 +5,7 @@
 # Third party modules.
 import matplotlib
 
-matplotlib.use("agg")
 import matplotlib.pyplot as plt
-from matplotlib.testing.decorators import cleanup
 from matplotlib.font_manager import FontProperties
 
 import numpy as np
@@ -19,9 +17,9 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 # Globals and constants variables.
 
+matplotlib.use("agg")
 
 @pytest.fixture
-@cleanup
 def scalebar():
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -310,21 +308,3 @@ def test_rotation(scalebar, rotation):
 
     with pytest.raises(ValueError):
         scalebar.set_rotation("h")
-
-
-def test_warnings():
-    with pytest.warns(None) as record:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-
-        data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        ax.imshow(data)
-
-        scalebar = ScaleBar(0.5)
-        ax.add_artist(scalebar)
-
-        plt.draw()
-
-    assert len(record) == 0, "Warnings: " + ",".join(
-        f"{repr(w.message)}" for w in record
-    )

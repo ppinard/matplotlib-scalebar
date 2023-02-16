@@ -139,7 +139,6 @@ _DIMENSION_LOOKUP = {
 
 
 class ScaleBar(Artist):
-
     zorder = 6
 
     _PREFERRED_VALUES = [1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500, 750]
@@ -306,14 +305,16 @@ class ScaleBar(Artist):
         # Deprecation
         if height_fraction is not None:
             warnings.warn(
-                "The height_fraction argument was deprecated. Use width_fraction instead.",
+                "The height_fraction argument was deprecated. "
+                "Use width_fraction instead.",
                 DeprecationWarning,
             )
             width_fraction = width_fraction or height_fraction
 
         if label_formatter is not None:
             warnings.warn(
-                "The label_formatter argument was deprecated. Use scale_formatter instead.",
+                "The label_formatter argument was deprecated. "
+                "Use scale_formatter instead.",
                 DeprecationWarning,
             )
             scale_formatter = scale_formatter or label_formatter
@@ -586,14 +587,16 @@ class ScaleBar(Artist):
 
     def get_height_fraction(self):
         warnings.warn(
-            "The get_height_fraction method is deprecated. Use get_width_fraction instead.",
+            "The get_height_fraction method is deprecated. "
+            "Use get_width_fraction instead.",
             DeprecationWarning,
         )
         return self.width_fraction
 
     def set_height_fraction(self, fraction):
         warnings.warn(
-            "The set_height_fraction method is deprecated. Use set_width_fraction instead.",
+            "The set_height_fraction method is deprecated. "
+            "Use set_width_fraction instead.",
             DeprecationWarning,
         )
         self.width_fraction = fraction
@@ -741,14 +744,16 @@ class ScaleBar(Artist):
 
     def get_label_formatter(self):
         warnings.warn(
-            "The get_label_formatter method is deprecated. Use get_scale_formatter instead.",
+            "The get_label_formatter method is deprecated. "
+            "Use get_scale_formatter instead.",
             DeprecationWarning,
         )
         return self.scale_formatter
 
     def set_label_formatter(self, scale_formatter):
         warnings.warn(
-            "The set_label_formatter method is deprecated. Use set_scale_formatter instead.",
+            "The set_label_formatter method is deprecated. "
+            "Use set_scale_formatter instead.",
             DeprecationWarning,
         )
         self.scale_formatter = scale_formatter
