@@ -37,6 +37,7 @@ hatch env create
 hatch run test
 ```
 
+
 ## Getting started
 
 There are many ways to customize the scale bar.
@@ -75,6 +76,13 @@ plt.show()
 ```
 
 ![Example of scale bar](doc/getting_started.png)
+
+
+## Cheat Sheet
+
+https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar/
+![citurs](https://user-images.githubusercontent.com/44469195/202899151-483bad4b-bacf-4845-a7cd-ace7bb6417b1.png)
+
 
 ## ScaleBar arguments
 
