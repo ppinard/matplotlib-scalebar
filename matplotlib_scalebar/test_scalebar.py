@@ -5,7 +5,6 @@
 # Third party modules.
 import matplotlib
 
-matplotlib.use("agg")
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 
@@ -18,6 +17,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 # Globals and constants variables.
 
+matplotlib.use("agg")
 
 @pytest.fixture
 def scalebar():
