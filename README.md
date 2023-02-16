@@ -9,6 +9,8 @@
 
 **Source Code**: https://github.com/ppinard/matplotlib-scalebar
 
+**Cheat sheet**: https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar
+
 ---
 
 Provides a new artist for [matplotlib](https://matplotlib.org) to display a scale bar, aka micron bar.
@@ -36,6 +38,7 @@ pip install hatch
 hatch env create
 hatch run test
 ```
+
 
 ## Getting started
 
@@ -75,6 +78,15 @@ plt.show()
 ```
 
 ![Example of scale bar](doc/getting_started.png)
+
+
+## Cheat Sheet
+
+An example gallery for the matplotlib-scalebar package:
+https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar/
+
+![citurs](https://user-images.githubusercontent.com/44469195/202899151-483bad4b-bacf-4845-a7cd-ace7bb6417b1.png)
+
 
 ## ScaleBar arguments
 
@@ -323,6 +335,11 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
+### Dev
+
+* Update tooling ([#53][i53])
+* Add example gallery ([#50][i50])
+
 ### 0.8.1
 
 * Remove useless shebangs ([#47][i47])
@@ -404,7 +421,8 @@ ax.add_artist(scalebar)
 [@k1moradi](https://github.com/k1moradi),
 [@anntzer](https://github.com/anntzer),
 [@bugalo](https://github.com/bugalo),
-[@musicinmybrain](https://github.com/musicinmybrain)
+[@musicinmybrain](https://github.com/musicinmybrain),
+[@kolibril13](https://github.com/kolibril13)
 
 ## License
 
@@ -433,3 +451,5 @@ Copyright (c) 2015-2022 Philippe Pinard
 [i44]: https://github.com/ppinard/matplotlib-scalebar/pull/44
 [i47]: https://github.com/ppinard/matplotlib-scalebar/pull/47
 [i48]: https://github.com/ppinard/matplotlib-scalebar/pull/48
+[i50]: https://github.com/ppinard/matplotlib-scalebar/pull/50
+[i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
