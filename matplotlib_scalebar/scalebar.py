@@ -301,11 +301,11 @@ class ScaleBar(Artist):
         :arg rotation: either ``horizontal`` or ``vertical``
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
-        
-        :arg bbox_to_anchor: Box that is used to position the scalebar in conjunction with loc.  If ``None``
-             the figure bbox is used
+
+        :arg bbox_to_anchor: Box that is used to position the scalebar
+            in conjunction with loc.  If ``None`` the figure bbox is used
         :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
-        
+
         :arg bbox_transform: The transform for the bounding box
         :type bbox_transform: : class:`matplotlib.transforms.Transform`
         """
@@ -519,21 +519,33 @@ class ScaleBar(Artist):
         else:
             child = scale_box
 
-        if self.bbox_to_anchor != None:
-            self.box = AnchoredOffsetbox(loc=location, pad=pad,  child=child, frameon=frameon, 
-                                        bbox_to_anchor=self.bbox_to_anchor, bbox_transform=self.bbox_transform)
+        if self.bbox_to_anchor is not None:
+            self.box = AnchoredOffsetbox(
+                loc=location,
+                pad=pad,
+                child=child,
+                frameon=frameon,
+                bbox_to_anchor=self.bbox_to_anchor,
+                bbox_transform=self.bbox_transform,
+            )
         else:
-            self.box = AnchoredOffsetbox(loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon)
+            self.box = AnchoredOffsetbox(
+                loc=location,
+                pad=pad,
+                borderpad=border_pad,
+                child=child,
+                frameon=frameon,
+            )
 
         self.box.axes = ax
         self.box.set_figure(self.get_figure())
         self.box.patch.set_color(box_color)
         self.box.patch.set_alpha(box_alpha)
         self.box.draw(renderer)
-      
+
     def get_window_extent(self, renderer):
         return self.box.get_window_extent(renderer)
-        
+
     def get_dx(self):
         return self._dx
 
@@ -804,13 +816,11 @@ class ScaleBar(Artist):
         self._rotation = rotation
 
     rotation = property(get_rotation, set_rotation)
-   
+
     def get_bbox_to_anchor(self):
-         return self.bbox_to_anchor
-      
+        return self.bbox_to_anchor
+
     def set_bbox_to_anchor(self, bbox_to_anchor, bbox_transform):
         self.bbox_to_anchor = bbox_to_anchor
         self.bbox_transform = bbox_transform
         self.box.set_bbox_to_anchor(bbox_to_anchor, bbox_transform)
-    
-    

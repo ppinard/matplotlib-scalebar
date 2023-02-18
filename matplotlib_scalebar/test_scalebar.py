@@ -19,6 +19,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 matplotlib.use("agg")
 
+
 @pytest.fixture
 def scalebar():
     fig = plt.figure()
