@@ -1,11 +1,14 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: stable
+    rev: 23.1.0
     hooks:
       - id: black
-        language_version: python3.7
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v4.4.0
     hooks:
-      - id: requirements-txt-fixer
       - id: check-yaml
+      - id: check-toml
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.245'
+    hooks:
+      - id: ruff

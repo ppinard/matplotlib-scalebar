@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [master]
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
 
 jobs:
   build:
@@ -15,27 +15,36 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: [3.x]
+        matplotlib-version: [latest, dev]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Cache pip
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip codecov
-          pip install --upgrade -e .
-          pip install -r requirements-test.txt
+          python -m pip install --upgrade pip hatch codecov
+
+      - name: Install matplotlib dev
+        if: matrix.matplotlib-version == 'dev'
+        run: |
+          pip install --upgrade git+https://github.com/matplotlib/matplotlib
+
       - name: Test
-        run: pytest
+        run: hatch run test
+
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3

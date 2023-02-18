@@ -73,12 +73,12 @@ from matplotlib_scalebar.dimension import (
 # Globals and constants variables.
 
 # Setup of extra parameters in the matplotlic rc
-_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left"]
+_VALID_SCALE_LOCATIONS = ["bottom", "top", "right", "left", "none"]
 _validate_scale_loc = ValidateInStrings(
     "scale_loc", _VALID_SCALE_LOCATIONS, ignorecase=True
 )
 
-_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left"]
+_VALID_LABEL_LOCATIONS = ["bottom", "top", "right", "left", "none"]
 _validate_label_loc = ValidateInStrings(
     "label_loc", _VALID_LABEL_LOCATIONS, ignorecase=True
 )
@@ -111,11 +111,15 @@ defaultParams.update(
     }
 )
 
+
+_all_deprecated = getattr(matplotlib, "_all_deprecated", {})
+
+
 # Recreate the validate function
 matplotlib.rcParams.validate = dict(
     (key, converter)
     for key, (default, converter) in defaultParams.items()
-    if key not in matplotlib._all_deprecated
+    if key not in _all_deprecated
 )
 
 # Dimension lookup
@@ -135,7 +139,6 @@ _DIMENSION_LOOKUP = {
 
 
 class ScaleBar(Artist):
-
     zorder = 6
 
     _PREFERRED_VALUES = [1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500, 750]
@@ -263,12 +266,14 @@ class ScaleBar(Artist):
             (default: rcParams['scalebar.box_alpha'] or ``1.0``)
         :type box_alpha: :class:`float`
 
-        :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``
-            (default: rcParams['scalebar.scale_loc'] or ``bottom``)
+        :arg scale_loc : either ``bottom``, ``top``, ``left``, ``right``, ``none``
+            (default: rcParams['scalebar.scale_loc'] or ``bottom``).
+            If ``none`` the scale is not shown.
         :type scale_loc: :class:`str`
 
-        :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``
-            (default: rcParams['scalebar.label_loc'] or ``top``)
+        :arg label_loc: either ``bottom``, ``top``, ``left``, ``right``, ``none``
+            (default: rcParams['scalebar.label_loc'] or ``top``).
+            If ``none`` the label is not shown.
         :type label_loc: :class:`str`
 
         :arg font_properties: font properties of the label text, specified
@@ -309,14 +314,16 @@ class ScaleBar(Artist):
         # Deprecation
         if height_fraction is not None:
             warnings.warn(
-                "The height_fraction argument was deprecated. Use width_fraction instead.",
+                "The height_fraction argument was deprecated. "
+                "Use width_fraction instead.",
                 DeprecationWarning,
             )
             width_fraction = width_fraction or height_fraction
 
         if label_formatter is not None:
             warnings.warn(
-                "The label_formatter argument was deprecated. Use scale_formatter instead.",
+                "The label_formatter argument was deprecated. "
+                "Use scale_formatter instead.",
                 DeprecationWarning,
             )
             scale_formatter = scale_formatter or label_formatter
@@ -471,22 +478,27 @@ class ScaleBar(Artist):
         scale_bar_box = AuxTransformBox(ax.transData)
         scale_bar_box.add_artist(scale_rect)
 
-        scale_text_box = TextArea(scale_text, textprops=textprops)
+        # Create scale text
+        if scale_loc != "none":
+            scale_text_box = TextArea(scale_text, textprops=textprops)
 
-        if scale_loc in ["bottom", "right"]:
-            children = [scale_bar_box, scale_text_box]
+            if scale_loc in ["bottom", "right"]:
+                children = [scale_bar_box, scale_text_box]
+            else:
+                children = [scale_text_box, scale_bar_box]
+
+            if scale_loc in ["bottom", "top"]:
+                Packer = VPacker
+            else:
+                Packer = HPacker
+
+            scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+
         else:
-            children = [scale_text_box, scale_bar_box]
-
-        if scale_loc in ["bottom", "top"]:
-            Packer = VPacker
-        else:
-            Packer = HPacker
-
-        scale_box = Packer(children=children, align="center", pad=0, sep=sep)
+            scale_box = scale_bar_box
 
         # Create label
-        if label:
+        if label and label_loc != "none":
             label_box = TextArea(label, textprops=textprops)
         else:
             label_box = None
@@ -591,14 +603,16 @@ class ScaleBar(Artist):
 
     def get_height_fraction(self):
         warnings.warn(
-            "The get_height_fraction method is deprecated. Use get_width_fraction instead.",
+            "The get_height_fraction method is deprecated. "
+            "Use get_width_fraction instead.",
             DeprecationWarning,
         )
         return self.width_fraction
 
     def set_height_fraction(self, fraction):
         warnings.warn(
-            "The set_height_fraction method is deprecated. Use set_width_fraction instead.",
+            "The set_height_fraction method is deprecated. "
+            "Use set_width_fraction instead.",
             DeprecationWarning,
         )
         self.width_fraction = fraction
@@ -746,14 +760,16 @@ class ScaleBar(Artist):
 
     def get_label_formatter(self):
         warnings.warn(
-            "The get_label_formatter method is deprecated. Use get_scale_formatter instead.",
+            "The get_label_formatter method is deprecated. "
+            "Use get_scale_formatter instead.",
             DeprecationWarning,
         )
         return self.scale_formatter
 
     def set_label_formatter(self, scale_formatter):
         warnings.warn(
-            "The set_label_formatter method is deprecated. Use set_scale_formatter instead.",
+            "The set_label_formatter method is deprecated. "
+            "Use set_scale_formatter instead.",
             DeprecationWarning,
         )
         self.scale_formatter = scale_formatter

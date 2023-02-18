@@ -3,6 +3,16 @@
 ![CI](https://github.com/ppinard/matplotlib-scalebar/workflows/CI/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/matplotlib-scalebar)
 
+---
+
+**Documentation**: See below
+
+**Source Code**: https://github.com/ppinard/matplotlib-scalebar
+
+**Cheat sheet**: https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar
+
+---
+
 Provides a new artist for [matplotlib](https://matplotlib.org) to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
 `plt.imshow(...)`.
@@ -23,8 +33,12 @@ For development installation from the git repository:
 
 ```bash
 git clone git@github.com:ppinard/matplotlib-scalebar.git
-pip install -e matplotlib-scalebar
+cd matplotlib-scalebar
+pip install hatch
+hatch env create
+hatch run test
 ```
+
 
 ## Getting started
 
@@ -64,6 +78,15 @@ plt.show()
 ```
 
 ![Example of scale bar](doc/getting_started.png)
+
+
+## Cheat Sheet
+
+An example gallery for the matplotlib-scalebar package:
+https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar/
+
+![citurs](https://user-images.githubusercontent.com/44469195/202899151-483bad4b-bacf-4845-a7cd-ace7bb6417b1.png)
+
 
 ## ScaleBar arguments
 
@@ -234,16 +257,18 @@ Default: `None`, value from matplotlibrc or `1.0` (opaque).
 ### scale_loc
 
 Location of the scale with respect to the scale bar.
-Either `bottom`, `top`, `left`, `right`.
+Either `bottom`, `top`, `left`, `right`, `none`.
 Default: `None`, value from matplotlibrc or `bottom`.
+If `"none"`, no scale is shown.
 
 ![scale_loc](doc/argument_scale_loc.png)
 
 ### label_loc
 
 Location of the label with respect to the scale bar.
-Either `bottom`, `top`, `left`, `right`.
+Either `bottom`, `top`, `left`, `right`, `none`.
 Default: `None`, value from matplotlibrc or `top`.
+If `"none"`, no label is shown.
 
 ### font_properties
 
@@ -309,6 +334,21 @@ ax.add_artist(scalebar)
 ![rotation](doc/argument_rotation.png)
 
 ## Release notes
+
+### Dev
+
+* Update tooling ([#53][i53])
+* Add example gallery ([#50][i50])
+
+### 0.8.1
+
+* Remove useless shebangs ([#47][i47])
+* Correct License trove classifier ([#48][i48])
+
+### 0.8.0
+
+* Fix missing `_all_deprecated` in future matplotlib (> 3.5) ([#44][i44])
+* Add ability to hide scale and label ([#41][i41])
 
 ### 0.7.2
 
@@ -378,14 +418,17 @@ ax.add_artist(scalebar)
 [@PhilipeRLeal](https://github.com/PhilipeRLeal),
 [@din14970](https://github.com/din14970),
 [@SarthakJariwala](https://github.com/SarthakJariwala),
-[@k1moradi](https://github.com/k1moradi)
-[@anntzer](https://github.com/anntzer)
+[@k1moradi](https://github.com/k1moradi),
+[@anntzer](https://github.com/anntzer),
+[@bugalo](https://github.com/bugalo),
+[@musicinmybrain](https://github.com/musicinmybrain),
+[@kolibril13](https://github.com/kolibril13)
 
 ## License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2021 Philippe Pinard
+Copyright (c) 2015-2022 Philippe Pinard
 
 [i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
 [i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
@@ -404,3 +447,9 @@ Copyright (c) 2015-2021 Philippe Pinard
 [i33]: https://github.com/ppinard/matplotlib-scalebar/issues/33
 [i35]: https://github.com/ppinard/matplotlib-scalebar/issues/35
 [i36]: https://github.com/ppinard/matplotlib-scalebar/issues/36
+[i41]: https://github.com/ppinard/matplotlib-scalebar/issues/41
+[i44]: https://github.com/ppinard/matplotlib-scalebar/pull/44
+[i47]: https://github.com/ppinard/matplotlib-scalebar/pull/47
+[i48]: https://github.com/ppinard/matplotlib-scalebar/pull/48
+[i50]: https://github.com/ppinard/matplotlib-scalebar/pull/50
+[i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
