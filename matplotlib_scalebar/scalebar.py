@@ -183,8 +183,8 @@ class ScaleBar(Artist):
         fixed_units=None,
         animated=False,
         rotation=None,
-        bbox_to_anchor=None,  # bbox that the legend will be anchored.
-        bbox_transform=None,  # transform for the bbox
+        bbox_to_anchor=None,
+        bbox_transform=None,
     ):
         """
         Creates a new scale bar.
@@ -303,7 +303,7 @@ class ScaleBar(Artist):
         :type rotation: :class:`str`
 
         :arg bbox_to_anchor: Box that is used to position the scalebar
-            in conjunction with loc.  If ``None`` the figure bbox is used
+            in conjunction with location.  If ``None`` the figure bbox is used.
         :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
 
         :arg bbox_transform: The transform for the bounding box
@@ -519,32 +519,21 @@ class ScaleBar(Artist):
         else:
             child = scale_box
 
-        if self.bbox_to_anchor is not None:
-            self.box = AnchoredOffsetbox(
-                loc=location,
-                pad=pad,
-                child=child,
-                frameon=frameon,
-                bbox_to_anchor=self.bbox_to_anchor,
-                bbox_transform=self.bbox_transform,
-            )
-        else:
-            self.box = AnchoredOffsetbox(
-                loc=location,
-                pad=pad,
-                borderpad=border_pad,
-                child=child,
-                frameon=frameon,
-            )
+        box = AnchoredOffsetbox(
+            loc=location,
+            pad=pad,
+            child=child,
+            borderpad=border_pad,
+            frameon=frameon,
+            bbox_to_anchor=self.bbox_to_anchor,
+            bbox_transform=self.bbox_transform,
+        )
 
-        self.box.axes = ax
-        self.box.set_figure(self.get_figure())
-        self.box.patch.set_color(box_color)
-        self.box.patch.set_alpha(box_alpha)
-        self.box.draw(renderer)
-
-    def get_window_extent(self, renderer):
-        return self.box.get_window_extent(renderer)
+        box.axes = ax
+        box.set_figure(self.get_figure())
+        box.patch.set_color(box_color)
+        box.patch.set_alpha(box_alpha)
+        box.draw(renderer)
 
     def get_dx(self):
         return self._dx
@@ -818,9 +807,17 @@ class ScaleBar(Artist):
     rotation = property(get_rotation, set_rotation)
 
     def get_bbox_to_anchor(self):
-        return self.bbox_to_anchor
+        return self._bbox_to_anchor
 
-    def set_bbox_to_anchor(self, bbox_to_anchor, bbox_transform):
-        self.bbox_to_anchor = bbox_to_anchor
-        self.bbox_transform = bbox_transform
-        self.box.set_bbox_to_anchor(bbox_to_anchor, bbox_transform)
+    def set_bbox_to_anchor(self, bbox_to_anchor):
+        self._bbox_to_anchor = bbox_to_anchor
+
+    bbox_to_anchor = property(get_bbox_to_anchor, set_bbox_to_anchor)
+
+    def get_bbox_transform(self):
+        return self._bbox_transform
+
+    def set_bbox_transform(self, bbox_transform):
+        self._bbox_transform = bbox_transform
+
+    bbox_transform = property(get_bbox_transform, set_bbox_transform)
