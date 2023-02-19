@@ -302,12 +302,12 @@ class ScaleBar(Artist):
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
 
-        :arg bbox_to_anchor: Box that is used to position the scalebar
-            in conjunction with location.  If ``None`` the figure bbox is used.
+        :arg bbox_to_anchor: box that is used to position the scalebar
+            in conjunction with location. If ``None`` the figure bbox is used.
         :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
 
-        :arg bbox_transform: The transform for the bounding box
-        :type bbox_transform: : class:`matplotlib.transforms.Transform`
+        :arg bbox_transform: transform for the bounding box
+        :type bbox_transform: :class:`matplotlib.transforms.Transform`
         """
         Artist.__init__(self)
 
