@@ -462,13 +462,14 @@ ax.add_artist(scalebar)
 [@anntzer](https://github.com/anntzer),
 [@bugalo](https://github.com/bugalo),
 [@musicinmybrain](https://github.com/musicinmybrain),
-[@kolibril13](https://github.com/kolibril13)
+[@kolibril13](https://github.com/kolibril13),
+[@ilopata1](https://github.com/ilopata1)
 
 ## License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2022 Philippe Pinard
+Copyright (c) 2015-2023 Philippe Pinard
 
 [i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
 [i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
