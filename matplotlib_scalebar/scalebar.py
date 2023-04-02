@@ -183,6 +183,8 @@ class ScaleBar(Artist):
         fixed_units=None,
         animated=False,
         rotation=None,
+        bbox_to_anchor=None,
+        bbox_transform=None,
     ):
         """
         Creates a new scale bar.
@@ -299,6 +301,13 @@ class ScaleBar(Artist):
         :arg rotation: either ``horizontal`` or ``vertical``
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
+
+        :arg bbox_to_anchor: box that is used to position the scalebar
+            in conjunction with location. If ``None`` the figure bbox is used.
+        :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
+
+        :arg bbox_transform: transform for the bounding box
+        :type bbox_transform: :class:`matplotlib.transforms.Transform`
         """
         Artist.__init__(self)
 
@@ -346,6 +355,8 @@ class ScaleBar(Artist):
         self.fixed_units = fixed_units
         self.set_animated(animated)
         self.rotation = rotation
+        self.bbox_to_anchor = bbox_to_anchor
+        self.bbox_transform = bbox_transform
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -509,7 +520,13 @@ class ScaleBar(Artist):
             child = scale_box
 
         box = AnchoredOffsetbox(
-            loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon
+            loc=location,
+            pad=pad,
+            child=child,
+            borderpad=border_pad,
+            frameon=frameon,
+            bbox_to_anchor=self.bbox_to_anchor,
+            bbox_transform=self.bbox_transform,
         )
 
         box.axes = ax
@@ -788,3 +805,19 @@ class ScaleBar(Artist):
         self._rotation = rotation
 
     rotation = property(get_rotation, set_rotation)
+
+    def get_bbox_to_anchor(self):
+        return self._bbox_to_anchor
+
+    def set_bbox_to_anchor(self, bbox_to_anchor):
+        self._bbox_to_anchor = bbox_to_anchor
+
+    bbox_to_anchor = property(get_bbox_to_anchor, set_bbox_to_anchor)
+
+    def get_bbox_transform(self):
+        return self._bbox_transform
+
+    def set_bbox_transform(self, bbox_transform):
+        self._bbox_transform = bbox_transform
+
+    bbox_transform = property(get_bbox_transform, set_bbox_transform)

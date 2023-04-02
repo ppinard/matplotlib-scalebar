@@ -19,6 +19,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 matplotlib.use("agg")
 
+
 @pytest.fixture
 def scalebar():
     fig = plt.figure()
@@ -308,3 +309,21 @@ def test_rotation(scalebar, rotation):
 
     with pytest.raises(ValueError):
         scalebar.set_rotation("h")
+
+
+def test_bbox_to_anchor(scalebar):
+    assert scalebar.get_bbox_to_anchor() is None
+    assert scalebar.bbox_to_anchor is None
+
+    scalebar.bbox_to_anchor = (0.5, 0.5)
+    assert scalebar.get_bbox_to_anchor() == (0.5, 0.5)
+    assert scalebar.bbox_to_anchor == (0.5, 0.5)
+
+
+def test_bbox_transform(scalebar):
+    assert scalebar.get_bbox_transform() is None
+    assert scalebar.bbox_transform is None
+
+    scalebar.bbox_transform = scalebar.axes.transAxes
+    assert scalebar.get_bbox_transform() == scalebar.axes.transAxes
+    assert scalebar.bbox_transform == scalebar.axes.transAxes
