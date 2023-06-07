@@ -33,6 +33,7 @@ __all__ = [
     "SI_LENGTH",
     "SI_LENGTH_RECIPROCAL",
     "IMPERIAL_LENGTH",
+    "ASTRO_LENGTH",
     "PIXEL_LENGTH",
 ]
 
@@ -66,6 +67,7 @@ from matplotlib_scalebar.dimension import (
     SILengthDimension,
     SILengthReciprocalDimension,
     ImperialLengthDimension,
+    AstronomicalLengthDimension,
     PixelLengthDimension,
     AngleDimension,
 )
@@ -126,6 +128,7 @@ matplotlib.rcParams.validate = dict(
 SI_LENGTH = "si-length"
 SI_LENGTH_RECIPROCAL = "si-length-reciprocal"
 IMPERIAL_LENGTH = "imperial-length"
+ASTRO_LENGTH = "astro-length"
 PIXEL_LENGTH = "pixel-length"
 ANGLE = "angle"
 
@@ -133,6 +136,7 @@ _DIMENSION_LOOKUP = {
     SI_LENGTH: SILengthDimension,
     SI_LENGTH_RECIPROCAL: SILengthReciprocalDimension,
     IMPERIAL_LENGTH: ImperialLengthDimension,
+    ASTRO_LENGTH: AstronomicalLengthDimension,
     PIXEL_LENGTH: PixelLengthDimension,
     ANGLE: AngleDimension,
 }
@@ -212,6 +216,7 @@ class ScaleBar(Artist):
                 * ``:const:`si-length```: scale bar showing km, m, cm, etc.
                 * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
+                * ``:const:`astro-length```: scale bar showing pc, kpc, Mpc, ly, AU, etc.
                 * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
                 * ``:const:`angle```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
