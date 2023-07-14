@@ -142,7 +142,6 @@ _DIMENSION_LOOKUP = {
 
 
 class ScaleBar(Artist):
-
     zorder = 6
 
     _PREFERRED_VALUES = [1, 2, 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 200, 500, 750]
@@ -187,6 +186,8 @@ class ScaleBar(Artist):
         fixed_units=None,
         animated=False,
         rotation=None,
+        bbox_to_anchor=None,
+        bbox_transform=None,
     ):
         """
         Creates a new scale bar.
@@ -305,20 +306,29 @@ class ScaleBar(Artist):
         :arg rotation: either ``horizontal`` or ``vertical``
             (default: rcParams['scalebar.rotation'] or ``horizontal``)
         :type rotation: :class:`str`
+
+        :arg bbox_to_anchor: box that is used to position the scalebar
+            in conjunction with location. If ``None`` the figure bbox is used.
+        :type bbox_to_anchor: :class:`BboxBase`, `2-tuple`, or `4-tuple` of floats
+
+        :arg bbox_transform: transform for the bounding box
+        :type bbox_transform: :class:`matplotlib.transforms.Transform`
         """
         Artist.__init__(self)
 
         # Deprecation
         if height_fraction is not None:
             warnings.warn(
-                "The height_fraction argument was deprecated. Use width_fraction instead.",
+                "The height_fraction argument was deprecated. "
+                "Use width_fraction instead.",
                 DeprecationWarning,
             )
             width_fraction = width_fraction or height_fraction
 
         if label_formatter is not None:
             warnings.warn(
-                "The label_formatter argument was deprecated. Use scale_formatter instead.",
+                "The label_formatter argument was deprecated. "
+                "Use scale_formatter instead.",
                 DeprecationWarning,
             )
             scale_formatter = scale_formatter or label_formatter
@@ -357,6 +367,8 @@ class ScaleBar(Artist):
         self.fixed_units = fixed_units
         self.set_animated(animated)
         self.rotation = rotation
+        self.bbox_to_anchor = bbox_to_anchor
+        self.bbox_transform = bbox_transform
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -519,8 +531,13 @@ class ScaleBar(Artist):
             child = scale_box
 
         box = AnchoredOffsetbox(
-            loc=location, pad=pad, borderpad=border_pad, child=child, frameon=frameon,
-            bbox_to_anchor=bbox_to_anchor, bbox_transform=ax.transAxes
+            loc=location,
+            pad=pad,
+            child=child,
+            borderpad=border_pad,
+            frameon=frameon,
+            bbox_to_anchor=self.bbox_to_anchor,
+            bbox_transform=self.bbox_transform,
         )
 
         box.axes = ax
@@ -600,14 +617,16 @@ class ScaleBar(Artist):
 
     def get_height_fraction(self):
         warnings.warn(
-            "The get_height_fraction method is deprecated. Use get_width_fraction instead.",
+            "The get_height_fraction method is deprecated. "
+            "Use get_width_fraction instead.",
             DeprecationWarning,
         )
         return self.width_fraction
 
     def set_height_fraction(self, fraction):
         warnings.warn(
-            "The set_height_fraction method is deprecated. Use set_width_fraction instead.",
+            "The set_height_fraction method is deprecated. "
+            "Use set_width_fraction instead.",
             DeprecationWarning,
         )
         if fraction is not None:
@@ -763,14 +782,16 @@ class ScaleBar(Artist):
 
     def get_label_formatter(self):
         warnings.warn(
-            "The get_label_formatter method is deprecated. Use get_scale_formatter instead.",
+            "The get_label_formatter method is deprecated. "
+            "Use get_scale_formatter instead.",
             DeprecationWarning,
         )
         return self.scale_formatter
 
     def set_label_formatter(self, scale_formatter):
         warnings.warn(
-            "The set_label_formatter method is deprecated. Use set_scale_formatter instead.",
+            "The set_label_formatter method is deprecated. "
+            "Use set_scale_formatter instead.",
             DeprecationWarning,
         )
         self.scale_formatter = scale_formatter
@@ -805,3 +826,19 @@ class ScaleBar(Artist):
         self._rotation = rotation
 
     rotation = property(get_rotation, set_rotation)
+
+    def get_bbox_to_anchor(self):
+        return self._bbox_to_anchor
+
+    def set_bbox_to_anchor(self, bbox_to_anchor):
+        self._bbox_to_anchor = bbox_to_anchor
+
+    bbox_to_anchor = property(get_bbox_to_anchor, set_bbox_to_anchor)
+
+    def get_bbox_transform(self):
+        return self._bbox_transform
+
+    def set_bbox_transform(self, bbox_transform):
+        self._bbox_transform = bbox_transform
+
+    bbox_transform = property(get_bbox_transform, set_bbox_transform)

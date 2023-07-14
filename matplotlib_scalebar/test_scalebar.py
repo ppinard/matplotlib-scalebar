@@ -5,9 +5,7 @@
 # Third party modules.
 import matplotlib
 
-matplotlib.use("agg")
 import matplotlib.pyplot as plt
-from matplotlib.testing.decorators import cleanup
 from matplotlib.font_manager import FontProperties
 
 import numpy as np
@@ -19,9 +17,10 @@ from matplotlib_scalebar.scalebar import ScaleBar
 
 # Globals and constants variables.
 
+matplotlib.use("agg")
+
 
 @pytest.fixture
-@cleanup
 def scalebar():
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -317,19 +316,19 @@ def test_rotation(scalebar, rotation):
         scalebar.set_rotation("h")
 
 
-def test_warnings():
-    with pytest.warns(None) as record:
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
+def test_bbox_to_anchor(scalebar):
+    assert scalebar.get_bbox_to_anchor() is None
+    assert scalebar.bbox_to_anchor is None
 
-        data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        ax.imshow(data)
+    scalebar.bbox_to_anchor = (0.5, 0.5)
+    assert scalebar.get_bbox_to_anchor() == (0.5, 0.5)
+    assert scalebar.bbox_to_anchor == (0.5, 0.5)
 
-        scalebar = ScaleBar(0.5)
-        ax.add_artist(scalebar)
 
-        plt.draw()
+def test_bbox_transform(scalebar):
+    assert scalebar.get_bbox_transform() is None
+    assert scalebar.bbox_transform is None
 
-    assert len(record) == 0, "Warnings: " + ",".join(
-        f"{repr(w.message)}" for w in record
-    )
+    scalebar.bbox_transform = scalebar.axes.transAxes
+    assert scalebar.get_bbox_transform() == scalebar.axes.transAxes
+    assert scalebar.bbox_transform == scalebar.axes.transAxes

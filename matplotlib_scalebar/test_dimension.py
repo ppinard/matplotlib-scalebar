@@ -56,9 +56,9 @@ def test_calculate_preferred(dim, value, units, expected_value, expected_units):
     "dim,units,expected",
     [
         (SILengthDimension(), "cm", "cm"),
-        (SILengthDimension(), u"\u00b5m", _LATEX_MU + "m"),
+        (SILengthDimension(), "\u00b5m", _LATEX_MU + "m"),
         (SILengthReciprocalDimension(), "1/cm", "cm$^{-1}$"),
-        (SILengthReciprocalDimension(), u"1/\u00b5m", _LATEX_MU + "m$^{-1}$"),
+        (SILengthReciprocalDimension(), "1/\u00b5m", _LATEX_MU + "m$^{-1}$"),
     ],
 )
 def test_to_latex(dim, units, expected):

@@ -3,6 +3,16 @@
 ![CI](https://github.com/ppinard/matplotlib-scalebar/workflows/CI/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/matplotlib-scalebar)
 
+---
+
+**Documentation**: See below
+
+**Source Code**: https://github.com/ppinard/matplotlib-scalebar
+
+**Cheat sheet**: https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar
+
+---
+
 Provides a new artist for [matplotlib](https://matplotlib.org) to display a scale bar, aka micron bar.
 It is particularly useful when displaying calibrated images plotted using
 `plt.imshow(...)`.
@@ -23,8 +33,12 @@ For development installation from the git repository:
 
 ```bash
 git clone git@github.com:ppinard/matplotlib-scalebar.git
-pip install -e matplotlib-scalebar
+cd matplotlib-scalebar
+pip install hatch
+hatch env create
+hatch run test
 ```
+
 
 ## Getting started
 
@@ -65,6 +79,15 @@ plt.show()
 
 ![Example of scale bar](doc/getting_started.png)
 
+
+## Cheat Sheet
+
+An example gallery for the matplotlib-scalebar package:
+https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar/
+
+![citurs](https://user-images.githubusercontent.com/44469195/202899151-483bad4b-bacf-4845-a7cd-ace7bb6417b1.png)
+
+
 ## ScaleBar arguments
 
 Here are arguments of the **ScaleBar** class constructor and examples how to use them.
@@ -95,6 +118,8 @@ scalebar = ScaleBar(
         fixed_units=None,
         animated=False,
         rotation=None,
+        bbox_to_anchor=None,
+        bbox_transform=None,
     )
 ```
 
@@ -310,7 +335,50 @@ ax.add_artist(scalebar)
 
 ![rotation](doc/argument_rotation.png)
 
+### bbox_to_anchor and bbox_transform
+
+Use a different bounding box than the plot axes to anchor the scale bar.
+The *bbox_transform* defines the transform applied to the *bbox_to_anchor* value.
+Note that the *location* will influence the position of the scale bar relative to the anchor (see example below).
+Default: `None`, the plot axes bounding box is used.
+
+```python
+fig, ax = plt.subplots()
+
+scalebar = ScaleBar(
+    1,
+    "cm",
+    length_fraction=0.25,
+    bbox_to_anchor=(0.5, 0.5),
+    bbox_transform=ax.transAxes,
+    location="lower left",
+    label="lower left",
+    box_color="0.8",
+)
+ax.add_artist(scalebar)
+
+scalebar = ScaleBar(
+    1,
+    "cm",
+    length_fraction=0.25,
+    bbox_to_anchor=(0.5, 0.5),
+    bbox_transform=ax.transAxes,
+    location="upper right",
+    label="upper right",
+    box_color="0.8",
+)
+ax.add_artist(scalebar)
+```
+
+![rotation](doc/argument_bbox_to_anchor.png)
+
 ## Release notes
+
+### Dev
+
+* Update tooling ([#53][i53])
+* Add example gallery ([#50][i50])
+* Add *bbox_anchor* and *bbox_transform* ([#40](i40))
 
 ### 0.8.1
 
@@ -393,13 +461,15 @@ ax.add_artist(scalebar)
 [@k1moradi](https://github.com/k1moradi),
 [@anntzer](https://github.com/anntzer),
 [@bugalo](https://github.com/bugalo),
-[@musicinmybrain](https://github.com/musicinmybrain)
+[@musicinmybrain](https://github.com/musicinmybrain),
+[@kolibril13](https://github.com/kolibril13),
+[@ilopata1](https://github.com/ilopata1)
 
 ## License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2022 Philippe Pinard
+Copyright (c) 2015-2023 Philippe Pinard
 
 [i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
 [i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
@@ -419,6 +489,9 @@ Copyright (c) 2015-2022 Philippe Pinard
 [i35]: https://github.com/ppinard/matplotlib-scalebar/issues/35
 [i36]: https://github.com/ppinard/matplotlib-scalebar/issues/36
 [i41]: https://github.com/ppinard/matplotlib-scalebar/issues/41
+[i40]: https://github.com/ppinard/matplotlib-scalebar/pull/40
 [i44]: https://github.com/ppinard/matplotlib-scalebar/pull/44
 [i47]: https://github.com/ppinard/matplotlib-scalebar/pull/47
 [i48]: https://github.com/ppinard/matplotlib-scalebar/pull/48
+[i50]: https://github.com/ppinard/matplotlib-scalebar/pull/50
+[i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
