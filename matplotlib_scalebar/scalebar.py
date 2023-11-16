@@ -519,7 +519,7 @@ class ScaleBar(Artist):
         else:
             child = scale_box
 
-        box = AnchoredOffsetbox(
+        self.box = AnchoredOffsetbox(
             loc=location,
             pad=pad,
             child=child,
@@ -529,13 +529,17 @@ class ScaleBar(Artist):
             bbox_transform=self.bbox_transform,
         )
 
-        box.axes = ax
-        box.set_figure(self.get_figure())
-        box.patch.set_color(box_color)
-        box.patch.set_alpha(box_alpha)
-        box.draw(renderer)
+        self.box.axes = ax
+        self.box.set_figure(self.get_figure())
+        self.box.patch.set_color(box_color)
+        self.box.patch.set_alpha(box_alpha)
+        self.box.draw(renderer)
+    
+    def get_window_extent(self, renderer):
+        if hasattr(self, 'box'):
+            return self.box.get_window_extent(renderer)
 
-    def get_dx(self):
+   def get_dx(self):
         return self._dx
 
     def set_dx(self, dx):
