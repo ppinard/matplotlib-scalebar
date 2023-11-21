@@ -539,7 +539,7 @@ class ScaleBar(Artist):
         if hasattr(self, 'box'):
             return self.box.get_window_extent(renderer)
 
-   def get_dx(self):
+    def get_dx(self):
         return self._dx
 
     def set_dx(self, dx):
