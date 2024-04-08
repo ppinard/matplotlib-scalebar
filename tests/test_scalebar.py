@@ -2,6 +2,8 @@
 
 # Standard library modules.
 
+import warnings
+
 # Third party modules.
 import matplotlib
 
@@ -298,7 +300,8 @@ def test_label_formatter(scalebar):
         assert scalebar.label_formatter(value, units) == "m 5"
 
 
-@pytest.mark.parametrize("rotation", ["horizontal", "vertical"])
+@pytest.mark.parametrize("rotation", [
+    "horizontal", "vertical", "horizontal-only", "vertical-only"])
 def test_rotation(scalebar, rotation):
     assert scalebar.get_rotation() is None
     assert scalebar.rotation is None
@@ -309,6 +312,33 @@ def test_rotation(scalebar, rotation):
 
     with pytest.raises(ValueError):
         scalebar.set_rotation("h")
+
+
+def test_rotation_checks_aspect():
+    fig, ax = plt.subplots()
+    sb = ScaleBar(0.5)
+    ax.add_artist(sb)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+
+        for aspect in ["auto", 2]:
+            ax.set_aspect(aspect)  # Warns if not using the -only variants.
+            for rotation in ["horizontal", "vertical"]:
+                sb.rotation = rotation
+                with pytest.warns():
+                    fig.canvas.draw()
+                sb.rotation = rotation + "-only"
+                fig.canvas.draw()
+
+        ax.set_aspect("equal")  # Never warn.
+        for rotation in ["horizontal", "vertical"]:
+            sb.rotation = rotation
+            fig.canvas.draw()
+            sb.rotation = rotation + "-only"
+            fig.canvas.draw()
+
+    plt.close(fig)
 
 
 def test_bbox_to_anchor(scalebar):
