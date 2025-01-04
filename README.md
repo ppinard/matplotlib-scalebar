@@ -380,6 +380,9 @@ ax.add_artist(scalebar)
 * Update tooling ([#53][i53])
 * Add example gallery ([#50][i50])
 * Add *bbox_anchor* and *bbox_transform* ([#40](i40))
+* Add common astronomical lengths ([#56][i56])
+* Fix example_angular.py ([#55][i55])
+* Support Python 3.12 ([#60][i60])
 
 ### 0.8.1
 
@@ -465,12 +468,15 @@ ax.add_artist(scalebar)
 [@musicinmybrain](https://github.com/musicinmybrain),
 [@kolibril13](https://github.com/kolibril13),
 [@ilopata1](https://github.com/ilopata1)
+[@jzuhone](https://github.com/jzuhone)
+[@360tetsu360](https://github.com/360tetsu360)
+[@jlaehne](https://github.com/jlaehne)
 
 ## License
 
 License under the BSD License, compatible with matplotlib.
 
-Copyright (c) 2015-2023 Philippe Pinard
+Copyright (c) 2015-2025 Philippe Pinard
 
 [i9]: https://github.com/ppinard/matplotlib-scalebar/issues/9
 [i11]: https://github.com/ppinard/matplotlib-scalebar/issues/11
@@ -496,3 +502,6 @@ Copyright (c) 2015-2023 Philippe Pinard
 [i48]: https://github.com/ppinard/matplotlib-scalebar/pull/48
 [i50]: https://github.com/ppinard/matplotlib-scalebar/pull/50
 [i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
+[i55]: https://github.com/ppinard/matplotlib-scalebar/pull/55
+[i56]: https://github.com/ppinard/matplotlib-scalebar/pull/56
+[i62]: https://github.com/ppinard/matplotlib-scalebar/pull/62
