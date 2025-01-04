@@ -70,6 +70,7 @@ from matplotlib_scalebar.dimension import (
     AstronomicalLengthDimension,
     PixelLengthDimension,
     AngleDimension,
+    TimeDimension
 )
 
 # Globals and constants variables.
@@ -131,6 +132,7 @@ IMPERIAL_LENGTH = "imperial-length"
 ASTRO_LENGTH = "astro-length"
 PIXEL_LENGTH = "pixel-length"
 ANGLE = "angle"
+TIME = "time"
 
 _DIMENSION_LOOKUP = {
     SI_LENGTH: SILengthDimension,
@@ -139,6 +141,7 @@ _DIMENSION_LOOKUP = {
     ASTRO_LENGTH: AstronomicalLengthDimension,
     PIXEL_LENGTH: PixelLengthDimension,
     ANGLE: AngleDimension,
+    TIME: TimeDimension
 }
 
 
@@ -205,7 +208,7 @@ class ScaleBar(Artist):
 
         :arg dx: size of one pixel in *units*
             Set ``dx`` to 1.0 if the axes image has already been calibrated by
-            setting its ``extent``.
+            setting its ``extent``, or if you are plotting non-image data.
         :type dx: :class:`float`
 
         :arg units: units of *dx* (default: ``m``)
@@ -236,9 +239,11 @@ class ScaleBar(Artist):
             axes's height (default: rcParams['scalebar.width_fraction'] or ``0.01``)
         :type width_fraction: :class:`float`
 
-        :arg location: a location code (same as legend)
+        :arg location: the location for the scale bar to be plotted, expressed either
+            as a location code (same as legend), or as an (x, y) location for the
+            bottom-left of the scale box to be placed (in figure coordinates)
             (default: rcParams['scalebar.location'] or ``upper right``)
-        :type location: :class:`str`
+        :type location: :class:`str` or `2-tuple` of floats
 
         :arg loc: alias for location
         :type loc: :class:`str`
@@ -338,13 +343,20 @@ class ScaleBar(Artist):
         ):
             raise ValueError("loc and location are specified and not equal")
 
+        # Convert location to bbox_to_anchor parameter, if required
+        if isinstance(location, tuple):
+            self.bbox_to_anchor = location
+            self.location = 3
+        else:
+            self.bbox_to_anchor = None
+            self.location = location or loc
+
         self.dx = dx
-        self.dimension = dimension  # Should be initialize before units
+        self.dimension = dimension  # Should be initialized before units
         self.units = units
         self.label = label
         self.length_fraction = length_fraction
         self.width_fraction = width_fraction
-        self.location = location or loc
         self.pad = pad
         self.border_pad = border_pad
         self.sep = sep
@@ -416,8 +428,6 @@ class ScaleBar(Artist):
         length_fraction = _get_value("length_fraction", 0.2)
         width_fraction = _get_value("width_fraction", 0.01)
         location = _get_value("location", "upper right")
-        if isinstance(location, str):
-            location = self._LOCATIONS[location.lower()]
         pad = _get_value("pad", 0.2)
         border_pad = _get_value("border_pad", 0.1)
         sep = _get_value("sep", 5)
@@ -432,6 +442,7 @@ class ScaleBar(Artist):
         fixed_units = self.fixed_units or self.units
         rotation = _get_value("rotation", "horizontal").lower()
         label = self.label
+        bbox_to_anchor = self.bbox_to_anchor
 
         # Create text properties
         textprops = {"color": color, "rotation": rotation}
@@ -540,6 +551,7 @@ class ScaleBar(Artist):
         box.patch.set_alpha(box_alpha)
         box.draw(renderer)
 
+    # Create getters and setters
     def get_dx(self):
         return self._dx
 
@@ -570,7 +582,8 @@ class ScaleBar(Artist):
 
     def set_units(self, units):
         if not self.dimension.is_valid_units(units):
-            raise ValueError(f"Invalid unit ({units}) with dimension")
+            raise ValueError(f"Invalid unit ({units}) with dimension "
+                             f"({self._dimension.__class__.__name__})")
         self._units = units
 
     units = property(get_units, set_units)
@@ -621,6 +634,9 @@ class ScaleBar(Artist):
             "Use set_width_fraction instead.",
             DeprecationWarning,
         )
+        if fraction is not None:
+            fraction = float(fraction)
+
         self.width_fraction = fraction
 
     height_fraction = property(get_height_fraction, set_height_fraction)
@@ -640,7 +656,12 @@ class ScaleBar(Artist):
         return self._location
 
     def set_location(self, loc):
-        self._location = self._convert_location(loc)
+        if isinstance(loc, tuple):
+            self._bbox_to_anchor = loc
+            self._location = 3
+        else:
+            self._bbox_to_anchor = None
+            self._location = self._convert_location(loc)
 
     location = property(get_location, set_location)
 

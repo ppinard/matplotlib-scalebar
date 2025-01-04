@@ -11,6 +11,8 @@ import bisect
 
 # Globals and constants variables.
 _PREFIXES_FACTORS = {
+    "Q": 1e30,
+    "R": 1e27,
     "Y": 1e24,
     "Z": 1e21,
     "E": 1e18,
@@ -30,6 +32,8 @@ _PREFIXES_FACTORS = {
     "a": 1e-18,
     "z": 1e-21,
     "y": 1e-24,
+    "r": 1e-27,
+    "q": 1e-30,
 }
 _LATEX_MU = "$\\mathrm{\\mu}$"
 
@@ -58,8 +62,8 @@ class _Dimension(object):
         """
         if units in self._units:
             raise ValueError("%s already defined" % units)
-        if factor == 1:
-            raise ValueError("Factor cannot be equal to 1")
+        # if factor == 1:
+        #     raise ValueError("Factor cannot be equal to 1")
         if latexrepr is None:
             latexrepr = units
 
@@ -166,3 +170,15 @@ class AngleDimension(_Dimension):
     def create_label(self, value, latexrepr):
         # Overriden to remove space between value and units.
         return "{}{}".format(value, latexrepr)
+
+
+class TimeDimension(_Dimension):
+    def __init__(self):
+        super().__init__("s")
+        for prefix, factor in _PREFIXES_FACTORS.items():
+            self.add_units(prefix + "s", factor)
+        # for prefix, factor in _PREFIXES_FACTORS.items():
+        #     latexrepr = None
+        #     if prefix == "\u00b5" or prefix == "u":
+        #         latexrepr = _LATEX_MU + "s"
+        #     self.add_units(prefix + "s", factor, latexrepr)

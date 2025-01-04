@@ -12,6 +12,7 @@ from matplotlib_scalebar.dimension import (
     ImperialLengthDimension,
     PixelLengthDimension,
     _LATEX_MU,
+    TimeDimension
 )
 
 # Globals and constants variables.
@@ -37,6 +38,12 @@ from matplotlib_scalebar.dimension import (
         (PixelLengthDimension(), 200, "px", 200.0, "px"),
         (PixelLengthDimension(), 0.02, "px", 0.02, "px"),
         (PixelLengthDimension(), 0.001, "px", 0.001, "px"),
+        (TimeDimension(), 2000, "s", 2.0, "ks"),
+        (TimeDimension(), 200, "s", 200, "s"),
+        (TimeDimension(), 0.02, "s", 2.0, "cs"),
+        (TimeDimension(), 0.01, "s", 1.0, "cs"),
+        (TimeDimension(), 0.002, "s", 2, "ms"),
+        (TimeDimension(), 2e-7, "s", 200, "ns"),
     ],
 )
 def test_calculate_preferred(dim, value, units, expected_value, expected_units):
