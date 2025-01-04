@@ -216,7 +216,7 @@ class ScaleBar(Artist):
                 * ``:const:`si-length```: scale bar showing km, m, cm, etc.
                 * ``:const:`imperial-length```: scale bar showing in, ft, yd, mi, etc.
                 * ``:const:`si-length-reciprocal```: scale bar showing 1/m, 1/cm, etc.
-                * ``:const:`astro-length```: scale bar showing pc, kpc, Mpc, ly, AU, etc.
+                * ``:const:`astro-length```: scale bar showing pc, kpc ly, AU, etc.
                 * ``:const:`pixel-length```: scale bar showing px, kpx, Mpx, etc.
                 * ``:const:`angle```: scale bar showing \u00b0, \u2032 or \u2032\u2032.
                 * a :class:`matplotlib_scalebar.dimension._Dimension` object
