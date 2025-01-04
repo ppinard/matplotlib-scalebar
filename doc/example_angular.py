@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib_scalebar.scalebar import ScaleBar, ANGULAR
+from matplotlib_scalebar.scalebar import ScaleBar
 
 delta = 0.025
 x = y = np.arange(-3.0, 3.0, delta)
@@ -14,7 +14,7 @@ fig, axes = plt.subplots(1, 3, figsize=(9, 3))
 for ax, dx in zip(axes, [delta, delta / 60, delta / 3600]):
     ax.imshow(Z)
 
-    scalebar = ScaleBar(dx, "deg", ANGULAR)
+    scalebar = ScaleBar(dx, "deg", dimension="angle")
     ax.add_artist(scalebar)
 
     ax.set_title("dx = {:.6f}deg".format(dx))
