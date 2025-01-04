@@ -272,3 +272,5 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/code,python,pycharm,eclipse
+
+uv.lock
