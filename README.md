@@ -87,6 +87,26 @@ https://kolibril13.github.io/plywood-gallery-matplotlib-scalebar/
 
 ![citurs](https://user-images.githubusercontent.com/44469195/202899151-483bad4b-bacf-4845-a7cd-ace7bb6417b1.png)
 
+## Tips
+
+### Save image in original resolution
+
+The code snippet below shows how to save an image (stored in variable `arr`) in the same resolution as the original image without any horizontal and vertical axes.
+
+```python
+dpi = 200
+fig = plt.figure(figsize=(arr.shape[1] / dpi, arr.shape[0] / dpi), frameon=False, dpi=dpi)
+
+ax = fig.add_axes([0.0, 0.0, 1.0, 1.0])
+ax.set_axis_off()
+
+ax.imshow(arr)
+
+scalebar = ScaleBar(100, "nm", length_fraction=0.25, location="lower right")
+ax.add_artist(scalebar)
+
+fig.savefig("original_resolution.png", dpi=dpi)
+```
 
 ## ScaleBar arguments
 
