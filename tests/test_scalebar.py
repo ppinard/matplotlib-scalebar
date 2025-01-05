@@ -36,6 +36,8 @@ def scalebar():
     yield scalebar
 
     plt.draw()
+    plt.close()
+    del fig
 
 
 def test_mpl_rcParams_update():
@@ -300,8 +302,9 @@ def test_label_formatter(scalebar):
         assert scalebar.label_formatter(value, units) == "m 5"
 
 
-@pytest.mark.parametrize("rotation", [
-    "horizontal", "vertical", "horizontal-only", "vertical-only"])
+@pytest.mark.parametrize(
+    "rotation", ["horizontal", "vertical", "horizontal-only", "vertical-only"]
+)
 def test_rotation(scalebar, rotation):
     assert scalebar.get_rotation() is None
     assert scalebar.rotation is None
