@@ -391,7 +391,8 @@ ax.add_artist(scalebar)
 * Add *bbox_anchor* and *bbox_transform* ([#40](i40))
 * Add common astronomical lengths ([#56][i56])
 * Fix example_angular.py ([#55][i55])
-* Support Python 3.12 ([#60][i60])
+* Support Python 3.12 ([#61][i61])
+* Add a (skippable) check that the axes have equal aspect ratio ([#62][i62])
 
 ### 0.8.1
 
@@ -513,4 +514,5 @@ Copyright (c) 2015-2025 Philippe Pinard
 [i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
 [i55]: https://github.com/ppinard/matplotlib-scalebar/pull/55
 [i56]: https://github.com/ppinard/matplotlib-scalebar/pull/56
+[i61]: https://github.com/ppinard/matplotlib-scalebar/pull/61
 [i62]: https://github.com/ppinard/matplotlib-scalebar/pull/62
