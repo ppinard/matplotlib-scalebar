@@ -312,7 +312,16 @@ Default: `False`
 ### rotation
 
 Whether to create a scale bar based on the x-axis (default) or y-axis.
-*rotation* can either be `horizontal` or `vertical`.
+*rotation* can either be `horizontal`, `vertical`, `horizontal-only`, or
+`vertical-only`.
+
+By default, matplotlib_scalebar checks whether the axes have equal aspect ratio
+(so that the scale bar applies both for the x and the y directions), and emits
+a warning if this is not the case.  This warning can be suppressed by setting
+*rotation* to `horizontal-only` ("the scale bar only applies to the horizontal
+direction") or `vertical-only` ("the scale bar only applies to the vertical
+direction").
+
 Note you might have to adjust *scale_loc* and *label_loc* to achieve desired layout.
 Default: `None`, value from matplotlibrc or `horizontal`.
 

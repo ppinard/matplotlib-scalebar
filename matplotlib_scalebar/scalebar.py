@@ -85,7 +85,7 @@ _validate_label_loc = ValidateInStrings(
     "label_loc", _VALID_LABEL_LOCATIONS, ignorecase=True
 )
 
-_VALID_ROTATIONS = ["horizontal", "vertical"]
+_VALID_ROTATIONS = ["horizontal", "horizontal-only", "vertical", "vertical-only"]
 _validate_rotation = ValidateInStrings("rotation", _VALID_ROTATIONS, ignorecase=True)
 
 
@@ -303,8 +303,11 @@ class ScaleBar(Artist):
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
 
-        :arg rotation: either ``horizontal`` or ``vertical``
-            (default: rcParams['scalebar.rotation'] or ``horizontal``)
+        :arg rotation: ``horizontal``, ``vertical``, ``horizontal-only``, or ``vertical-only``
+            (default: rcParams['scalebar.rotation'] or ``horizontal``).
+            By default, ScaleBar checks that it is getting drawn on an axes
+            with equal aspect ratio and emits a warning if this is not the case.
+            The -only variants suppress that check.
         :type rotation: :class:`str`
 
         :arg bbox_to_anchor: box that is used to position the scalebar
@@ -431,6 +434,14 @@ class ScaleBar(Artist):
         fixed_value = self.fixed_value
         fixed_units = self.fixed_units or self.units
         rotation = _get_value("rotation", "horizontal").lower()
+        if rotation.endswith("-only"):
+            rotation = rotation[:-5]
+        else:  # Check aspect ratio.
+            if self.axes.get_aspect() != 1:
+                warnings.warn(
+                    f"Drawing scalebar on axes with unequal aspect ratio; "
+                    f"either call ax.set_aspect(1) or suppress the warning with "
+                    f"rotation='{rotation}-only'.")
         label = self.label
 
         # Create text properties
