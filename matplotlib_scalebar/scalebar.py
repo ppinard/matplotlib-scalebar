@@ -303,7 +303,8 @@ class ScaleBar(Artist):
         :arg animated: animation state (default: ``False``)
         :type animated: :class`bool`
 
-        :arg rotation: ``horizontal``, ``vertical``, ``horizontal-only``, or ``vertical-only``
+        :arg rotation: ``horizontal``, ``vertical``, ``horizontal-only``,
+            or ``vertical-only``
             (default: rcParams['scalebar.rotation'] or ``horizontal``).
             By default, ScaleBar checks that it is getting drawn on an axes
             with equal aspect ratio and emits a warning if this is not the case.
@@ -336,8 +337,10 @@ class ScaleBar(Artist):
             )
             scale_formatter = scale_formatter or label_formatter
 
-        if loc is not None and self._convert_location(loc) != self._convert_location(
-            location
+        if (
+            loc is not None
+            and location is not None
+            and self._convert_location(loc) != self._convert_location(location)
         ):
             raise ValueError("loc and location are specified and not equal")
 
@@ -441,7 +444,8 @@ class ScaleBar(Artist):
                 warnings.warn(
                     f"Drawing scalebar on axes with unequal aspect ratio; "
                     f"either call ax.set_aspect(1) or suppress the warning with "
-                    f"rotation='{rotation}-only'.")
+                    f"rotation='{rotation}-only'."
+                )
         label = self.label
 
         # Create text properties

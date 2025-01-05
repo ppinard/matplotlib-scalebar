@@ -164,6 +164,15 @@ def test_scalebar_loc(scalebar):
     with pytest.raises(ValueError):
         ScaleBar(1.0, loc="upper right", location=2)
 
+    # Should not raise error
+    scalebar2 = ScaleBar(1.0, loc="upper center")
+    assert scalebar2.location == 9
+    assert scalebar2.loc == 9
+
+    scalebar2 = ScaleBar(1.0, location="upper center")
+    assert scalebar2.location == 9
+    assert scalebar2.loc == 9
+
 
 def test_scalebar_pad(scalebar):
     assert scalebar.get_pad() is None
