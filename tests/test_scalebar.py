@@ -369,3 +369,32 @@ def test_bbox_transform(scalebar):
     scalebar.bbox_transform = scalebar.axes.transAxes
     assert scalebar.get_bbox_transform() == scalebar.axes.transAxes
     assert scalebar.bbox_transform == scalebar.axes.transAxes
+
+
+def test_info():
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    ax.imshow(data)
+
+    scalebar = ScaleBar(0.5)
+    ax.add_artist(scalebar)
+
+    with pytest.raises(ValueError):
+        scalebar.info
+
+    plt.draw()
+
+    info = scalebar.info
+    assert info.length_px == pytest.approx(0.4, 1e-4)
+    assert info.value == pytest.approx(2, 1e-4)
+    assert info.units == "dm"
+    assert info.scale_text == "2 dm"
+    assert info.window_extent.x0 == pytest.approx(456.5755555555555, 1e-4)
+    assert info.window_extent.y0 == pytest.approx(390.81511111111104, 1e-4)
+    assert info.window_extent.x1 == pytest.approx(511.4111111111111, 1e-4)
+    assert info.window_extent.y1 == pytest.approx(421.01111111111106, 1e-4)
+
+    plt.close()
+    del fig
