@@ -40,6 +40,7 @@ __all__ = [
 # Standard library modules.
 import bisect
 import warnings
+import dataclasses
 
 # Third party modules.
 import matplotlib
@@ -140,6 +141,15 @@ _DIMENSION_LOOKUP = {
     PIXEL_LENGTH: PixelLengthDimension,
     ANGLE: AngleDimension,
 }
+
+
+@dataclasses.dataclass
+class ScaleBarInfo:
+    length_px: int
+    value: float
+    units: str
+    scale_text: str
+    window_extent: matplotlib.transforms.Bbox
 
 
 class ScaleBar(Artist):
@@ -368,6 +378,7 @@ class ScaleBar(Artist):
         self.rotation = rotation
         self.bbox_to_anchor = bbox_to_anchor
         self.bbox_transform = bbox_transform
+        self._info = None
 
     def _calculate_best_length(self, length_px):
         dx = self.dx
@@ -393,6 +404,8 @@ class ScaleBar(Artist):
         return newvalue / self.dx
 
     def draw(self, renderer, *args, **kwargs):
+        self._info = None
+
         if not self.get_visible():
             return
         if self.dx == 0:
@@ -554,6 +567,10 @@ class ScaleBar(Artist):
         box.patch.set_color(box_color)
         box.patch.set_alpha(box_alpha)
         box.draw(renderer)
+
+        self._info = ScaleBarInfo(
+            length_px, value, units, scale_text, box.get_window_extent(renderer)
+        )
 
     def get_dx(self):
         return self._dx
@@ -841,3 +858,9 @@ class ScaleBar(Artist):
         self._bbox_transform = bbox_transform
 
     bbox_transform = property(get_bbox_transform, set_bbox_transform)
+
+    @property
+    def info(self):
+        if self._info is None:
+            raise ValueError("Scale bar has not been drawn. Call figure.canvas.draw()")
+        return self._info

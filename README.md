@@ -108,6 +108,35 @@ ax.add_artist(scalebar)
 fig.savefig("original_resolution.png", dpi=dpi)
 ```
 
+### Information about the drawn scale bar
+
+After the scale bar has been drawn, the `info` property returns the following dataclass.
+
+```python
+@dataclasses.dataclass
+class ScaleBarInfo:
+    length_px: int
+    value: float
+    units: str
+    scale_text: str
+    window_extent: matplotlib.transforms.Bbox
+```
+
+Note that the `info` property returns a `ValueError` exception if the scale bar has not been drawn.
+
+```python
+fig, ax = plt.subplots()
+
+scalebar = ScaleBar(0.08, "cm", length_fraction=0.25)
+ax.add_artist(scalebar)
+
+print(scalebar.info) # raises a ValueError exception
+
+fig.canvas.draw()
+
+print(scalebar.info) # works
+```
+
 ## ScaleBar arguments
 
 Here are arguments of the **ScaleBar** class constructor and examples how to use them.
