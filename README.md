@@ -442,6 +442,7 @@ ax.add_artist(scalebar)
 * Fix example_angular.py ([#55][i55])
 * Support Python 3.12 ([#61][i61])
 * Add a (skippable) check that the axes have equal aspect ratio ([#62][i62])
+* Use `\\mathregular` for LaTeX micro ([#58][i58])
 
 ### 0.8.1
 
@@ -530,6 +531,7 @@ ax.add_artist(scalebar)
 [@jzuhone](https://github.com/jzuhone)
 [@360tetsu360](https://github.com/360tetsu360)
 [@jlaehne](https://github.com/jlaehne)
+[@Alessandro-Zunino](https://github.com/Alessandro-Zunino)
 
 ## License
 
@@ -563,5 +565,6 @@ Copyright (c) 2015-2025 Philippe Pinard
 [i53]: https://github.com/ppinard/matplotlib-scalebar/pull/53
 [i55]: https://github.com/ppinard/matplotlib-scalebar/pull/55
 [i56]: https://github.com/ppinard/matplotlib-scalebar/pull/56
+[i58]: https://github.com/ppinard/matplotlib-scalebar/issues/58
 [i61]: https://github.com/ppinard/matplotlib-scalebar/pull/61
 [i62]: https://github.com/ppinard/matplotlib-scalebar/pull/62

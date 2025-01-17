@@ -31,7 +31,7 @@ _PREFIXES_FACTORS = {
     "z": 1e-21,
     "y": 1e-24,
 }
-_LATEX_MU = "$\\mathrm{\\mu}$"
+_LATEX_MU = "$\\mathregular{\\mu}$"
 
 
 class _Dimension(object):
