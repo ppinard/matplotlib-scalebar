@@ -433,7 +433,7 @@ ax.add_artist(scalebar)
 
 ## Release notes
 
-### Dev
+### 0.9.0
 
 * Update tooling ([#53][i53])
 * Add example gallery ([#50][i50])
