@@ -25,6 +25,7 @@ _PREFIXES_FACTORS = {
     "\u00b5": 1e-6,
     "u": 1e-6,
     "n": 1e-9,
+    "A": 1e-10,
     "p": 1e-12,
     "f": 1e-15,
     "a": 1e-18,
@@ -111,7 +112,11 @@ class SILengthDimension(_Dimension):
             latexrepr = None
             if prefix == "\u00b5" or prefix == "u":
                 latexrepr = _LATEX_MU + "m"
-            self.add_units(prefix + "m", factor, latexrepr)
+            if prefix == "Å" or prefix == "A" or prefix == "angstrom":
+                latexrepr = "Å"  # Directly add "Å" without appending "m"
+                self.add_units(prefix, factor, latexrepr)
+            else:
+                self.add_units(prefix + "m", factor, latexrepr)
 
 
 class SILengthReciprocalDimension(_Dimension):
@@ -121,7 +126,11 @@ class SILengthReciprocalDimension(_Dimension):
             latexrepr = "{0}m$^{{-1}}$".format(prefix)
             if prefix == "\u00b5" or prefix == "u":
                 latexrepr = _LATEX_MU + "m$^{-1}$"
-            self.add_units("1/{0}m".format(prefix), 1 / factor, latexrepr)
+            if prefix == "Å" or prefix == "A" or prefix == "angstrom":
+                latexrepr = "Å$^{-1}$"
+                self.add_units("1/A", 1 / factor, latexrepr)
+            else:
+                self.add_units("1/{0}m".format(prefix), 1 / factor, latexrepr)
 
 
 class ImperialLengthDimension(_Dimension):
